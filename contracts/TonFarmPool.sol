@@ -1,11 +1,11 @@
-pragma ton-solidity ^0.38.2;
+pragma ton-solidity ^0.41.0;
 pragma AbiHeader expire;
 
-import "../token-contracts/free-ton/contracts/interfaces/IRootTokenContract.sol";
-import "../token-contracts/free-ton/contracts/interfaces/ITONTokenWallet.sol";
-import "../token-contracts/free-ton/contracts/interfaces/ITokensReceivedCallback.sol";
-import "./IUserData.sol";
-import "./ITonFarmPool.sol";
+import "./interfaces/IRootTokenContract.sol";
+import "./interfaces/ITONTokenWallet.sol";
+import "./interfaces/ITokensReceivedCallback.sol";
+import "./interfaces/IUserData.sol";
+import "./interfaces/ITonFarmPool.sol";
 import "./UserData.sol";
 
 

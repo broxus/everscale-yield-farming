@@ -1,3 +1,0 @@
-[submodule "token-contracts"]
-	path = token-contracts
-	url = git@gitlab.dexpa.io:ethereum-freeton-bridge/token-contracts.git
