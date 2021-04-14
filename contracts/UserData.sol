@@ -1,4 +1,4 @@
-pragma solidity ^0.40.0;
+pragma ton-solidity ^0.38.2;
 pragma AbiHeader expire;
 
 import "./ITonFarmPool.sol";
@@ -12,12 +12,12 @@ contract UserData is IUserData {
     uint8 constant NOT_FARM_POOL = 101;
 
 
-    constructor() {
+    constructor() public {
         tvm.accept();
         farmPool = msg.sender;
     }
 
-    function processDeposit(uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external {
+    function processDeposit(uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(address(this).balance - msg.value, 2);
 
@@ -30,7 +30,7 @@ contract UserData is IUserData {
         ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _amount, send_gas_to);
     }
 
-    function processWithdraw(uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external {
+    function processWithdraw(uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(address(this).balance - msg.value, 2);
 

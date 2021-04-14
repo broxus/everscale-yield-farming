@@ -1,4 +1,4 @@
-pragma solidity ^0.40.0;
+pragma ton-solidity ^0.38.2;
 pragma AbiHeader expire;
 
 import "../token-contracts/free-ton/contracts/interfaces/IRootTokenContract.sol";
@@ -6,6 +6,7 @@ import "../token-contracts/free-ton/contracts/interfaces/ITONTokenWallet.sol";
 import "../token-contracts/free-ton/contracts/interfaces/ITokensReceivedCallback.sol";
 import "./IUserData.sol";
 import "./ITonFarmPool.sol";
+import "./UserData.sol";
 
 
 contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
@@ -57,10 +58,10 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
     address public owner;
 
-    TvmCell public static userDataСode;
+    TvmCell public static userDataCode;
 
     constructor(address _owner, uint128 _rewardPerSecond, uint128 _farmStartTime, uint128 _farmEndTime, address _lpTokenRoot) public {
-        require (tvm.pubkey() == msg.pubkey, WRONG_PUBKEY);
+        require (tvm.pubkey() == msg.pubkey(), WRONG_PUBKEY);
         require (_farmStartTime < _farmEndTime, WRONG_INTERVAL);
         tvm.accept();
 
@@ -86,7 +87,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         );
 
         // Request for token wallet address
-        IRootTokenContract(configuration.root).getWalletAddress{
+        IRootTokenContract(lpTokenRoot).getWalletAddress{
             value: GET_WALLET_ADDRESS_VALUE, callback: TonFarmPool.receiveTokenWalletAddress
         }(0, address(this));
     }
@@ -116,7 +117,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         address original_gas_to,
         uint128 updated_balance,
         TvmCell payload
-    ) external {
+    ) external override {
         require (msg.sender == lpTokenWallet, NOT_TOKEN_WALLET);
         require (msg.value >= MIN_DEPOSIT_MSG_VALUE, LOW_DEPOSIT_MSG_VALUE);
         tvm.rawReserve(address(this).balance - msg.value, 2);
@@ -124,7 +125,16 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         if (sender_wallet.value == 0 || amount < minDeposit) {
             // external owner or too low deposit value
             TvmCell tvmcell;
-            ITONTokenWallet(lpTokenWallet).transfer{value: 0, flag: 128}(sender_public_key, amount, 0, original_gas_to, false, tvmcell);
+            ITONTokenWallet(lpTokenWallet).transferToRecipient{value: 0, flag: 128}(
+                sender_public_key,
+                sender_wallet,
+                amount,
+                0,
+                0,
+                original_gas_to,
+                false,
+                tvmcell
+            );
             return;
         }
 
@@ -135,7 +145,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         UserData(userDataAddr).processDeposit{value: 0, flag: 128}(amount, accTonPerShare, original_gas_to);
     }
 
-    function finishDeposit(address user, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _depositAmount, address send_gas_to) external {
+    function finishDeposit(address user, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _depositAmount, address send_gas_to) external override {
         address expectedAddr = getUserDataAddress(user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
 
@@ -169,7 +179,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         UserData(userDataAddr).processWithdraw{value: 0, flag: 128}(amount, accTonPerShare, send_gas_to);
     }
 
-    function finishWithdraw(address user, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _withdrawAmount, address send_gas_to) external {
+    function finishWithdraw(address user, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _withdrawAmount, address send_gas_to) external override {
         address expectedAddr = getUserDataAddress(user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
 
@@ -185,8 +195,8 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         ITONTokenWallet(lpTokenWallet).transfer{value: 0, flag: 128}(user, _withdrawAmount, 0, send_gas_to, false, tvmcell);
     }
 
-    function withdrawUnclaimed(address to) external onlyOwner {
-        require (now() >= farmEndTime, FARMING_NOT_ENDED);
+    function withdrawUnclaimed(address to) external view onlyOwner {
+        require (now >= farmEndTime, FARMING_NOT_ENDED);
         // minimum value that should be placed on contract
         tvm.rawReserve(CONTRACT_MIN_BALANCE, 2);
 
@@ -194,10 +204,10 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     }
 
     // user_amount and user_reward_debt should be fetched from UserData at first
-    function pendingReward(uint128 user_amount, uint128 user_reward_debt) external view {
+    function pendingReward(uint128 user_amount, uint128 user_reward_debt) external view returns (uint128) {
         uint128 _accTonPerShare = accTonPerShare;
-        if (now() > lastRewardTime && lpTokenBalance != 0) {
-            uint128 multiplier = getMultiplier(lastRewardTime, now());
+        if (now > lastRewardTime && lpTokenBalance != 0) {
+            uint128 multiplier = getMultiplier(lastRewardTime, now);
             uint128 tonReward = multiplier * rewardPerSecond;
             _accTonPerShare += (tonReward * 1e12) / lpTokenBalance;
         }
@@ -219,19 +229,19 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     }
 
     function updatePoolInfo() internal {
-        if (now() <= lastRewardTime) {
+        if (now <= lastRewardTime) {
             return;
         }
 
         if (lpTokenBalance == 0) {
-            lastRewardTime = now();
+            lastRewardTime = now;
             return;
         }
 
-        uint128 multiplier = getMultiplier(lastRewardTime, now());
+        uint128 multiplier = getMultiplier(lastRewardTime, now);
         uint128 tonReward = rewardPerSecond * multiplier;
         accTonPerShare += tonReward * 1e12 / lpTokenBalance;
-        lastRewardTime = now();
+        lastRewardTime = now;
     }
 
     function deployUserData(address _user) internal returns (address) {
@@ -239,7 +249,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
             contr: UserData,
             varInit: { user: _user },
             pubkey: tvm.pubkey(),
-            code: userDataСode
+            code: userDataCode
         });
 
         return new UserData{
@@ -250,12 +260,12 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         }();
     }
 
-    function getUserDataAddress(address _user) public returns (address) {
+    function getUserDataAddress(address _user) public view returns (address) {
         TvmCell stateInit = tvm.buildStateInit({
             contr: UserData,
             varInit: { user: _user },
             pubkey: tvm.pubkey(),
-            code: userDataСode
+            code: userDataCode
         });
         return address(tvm.hash(stateInit));
     }
@@ -271,7 +281,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
     function onCodeUpgrade(TvmCell data) internal {}
 
-    function setRewardPerSecond(uint128 newReward) onlyOwner {
+    function setRewardPerSecond(uint128 newReward) external onlyOwner {
         tvm.rawReserve(address(this).balance - msg.value, 2);
         rewardPerSecond = newReward;
     }
