@@ -1,4 +1,4 @@
-pragma ton-solidity ^0.41.0;
+pragma ton-solidity ^0.39.0;
 pragma AbiHeader expire;
 
 import "./interfaces/IRootTokenContract.sol";
@@ -228,6 +228,29 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         return to - from;
     }
 
+    // withdraw all staked tokens without reward in case of some critical logic error / insufficient tons on FarmPool balance
+    function safeWithdraw(address send_gas_to) external {
+        require (msg.sender.value != 0, EXTERNAL_CALL);
+        require (msg.value >= MIN_WITHDRAW_MSG_VALUE, LOW_WITHDRAW_MSG_VALUE);
+        tvm.rawReserve(address(this).balance - msg.value, 2);
+
+        address user_data_addr = getUserDataAddress(msg.sender);
+        IUserData(user_data_addr).processSafeWithdraw{value: 0, flag: 128}(send_gas_to);
+    }
+
+    function finishSafeWithdraw(address user, uint128 amount, address send_gas_to) external override {
+        address expectedAddr = getUserDataAddress(user);
+        require (expectedAddr == msg.sender, NOT_USER_DATA);
+        tvm.rawReserve(address(this).balance - msg.value, 2);
+
+        lpTokenBalance -= amount;
+
+        TvmCell tvmcell;
+        emit Withdraw(user, amount);
+
+        ITONTokenWallet(lpTokenWallet).transfer{value: 0, flag: 128}(user, amount, 0, send_gas_to, false, tvmcell);
+    }
+
     function updatePoolInfo() internal {
         if (now <= lastRewardTime) {
             return;
@@ -270,6 +293,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         return address(tvm.hash(stateInit));
     }
 
+    // TODO: modify, transfer all storage vars in TVMCELL
     function upgrade(TvmCell new_code) public onlyOwner {
         TvmBuilder builder;
 

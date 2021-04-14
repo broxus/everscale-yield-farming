@@ -1,7 +1,13 @@
 pragma ton-solidity ^0.39.0;
 pragma AbiHeader expire;
 
-import "./AllowanceInfoStructure.sol";
+
+interface AllowanceInfoStructure {
+    struct AllowanceInfo {
+        uint128 remaining_tokens;
+        address spender;
+    }
+}
 
 interface ITONTokenWallet is AllowanceInfoStructure {
 
