@@ -270,7 +270,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     function deployUserData(address _user) internal returns (address) {
         TvmCell stateInit = tvm.buildStateInit({
             contr: UserData,
-            varInit: { user: _user },
+            varInit: { user: _user, farmPool: address(this) },
             pubkey: tvm.pubkey(),
             code: userDataCode
         });
@@ -286,7 +286,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     function getUserDataAddress(address _user) public view returns (address) {
         TvmCell stateInit = tvm.buildStateInit({
             contr: UserData,
-            varInit: { user: _user },
+            varInit: { user: _user, farmPool: address(this) },
             pubkey: tvm.pubkey(),
             code: userDataCode
         });
