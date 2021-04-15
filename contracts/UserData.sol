@@ -13,8 +13,8 @@ contract UserData is IUserData {
 
 
     constructor() public {
-        tvm.accept();
         require (farmPool == msg.sender, NOT_FARM_POOL);
+        tvm.accept();
     }
 
     function getDetails() external responsible view override returns (UserDataDetails) {
@@ -29,7 +29,7 @@ contract UserData is IUserData {
         uint128 prevRewardDebt = rewardDebt;
 
         amount += _amount;
-        rewardDebt = (amount * _accTonPerShare) / 1e12;
+        rewardDebt = (amount * _accTonPerShare) / 1e18;
 
         ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _amount, send_gas_to);
     }
@@ -48,7 +48,7 @@ contract UserData is IUserData {
         uint128 prevRewardDebt = rewardDebt;
 
         amount -= _amount;
-        rewardDebt = (amount * _accTonPerShare) / 1e12;
+        rewardDebt = (amount * _accTonPerShare) / 1e18;
 
         ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _amount, send_gas_to);
     }

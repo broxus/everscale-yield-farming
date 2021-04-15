@@ -122,12 +122,13 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         require (msg.value >= MIN_DEPOSIT_MSG_VALUE, LOW_DEPOSIT_MSG_VALUE);
         tvm.rawReserve(address(this).balance - msg.value, 2);
 
-        if (sender_wallet.value == 0 || amount < minDeposit) {
+        if (sender_address.value == 0 || amount < minDeposit) {
             // external owner or too low deposit value
             TvmCell tvmcell;
+            // TODO: transfer by sender wallet
             ITONTokenWallet(lpTokenWallet).transferToRecipient{value: 0, flag: 128}(
                 sender_public_key,
-                sender_wallet,
+                sender_address,
                 amount,
                 0,
                 0,
@@ -141,7 +142,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         updatePoolInfo();
 
         // we try deploying every time
-        address userDataAddr = deployUserData(sender_wallet);
+        address userDataAddr = deployUserData(sender_address);
         UserData(userDataAddr).processDeposit{value: 0, flag: 128}(amount, accTonPerShare, original_gas_to);
     }
 
@@ -151,8 +152,9 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
         uint128 pending = 0;
         if (_prevAmount > 0) {
-            pending = ((_prevAmount * accTonPerShare) / 1e12) - _prevRewardDebt;
+            pending = ((_prevAmount * accTonPerShare) / 1e18) - _prevRewardDebt;
         }
+
 
         tvm.rawReserve(address(this).balance - msg.value - pending, 2);
         lpTokenBalance += _depositAmount;
@@ -183,7 +185,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         address expectedAddr = getUserDataAddress(user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
 
-        uint128 pending = ((_prevAmount * accTonPerShare) / 1e12) - _prevRewardDebt;
+        uint128 pending = ((_prevAmount * accTonPerShare) / 1e18) - _prevRewardDebt;
         tvm.rawReserve(address(this).balance - msg.value - pending, 2);
 
         lpTokenBalance -= _withdrawAmount;
@@ -192,7 +194,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         TvmCell tvmcell;
         emit Withdraw(user, _withdrawAmount);
 
-        ITONTokenWallet(lpTokenWallet).transfer{value: 0, flag: 128}(user, _withdrawAmount, 0, send_gas_to, false, tvmcell);
+        ITONTokenWallet(lpTokenWallet).transferToRecipient{value: 0, flag: 128}(user, _withdrawAmount, 0, send_gas_to, true, tvmcell);
     }
 
     function withdrawUnclaimed(address to) external view onlyOwner {
@@ -209,9 +211,9 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         if (now > lastRewardTime && lpTokenBalance != 0) {
             uint128 multiplier = getMultiplier(lastRewardTime, now);
             uint128 tonReward = multiplier * rewardPerSecond;
-            _accTonPerShare += (tonReward * 1e12) / lpTokenBalance;
+            _accTonPerShare += (tonReward * 1e18) / lpTokenBalance;
         }
-        return ((user_amount * _accTonPerShare) / 1e12) - user_reward_debt;
+        return ((user_amount * _accTonPerShare) / 1e18) - user_reward_debt;
     }
 
     function getMultiplier(uint128 from, uint128 to) public view returns(uint128) {
@@ -248,7 +250,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         TvmCell tvmcell;
         emit Withdraw(user, amount);
 
-        ITONTokenWallet(lpTokenWallet).transfer{value: 0, flag: 128}(user, amount, 0, send_gas_to, false, tvmcell);
+        ITONTokenWallet(lpTokenWallet).transferToRecipient{value: 0, flag: 128}(user, amount, 0, send_gas_to, true, tvmcell);
     }
 
     function updatePoolInfo() internal {
@@ -263,7 +265,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
         uint128 multiplier = getMultiplier(lastRewardTime, now);
         uint128 tonReward = rewardPerSecond * multiplier;
-        accTonPerShare += tonReward * 1e12 / lpTokenBalance;
+        accTonPerShare += tonReward * 1e18 / lpTokenBalance;
         lastRewardTime = now;
     }
 
