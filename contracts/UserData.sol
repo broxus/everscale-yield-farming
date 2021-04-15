@@ -7,21 +7,29 @@ import "./interfaces/IUserData.sol";
 contract UserData is IUserData {
     uint128 public amount;
     uint128 public rewardDebt;
+//    uint128 public posDebt;
     address public static farmPool;
     address public static user; // setup from initData
     uint8 constant NOT_FARM_POOL = 101;
 
 
     constructor() public {
-        tvm.accept();
         require (farmPool == msg.sender, NOT_FARM_POOL);
+        tvm.accept();
     }
 
     function getDetails() external responsible view override returns (UserDataDetails) {
         return { value: 0, bounce: false, flag: 64 }UserDataDetails(amount, rewardDebt, farmPool, user);
     }
 
-    function processDeposit(uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external override {
+//    function increasePosDebt(uint128 debt) external override {
+//        require(msg.sender == farmPool, NOT_FARM_POOL);
+//        tvm.rawReserve(address(this).balance - msg.value, 2);
+//
+//        posDebt += debt;
+//    }
+
+    function processDeposit(uint64 nonce, uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(address(this).balance - msg.value, 2);
 
@@ -29,9 +37,9 @@ contract UserData is IUserData {
         uint128 prevRewardDebt = rewardDebt;
 
         amount += _amount;
-        rewardDebt = (amount * _accTonPerShare) / 1e12;
+        rewardDebt = (amount * _accTonPerShare) / 1e18;
 
-        ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _amount, send_gas_to);
+        ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: 128}(nonce, prevAmount, prevRewardDebt);
     }
 
     function processWithdraw(uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external override {
@@ -48,7 +56,7 @@ contract UserData is IUserData {
         uint128 prevRewardDebt = rewardDebt;
 
         amount -= _amount;
-        rewardDebt = (amount * _accTonPerShare) / 1e12;
+        rewardDebt = (amount * _accTonPerShare) / 1e18;
 
         ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _amount, send_gas_to);
     }

@@ -11,7 +11,7 @@ interface IUserData {
     }
 
     function getDetails() external responsible view returns (UserDataDetails);
-    function processDeposit(uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external;
+    function processDeposit(uint64 nonce, uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external;
     function processWithdraw(uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external;
     function processSafeWithdraw(address send_gas_to) external;
 }
