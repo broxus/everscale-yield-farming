@@ -7,7 +7,6 @@ import "./interfaces/IUserData.sol";
 contract UserData is IUserData {
     uint128 public amount;
     uint128 public rewardDebt;
-//    uint128 public posDebt;
     address public static farmPool;
     address public static user; // setup from initData
     uint8 constant NOT_FARM_POOL = 101;
@@ -22,12 +21,6 @@ contract UserData is IUserData {
         return { value: 0, bounce: false, flag: 64 }UserDataDetails(amount, rewardDebt, farmPool, user);
     }
 
-//    function increasePosDebt(uint128 debt) external override {
-//        require(msg.sender == farmPool, NOT_FARM_POOL);
-//        tvm.rawReserve(address(this).balance - msg.value, 2);
-//
-//        posDebt += debt;
-//    }
 
     function processDeposit(uint64 nonce, uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
