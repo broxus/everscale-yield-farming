@@ -435,7 +435,7 @@ describe('Test Ton Farm Pool', async function() {
             });
 
             it('Users withdraw tokens', async function() {
-                sleep(2000);
+                await sleep(2000);
 
                 const user1_bal_before = await locklift.ton.getBalance(user1.address);
                 const tx1 = await withdrawTokens(user1, farm_pool, minDeposit);
@@ -457,7 +457,7 @@ describe('Test Ton Farm Pool', async function() {
                     minDeposit, minDeposit, userInitialTokenBal
                 )
 
-                sleep(2000);
+                await sleep(2000);
 
                 const user2_bal_before = await locklift.ton.getBalance(user2.address);
                 const tx2 = await withdrawTokens(user2, farm_pool, minDeposit);
@@ -481,8 +481,8 @@ describe('Test Ton Farm Pool', async function() {
         });
 
         describe('Pool has low balance', async function() {
-            const updatedRewardPerSec = (farmEnd - farmStart) * rewardPerSec;
             it('Deposit tokens', async function() {
+                const updatedRewardPerSec = (farmEnd - farmStart) * rewardPerSec;
                 // increase rewardPerSec so that pool will become unable to pay rewards
                 // now pools pays amount equal to its balance every second
                 await admin_user.runTarget({
@@ -506,6 +506,8 @@ describe('Test Ton Farm Pool', async function() {
             });
 
             it('User withdraw, debt emitted', async function() {
+                const updatedRewardPerSec = (farmEnd - farmStart) * rewardPerSec;
+
                 const prev_reward_time = await farm_pool.call({method: 'lastRewardTime'});
                 const user1_bal_before = await locklift.ton.getBalance(user1.address);
                 await sleep(2000);

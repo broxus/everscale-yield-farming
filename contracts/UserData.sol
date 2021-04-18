@@ -22,7 +22,7 @@ contract UserData is IUserData {
     }
 
 
-    function processDeposit(uint64 nonce, uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external override {
+    function processDeposit(uint64 nonce, uint128 _amount, uint128 _accTonPerShare) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(address(this).balance - msg.value, 2);
 

@@ -153,7 +153,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         deposits[nonce] = PendingDeposit(sender_address, amount, original_gas_to);
 
         address userDataAddr = getUserDataAddress(sender_address);
-        UserData(userDataAddr).processDeposit{value: 0, flag: 128}(nonce, amount, accTonPerShare, original_gas_to);
+        UserData(userDataAddr).processDeposit{value: 0, flag: 128}(nonce, amount, accTonPerShare);
     }
 
     function finishDeposit(uint64 _nonce, uint128 _prevAmount, uint128 _prevRewardDebt) external override {
@@ -342,7 +342,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
             PendingDeposit deposit = deposits[_nonce];
             address user_data_addr = deployUserData(deposit.user);
             // try again
-            UserData(user_data_addr).processDeposit{value: 0, flag: 128}(_nonce, deposit.amount, accTonPerShare, deposit.send_gas_to);
+            UserData(user_data_addr).processDeposit{value: 0, flag: 128}(_nonce, deposit.amount, accTonPerShare);
         }
     }
 
