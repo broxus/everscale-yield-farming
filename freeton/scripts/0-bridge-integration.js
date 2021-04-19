@@ -73,38 +73,6 @@ async function main() {
   
   logger.success(`Owner: ${owner.address}`);
   
-  logger.log(`Deploying LP token`);
-  
-  const RootToken = await locklift.factory.getContract(
-    'RootTokenContract',
-    './../node_modules/broxus-ton-tokens-contracts/free-ton/build'
-  );
-  
-  const TokenWallet = await locklift.factory.getContract(
-    'TONTokenWallet',
-    './../node_modules/broxus-ton-tokens-contracts/free-ton/build'
-  );
-  
-  const root = await locklift.giver.deployContract({
-    contract: RootToken,
-    constructorParams: {
-      root_public_key_: `0x${keyPair.public}`,
-      root_owner_address_: locklift.ton.zero_address
-    },
-    initParams: {
-      name: stringToBytesArray('Uniswap V2: USDT-WTON'),
-      symbol: stringToBytesArray('UNI-V2-USDT-WTON'),
-      decimals: 18,
-      wallet_code: TokenWallet.code,
-      _randomNonce: getRandomNonce(),
-    },
-    keyPair,
-  });
-  
-  root.afterRun = afterRun;
-  
-  logger.success(`LP token root: ${root.address}`);
-  
   logger.log(`Deploying cell encoder`);
   
   const CellEncoder = await locklift.factory.getContract(
@@ -153,8 +121,37 @@ async function main() {
   
   logger.success(`Token event proxy: ${tokenEventProxy.address}`);
   
-  logger.log(`Setting up token event proxy`);
-  // TODO: add pipeline for token event proxy setup
+  logger.log(`Deploying LP token`);
+  
+  const RootToken = await locklift.factory.getContract(
+    'RootTokenContract',
+    './../node_modules/broxus-ton-tokens-contracts/free-ton/build'
+  );
+  
+  const TokenWallet = await locklift.factory.getContract(
+    'TONTokenWallet',
+    './../node_modules/broxus-ton-tokens-contracts/free-ton/build'
+  );
+  
+  const root = await locklift.giver.deployContract({
+    contract: RootToken,
+    constructorParams: {
+      root_public_key_: `0x0`,
+      root_owner_address_: tokenEventProxy.address
+    },
+    initParams: {
+      name: stringToBytesArray('Uniswap V2: USDT-WTON'),
+      symbol: stringToBytesArray('UNI-V2-USDT-WTON'),
+      decimals: 18,
+      wallet_code: TokenWallet.code,
+      _randomNonce: getRandomNonce(),
+    },
+    keyPair,
+  });
+  
+  root.afterRun = afterRun;
+  
+  logger.success(`LP token root: ${root.address}`);
   
   logger.log(`Deploying ethereum event configuration`);
   
@@ -274,6 +271,19 @@ async function main() {
     method: 'setEthEventConfigAddressOnce',
     params: {
       value: ethereumEventConfiguration.address
+    }
+  });
+  
+  logTx(tx);
+  
+  logger.log(`Transferring token event ownership to multisig`);
+  
+  tx = await owner.runTarget({
+    contract: tokenEventProxy,
+    method: 'transferOwner',
+    params: {
+      external_owner_pubkey_: 0,
+      internal_owner_address_: data.multisig
     }
   });
   
