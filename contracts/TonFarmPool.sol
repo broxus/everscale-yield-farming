@@ -156,14 +156,14 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         UserData(userDataAddr).processDeposit{value: 0, flag: 128}(nonce, amount, accTonPerShare);
     }
 
-    function finishDeposit(uint64 _nonce, uint128 _prevAmount, uint128 _prevRewardDebt) external override {
+    function finishDeposit(uint64 _nonce, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _accTonPerShare) external override {
         PendingDeposit deposit = deposits[_nonce];
         address expectedAddr = getUserDataAddress(deposit.user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
 
         uint128 pending = 0;
         if (_prevAmount > 0) {
-            pending = ((_prevAmount * accTonPerShare) / 1e18) - _prevRewardDebt;
+            pending = ((_prevAmount * _accTonPerShare) / 1e18) - _prevRewardDebt;
         }
 
         if ((pending + msg.value) > address(this).balance) {
@@ -199,11 +199,11 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         UserData(userDataAddr).processWithdraw{value: 0, flag: 128}(amount, accTonPerShare, send_gas_to);
     }
 
-    function finishWithdraw(address user, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _withdrawAmount, address send_gas_to) external override {
+    function finishWithdraw(address user, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _withdrawAmount, uint128 _accTonPerSahre, address send_gas_to) external override {
         address expectedAddr = getUserDataAddress(user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
 
-        uint128 pending = ((_prevAmount * accTonPerShare) / 1e18) - _prevRewardDebt;
+        uint128 pending = ((_prevAmount * _accTonPerSahre) / 1e18) - _prevRewardDebt;
 
         if ((pending + msg.value) > address(this).balance) {
             // yeah, not cool, lets hope there will be enough balance

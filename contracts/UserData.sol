@@ -32,7 +32,7 @@ contract UserData is IUserData {
         amount += _amount;
         rewardDebt = (amount * _accTonPerShare) / 1e18;
 
-        ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: 128}(nonce, prevAmount, prevRewardDebt);
+        ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: 128}(nonce, prevAmount, prevRewardDebt, _accTonPerShare);
     }
 
     function processWithdraw(uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external override {
@@ -51,7 +51,7 @@ contract UserData is IUserData {
         amount -= _amount;
         rewardDebt = (amount * _accTonPerShare) / 1e18;
 
-        ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _amount, send_gas_to);
+        ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _amount, _accTonPerShare, send_gas_to);
     }
 
     function processSafeWithdraw(address send_gas_to) external override {
