@@ -38,7 +38,7 @@ describe('Test Ton Farm Pool', async function() {
     let farmEnd;
     let rewardPerSec;
     if (locklift.network === 'dev') {
-        rewardPerSec = 50000000; // 0.05
+        rewardPerSec = 1000000000; // 0.1
     } else {
         rewardPerSec = 1000000000; // 1
     }
@@ -84,7 +84,7 @@ describe('Test Ton Farm Pool', async function() {
 
         const time_passed = tx.transaction.now - prevRewardTime;
         const expected_reward = rewardPerSec * time_passed;
-        const tx_cost = convertCrystal(0.2, 'nano'); // rough estimate
+        const tx_cost = convertCrystal(0.3, 'nano'); // rough estimate
 
         expect(reward).to.be.above(expected_reward - tx_cost, 'Bad reward');
     }
@@ -330,7 +330,7 @@ describe('Test Ton Farm Pool', async function() {
                 expect(details.root_address).to.be.equal(root.address, 'Wrong farm pool token wallet root');
             });
             it('Sending tons to pool', async function() {
-                const amount = 100 * 10**9;
+                const amount = 300 * 10**9;
                 await locklift.giver.giver.run({
                     method: 'sendGrams',
                     params: {
@@ -422,20 +422,21 @@ describe('Test Ton Farm Pool', async function() {
                     minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 )
 
-                await sleep(2000);
+                await sleep(20000);
 
                 const tx2 = await depositTokens(user2, userTokenWallet2, farm_pool, minDeposit);
                 await checkTokenBalances(
                     farm_pool, farm_pool_wallet, userTokenWallet1,
                     minDeposit * 2, minDeposit * 2, userInitialTokenBal - minDeposit
                 )
+                await afterRun(tx1);
 
                 user1_deposit_time = tx1.transaction.now;
                 user2_deposit_time = tx2.transaction.now;
             });
 
             it('Users withdraw tokens', async function() {
-                await sleep(2000);
+                await sleep(20000);
 
                 const user1_bal_before = await locklift.ton.getBalance(user1.address);
                 const tx1 = await withdrawTokens(user1, farm_pool, minDeposit);
@@ -449,8 +450,10 @@ describe('Test Ton Farm Pool', async function() {
                 const time_passed_2 = tx1.transaction.now - user2_deposit_time;
                 const expected_reward_2 = rewardPerSec * 0.5 * time_passed_2;
 
-                const tx_cost = convertCrystal(0.2, 'nano'); // rough estimate
-                expect(reward1).to.be.above(expected_reward_1 + expected_reward_2 - tx_cost, 'Bad reward 1 user');
+                const tx_cost = convertCrystal(0.6, 'nano'); // rough estimate
+                const expected_reward_final = (expected_reward_1 + expected_reward_2 - tx_cost) * 0.9
+
+                expect(reward1).to.be.above(expected_reward_final, 'Bad reward 1 user');
 
                 await checkTokenBalances(
                     farm_pool, farm_pool_wallet, userTokenWallet1,
@@ -470,8 +473,9 @@ describe('Test Ton Farm Pool', async function() {
 
                 const time_passed_22 = tx2.transaction.now - tx1.transaction.now;
                 const expected_reward_22 = rewardPerSec * time_passed_22;
+                const expected_reward_final_2 = (expected_reward_22 + expected_reward_21 - tx_cost) * 0.9
 
-                expect(reward2).to.be.above(expected_reward_22 + expected_reward_21 - tx_cost, 'Bad reward 2 user');
+                expect(reward2).to.be.above(expected_reward_final_2, 'Bad reward 2 user');
 
                 await checkTokenBalances(
                     farm_pool, farm_pool_wallet, userTokenWallet1,
