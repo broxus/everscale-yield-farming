@@ -1,0 +1,1 @@
+locklift run -n main -s scripts/deploy_farm_pool.js  --config locklift.config.js

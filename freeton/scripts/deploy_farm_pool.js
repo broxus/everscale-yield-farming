@@ -3,7 +3,7 @@ const {
 } = locklift.utils;
 
 const fs = require('fs')
-let deploy_params = JSON.parse(fs.readFileSync('../deploy_config.json', 'utf-8'))
+let deploy_params = JSON.parse(fs.readFileSync('deploy_config.json', 'utf-8'))
 const BigNumber = require('bignumber.js');
 
 async function sleep(ms) {
