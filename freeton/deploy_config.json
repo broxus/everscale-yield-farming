@@ -1,8 +1,8 @@
 {
-  "_owner": "0:22738381492993106c7b400172ca931d2b2fa09bf1d3f724466248b0c9d44b43",
-  "_rewardPerSecond": "1000",
-  "_minDeposit": "1000",
-  "_farmStartTime": "1000",
-  "_farmEndTime": "2000",
-  "_lpTokenRoot": "0:57e4cb4120be952f30e60408d38747e57371dc1ab24622a56b6283e72ddde980"
+  "_owner": "0:ad091843febdbaf72308bf9c45067817e254965c28a692b5c4187f8c7fab6c81",
+  "_rewardPerSecond": "115740740",
+  "_minDeposit": "213351773",
+  "_farmStartTime": "1618995600",
+  "_farmEndTime": "1620810000",
+  "_lpTokenRoot": "0:72cad0c97cc8d84eef6837ee110f8f67c9d376cae57d684308fe30e831df734a"
 }

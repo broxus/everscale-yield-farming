@@ -49,6 +49,9 @@ async function main() {
 
     console.log(`Farm Pool address: ${farm_pool.address}`);
 
+    const owner = await farm_pool.call({method: 'owner'});
+    console.log(`Farm Pool owner: ${owner}`);
+
     const expectedWalletAddr = await root.call({
         method: 'getWalletAddress',
         params: {
