@@ -4,7 +4,7 @@
   "description": "Freeton smart-contract for staking TIP-3 tokens for ton reward",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \\\"Error: no freeton/test specified\\\" && exit 1"
   },
   "repository": {
     "type": "git",
