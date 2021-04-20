@@ -1,7 +1,7 @@
 module.exports = {
     compiler: {
         // Specify path to your TON-Solidity-Compiler
-        path: '/usr/bin/solc',
+        path: '/usr/bin/solcton',
     },
     linker: {
         // Path to your TVM Linker

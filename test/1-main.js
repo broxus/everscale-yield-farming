@@ -38,7 +38,7 @@ describe('Test Ton Farm Pool', async function() {
     let farmEnd;
     let rewardPerSec;
     if (locklift.network === 'dev') {
-        rewardPerSec = 1000000000; // 0.1
+        rewardPerSec = 100000000; // 0.1
     } else {
         rewardPerSec = 1000000000; // 1
     }
@@ -330,7 +330,7 @@ describe('Test Ton Farm Pool', async function() {
                 expect(details.root_address).to.be.equal(root.address, 'Wrong farm pool token wallet root');
             });
             it('Sending tons to pool', async function() {
-                const amount = 300 * 10**9;
+                const amount = 600 * 10**9;
                 await locklift.giver.giver.run({
                     method: 'sendGrams',
                     params: {
@@ -486,7 +486,7 @@ describe('Test Ton Farm Pool', async function() {
 
         describe('Pool has low balance', async function() {
             it('Deposit tokens', async function() {
-                const updatedRewardPerSec = (farmEnd - farmStart) * rewardPerSec;
+                const updatedRewardPerSec = (farmEnd - farmStart) * rewardPerSec * 1000000;
                 // increase rewardPerSec so that pool will become unable to pay rewards
                 // now pools pays amount equal to its balance every second
                 await admin_user.runTarget({
@@ -497,6 +497,8 @@ describe('Test Ton Farm Pool', async function() {
                     },
                     value: convertCrystal(1, 'nano')
                 });
+                const newReward = await farm_pool.call({method: 'rewardPerSecond'});
+                expect(newReward.toNumber()).to.be.equal(updatedRewardPerSec, 'RewardPerSec not updated');
 
                 const tx = await depositTokens(user1, userTokenWallet1, farm_pool, minDeposit);
                 await checkTokenBalances(
@@ -510,7 +512,7 @@ describe('Test Ton Farm Pool', async function() {
             });
 
             it('User withdraw, debt emitted', async function() {
-                const updatedRewardPerSec = (farmEnd - farmStart) * rewardPerSec;
+                const updatedRewardPerSec = (farmEnd - farmStart) * rewardPerSec * 1000000;
 
                 const prev_reward_time = await farm_pool.call({method: 'lastRewardTime'});
                 const user1_bal_before = await locklift.ton.getBalance(user1.address);
@@ -530,7 +532,7 @@ describe('Test Ton Farm Pool', async function() {
                 );
                 const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('RewardDebt')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
-                expect(_amount).to.be.equal(expected_reward.toString(), 'Bad event');
+                expect(Number(_amount)).to.be.above(expected_reward, 'Bad event');
 
                 // return to normal
                 await admin_user.runTarget({
