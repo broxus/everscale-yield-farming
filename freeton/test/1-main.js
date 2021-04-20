@@ -19,8 +19,6 @@ const getRandomNonce = () => Math.random() * 64000 | 0;
 const afterRun = async (tx) => {
     if (locklift.network === 'dev') {
         await sleep(80000);
-    } else {
-        await sleep(500)
     }
 };
 
@@ -77,6 +75,15 @@ describe('Test Ton Farm Pool', async function() {
             value: convertCrystal(0.6, 'nano')
         });
     };
+
+    const withdrawAllTokens = async function(user, farm_pool) {
+        return await user.runTarget({
+            contract: farm_pool,
+            method: 'withdrawAll',
+            params: {},
+            value: convertCrystal(0.6, 'nano')
+        });
+    }
 
     const checkReward = async function(user, prevBalance, prevRewardTime, tx) {
         const user1_bal_after = await locklift.ton.getBalance(user.address);
@@ -422,7 +429,7 @@ describe('Test Ton Farm Pool', async function() {
                     minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 )
 
-                await sleep(20000);
+                await sleep(5000);
 
                 const tx2 = await depositTokens(user2, userTokenWallet2, farm_pool, minDeposit);
                 await checkTokenBalances(
@@ -436,7 +443,7 @@ describe('Test Ton Farm Pool', async function() {
             });
 
             it('Users withdraw tokens', async function() {
-                await sleep(20000);
+                await sleep(5000);
 
                 const user1_bal_before = await locklift.ton.getBalance(user1.address);
                 const tx1 = await withdrawTokens(user1, farm_pool, minDeposit);
@@ -476,6 +483,46 @@ describe('Test Ton Farm Pool', async function() {
                 const expected_reward_final_2 = (expected_reward_22 + expected_reward_21 - tx_cost) * 0.9
 
                 expect(reward2).to.be.above(expected_reward_final_2, 'Bad reward 2 user');
+
+                await checkTokenBalances(
+                    farm_pool, farm_pool_wallet, userTokenWallet1,
+                    0, 0, userInitialTokenBal
+                )
+            });
+        });
+
+        describe('Withdraw all test', async function() {
+            let user_deposit_time;
+
+            it('User deposit tokens', async function() {
+                const tx = await depositTokens(user1, userTokenWallet1, farm_pool, minDeposit);
+                await checkTokenBalances(
+                    farm_pool, farm_pool_wallet, userTokenWallet1,
+                    minDeposit, minDeposit, userInitialTokenBal - minDeposit
+                );
+
+                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
+                expect(_user).to.be.equal(user1.address, 'Bad event');
+                expect(_amount).to.be.equal(minDeposit.toString(), 'Bad event');
+
+                user_deposit_time = tx.transaction.now;
+            });
+
+            it('User withdraw all', async function() {
+                await sleep(2000);
+                const user_bal_before = await locklift.ton.getBalance(user1.address);
+                const tx1 = await withdrawAllTokens(user1, farm_pool);
+                await afterRun(tx1);
+                const user_bal_after = await locklift.ton.getBalance(user1.address);
+                const reward = user_bal_after - user_bal_before;
+
+                const time_passed = tx1.transaction.now - user_deposit_time;
+                const expected_reward = rewardPerSec * time_passed;
+
+                const tx_cost = convertCrystal(0.6, 'nano'); // rough estimate
+                const expected_reward_final = (expected_reward - tx_cost) * 0.9
+
+                expect(reward).to.be.above(expected_reward_final, 'Bad reward 1 user');
 
                 await checkTokenBalances(
                     farm_pool, farm_pool_wallet, userTokenWallet1,
@@ -524,7 +571,7 @@ describe('Test Ton Farm Pool', async function() {
                 expect(user1_bal_after.toNumber()).to.be.below(user1_bal_before.toNumber(), 'Balance increased on debt');
 
                 const time_passed = tx.transaction.now - prev_reward_time;
-                const expected_reward = time_passed * updatedRewardPerSec;
+                const expected_reward = (time_passed * updatedRewardPerSec) * 0.9;
 
                 await checkTokenBalances(
                     farm_pool, farm_pool_wallet, userTokenWallet1,
@@ -532,7 +579,8 @@ describe('Test Ton Farm Pool', async function() {
                 );
                 const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('RewardDebt')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
-                expect(Number(_amount)).to.be.above(expected_reward, 'Bad event');
+                const num = Number(_amount);
+                expect(num).to.be.above(expected_reward, 'Bad event');
 
                 // return to normal
                 await admin_user.runTarget({

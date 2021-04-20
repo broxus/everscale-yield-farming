@@ -54,6 +54,25 @@ contract UserData is IUserData {
         ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _amount, _accTonPerShare, send_gas_to);
     }
 
+    function processWithdrawAll(uint128 _accTonPerShare, address send_gas_to) external override {
+        require (msg.sender == farmPool, NOT_FARM_POOL);
+        tvm.rawReserve(address(this).balance - msg.value, 2);
+
+        // bad input. User does not have enough staked balance. At least we can return some gas
+        if (amount == 0) {
+            send_gas_to.transfer(0, false, 128);
+            return;
+        }
+
+        uint128 prevAmount = amount;
+        uint128 prevRewardDebt = rewardDebt;
+
+        amount = 0;
+        rewardDebt = 0;
+
+        ITonFarmPool(msg.sender).finishWithdrawAll{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _accTonPerShare, send_gas_to);
+    }
+
     function processSafeWithdraw(address send_gas_to) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(address(this).balance - msg.value, 2);

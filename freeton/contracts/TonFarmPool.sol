@@ -199,11 +199,23 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         UserData(userDataAddr).processWithdraw{value: 0, flag: 128}(amount, accTonPerShare, send_gas_to);
     }
 
-    function finishWithdraw(address user, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _withdrawAmount, uint128 _accTonPerSahre, address send_gas_to) external override {
+    function withdrawAll() public {
+        require (msg.sender.value != 0, EXTERNAL_CALL);
+        require (msg.value >= MIN_WITHDRAW_MSG_VALUE, LOW_WITHDRAW_MSG_VALUE);
+        tvm.rawReserve(address(this).balance - msg.value, 2);
+
+        updatePoolInfo();
+
+        address userDataAddr = getUserDataAddress(msg.sender);
+        // we cant check if user has any balance here, delegate it to UserData
+        UserData(userDataAddr).processWithdrawAll{value: 0, flag: 128}(accTonPerShare, msg.sender);
+    }
+
+    function finishWithdraw(address user, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _withdrawAmount, uint128 _accTonPerShare, address send_gas_to) public override {
         address expectedAddr = getUserDataAddress(user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
 
-        uint128 pending = ((_prevAmount * _accTonPerSahre) / 1e18) - _prevRewardDebt;
+        uint128 pending = ((_prevAmount * _accTonPerShare) / 1e18) - _prevRewardDebt;
 
         if ((pending + msg.value) > address(this).balance) {
             // yeah, not cool, lets hope there will be enough balance
@@ -224,6 +236,10 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         ITONTokenWallet(lpTokenWallet).transferToRecipient{value: 0, flag: 128}(
             0, user, _withdrawAmount, 0, 0, send_gas_to, false, tvmcell
         );
+    }
+
+    function finishWithdrawAll(address user, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _accTonPerShare, address send_gas_to) external override {
+        finishWithdraw(user, _prevAmount, _prevRewardDebt, _prevAmount, _accTonPerShare, send_gas_to);
     }
 
     function withdrawUnclaimed(address to) external view onlyOwner {
