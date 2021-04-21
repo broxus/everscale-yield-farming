@@ -1,0 +1,294 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_owner","type":"address"},
+				{"name":"_rewardPerSecond","type":"uint128"},
+				{"name":"_minDeposit","type":"uint128"},
+				{"name":"_farmStartTime","type":"uint128"},
+				{"name":"_farmEndTime","type":"uint128"},
+				{"name":"_lpTokenRoot","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "receiveTokenWalletAddress",
+			"inputs": [
+				{"name":"wallet","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "tokensReceivedCallback",
+			"inputs": [
+				{"name":"token_wallet","type":"address"},
+				{"name":"token_root","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"sender_public_key","type":"uint256"},
+				{"name":"sender_address","type":"address"},
+				{"name":"sender_wallet","type":"address"},
+				{"name":"original_gas_to","type":"address"},
+				{"name":"updated_balance","type":"uint128"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finishDeposit",
+			"inputs": [
+				{"name":"_nonce","type":"uint64"},
+				{"name":"_prevAmount","type":"uint128"},
+				{"name":"_prevRewardDebt","type":"uint128"},
+				{"name":"_accTonPerShare","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdraw",
+			"inputs": [
+				{"name":"amount","type":"uint128"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdrawAll",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finishWithdraw",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"_prevAmount","type":"uint128"},
+				{"name":"_prevRewardDebt","type":"uint128"},
+				{"name":"_withdrawAmount","type":"uint128"},
+				{"name":"_accTonPerShare","type":"uint128"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finishWithdrawAll",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"_prevAmount","type":"uint128"},
+				{"name":"_prevRewardDebt","type":"uint128"},
+				{"name":"_accTonPerShare","type":"uint128"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdrawUnclaimed",
+			"inputs": [
+				{"name":"to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "pendingReward",
+			"inputs": [
+				{"name":"user_amount","type":"uint128"},
+				{"name":"user_reward_debt","type":"uint128"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint128"}
+			]
+		},
+		{
+			"name": "getMultiplier",
+			"inputs": [
+				{"name":"from","type":"uint128"},
+				{"name":"to","type":"uint128"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint128"}
+			]
+		},
+		{
+			"name": "safeWithdraw",
+			"inputs": [
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finishSafeWithdraw",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getUserDataAddress",
+			"inputs": [
+				{"name":"_user","type":"address"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "upgrade",
+			"inputs": [
+				{"name":"new_code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRewardPerSecond",
+			"inputs": [
+				{"name":"newReward","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "rewardPerSecond",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"rewardPerSecond","type":"uint128"}
+			]
+		},
+		{
+			"name": "lastRewardTime",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"lastRewardTime","type":"uint128"}
+			]
+		},
+		{
+			"name": "accTonPerShare",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"accTonPerShare","type":"uint128"}
+			]
+		},
+		{
+			"name": "farmStartTime",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"farmStartTime","type":"uint128"}
+			]
+		},
+		{
+			"name": "farmEndTime",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"farmEndTime","type":"uint128"}
+			]
+		},
+		{
+			"name": "lpTokenRoot",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"lpTokenRoot","type":"address"}
+			]
+		},
+		{
+			"name": "lpTokenWallet",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"lpTokenWallet","type":"address"}
+			]
+		},
+		{
+			"name": "lpTokenBalance",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"lpTokenBalance","type":"uint128"}
+			]
+		},
+		{
+			"name": "minDeposit",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"minDeposit","type":"uint128"}
+			]
+		},
+		{
+			"name": "owner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"owner","type":"address"}
+			]
+		},
+		{
+			"name": "nonce",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"nonce","type":"uint64"}
+			]
+		},
+		{
+			"name": "userDataCode",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"userDataCode","type":"cell"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"userDataCode","type":"cell"}
+	],
+	"events": [
+		{
+			"name": "Deposit",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "Withdraw",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "RewardDebt",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		}
+	]
+}

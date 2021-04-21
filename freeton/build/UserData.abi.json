@@ -1,0 +1,97 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDetails",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"amount","type":"uint128"},{"name":"rewardDebt","type":"uint128"},{"name":"farmPool","type":"address"},{"name":"user","type":"address"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "processDeposit",
+			"inputs": [
+				{"name":"nonce","type":"uint64"},
+				{"name":"_amount","type":"uint128"},
+				{"name":"_accTonPerShare","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processWithdraw",
+			"inputs": [
+				{"name":"_amount","type":"uint128"},
+				{"name":"_accTonPerShare","type":"uint128"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processWithdrawAll",
+			"inputs": [
+				{"name":"_accTonPerShare","type":"uint128"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processSafeWithdraw",
+			"inputs": [
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "amount",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"amount","type":"uint128"}
+			]
+		},
+		{
+			"name": "rewardDebt",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"rewardDebt","type":"uint128"}
+			]
+		},
+		{
+			"name": "farmPool",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"farmPool","type":"address"}
+			]
+		},
+		{
+			"name": "user",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"user","type":"address"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"farmPool","type":"address"},
+		{"key":2,"name":"user","type":"address"}
+	],
+	"events": [
+	]
+}
