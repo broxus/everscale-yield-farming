@@ -42,7 +42,7 @@
 		{
 			"name": "finishDeposit",
 			"inputs": [
-				{"name":"_nonce","type":"uint64"},
+				{"name":"_deposit_nonce","type":"uint64"},
 				{"name":"_prevAmount","type":"uint128"},
 				{"name":"_prevRewardDebt","type":"uint128"},
 				{"name":"_accTonPerShare","type":"uint128"}
@@ -243,11 +243,11 @@
 			]
 		},
 		{
-			"name": "nonce",
+			"name": "deposit_nonce",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"nonce","type":"uint64"}
+				{"name":"deposit_nonce","type":"uint64"}
 			]
 		},
 		{
@@ -257,10 +257,19 @@
 			"outputs": [
 				{"name":"userDataCode","type":"cell"}
 			]
+		},
+		{
+			"name": "deploy_nonce",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"deploy_nonce","type":"uint64"}
+			]
 		}
 	],
 	"data": [
-		{"key":1,"name":"userDataCode","type":"cell"}
+		{"key":1,"name":"userDataCode","type":"cell"},
+		{"key":2,"name":"deploy_nonce","type":"uint64"}
 	],
 	"events": [
 		{

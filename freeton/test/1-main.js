@@ -279,7 +279,8 @@ describe('Test Ton Farm Pool', async function() {
                         _lpTokenRoot: root.address
                     },
                     initParams: {
-                        userDataCode: UserData.code
+                        userDataCode: UserData.code,
+                        deploy_nonce: 0
                     },
                     keyPair,
                 }, convertCrystal(3, 'nano'));

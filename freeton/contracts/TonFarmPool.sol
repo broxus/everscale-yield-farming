@@ -379,6 +379,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         builder.store(minDeposit);
         builder.store(owner);
         builder.store(deposit_nonce);
+        builder.store(deploy_nonce);
         builder.store(deposits);
         builder.store(userDataCode); // ref
 
