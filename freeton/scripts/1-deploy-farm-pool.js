@@ -42,7 +42,8 @@ async function main() {
         contract: TonFarmPool,
         constructorParams: deploy_params,
         initParams: {
-            userDataCode: UserData.code
+            userDataCode: UserData.code,
+            deploy_nonce: 0
         },
         keyPair,
     }, convertCrystal(3, 'nano'));

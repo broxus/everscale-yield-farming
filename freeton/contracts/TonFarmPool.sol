@@ -64,11 +64,13 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         address send_gas_to;
     }
 
-    uint64 public nonce = 0;
+    uint64 public deposit_nonce = 0;
     // this is used to prevent data loss on bounced messages during deposit
     mapping (uint128 => PendingDeposit) deposits;
 
     TvmCell public static userDataCode;
+    
+    uint64 public static deploy_nonce;
 
     constructor(address _owner, uint128 _rewardPerSecond, uint128 _minDeposit, uint128 _farmStartTime, uint128 _farmEndTime, address _lpTokenRoot) public {
         require (tvm.pubkey() == msg.pubkey(), WRONG_PUBKEY);
@@ -149,15 +151,15 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
         updatePoolInfo();
 
-        nonce += 1;
-        deposits[nonce] = PendingDeposit(sender_address, amount, original_gas_to);
+        deposit_nonce += 1;
+        deposits[deposit_nonce] = PendingDeposit(sender_address, amount, original_gas_to);
 
         address userDataAddr = getUserDataAddress(sender_address);
-        UserData(userDataAddr).processDeposit{value: 0, flag: 128}(nonce, amount, accTonPerShare);
+        UserData(userDataAddr).processDeposit{value: 0, flag: 128}(deposit_nonce, amount, accTonPerShare);
     }
 
-    function finishDeposit(uint64 _nonce, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _accTonPerShare) external override {
-        PendingDeposit deposit = deposits[_nonce];
+    function finishDeposit(uint64 _deposit_nonce, uint128 _prevAmount, uint128 _prevRewardDebt, uint128 _accTonPerShare) external override {
+        PendingDeposit deposit = deposits[_deposit_nonce];
         address expectedAddr = getUserDataAddress(deposit.user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
 
@@ -180,7 +182,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
             deposit.user.transfer(pending, false, 1);
         }
 
-        delete deposits[_nonce];
+        delete deposits[_deposit_nonce];
         emit Deposit(deposit.user, deposit.amount);
 
         deposit.send_gas_to.transfer(0, false, 128);
@@ -354,11 +356,11 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         if (functionId == tvm.functionId(UserData.processDeposit)) {
             tvm.rawReserve(address(this).balance - msg.value, 2);
 
-            uint64 _nonce = slice.decode(uint64);
-            PendingDeposit deposit = deposits[_nonce];
+            uint64 _deposit_nonce = slice.decode(uint64);
+            PendingDeposit deposit = deposits[_deposit_nonce];
             address user_data_addr = deployUserData(deposit.user);
             // try again
-            UserData(user_data_addr).processDeposit{value: 0, flag: 128}(_nonce, deposit.amount, accTonPerShare);
+            UserData(user_data_addr).processDeposit{value: 0, flag: 128}(_deposit_nonce, deposit.amount, accTonPerShare);
         }
     }
 
@@ -376,7 +378,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         builder.store(lpTokenBalance);
         builder.store(minDeposit);
         builder.store(owner);
-        builder.store(nonce);
+        builder.store(deposit_nonce);
         builder.store(deposits);
         builder.store(userDataCode); // ref
 
