@@ -43,7 +43,7 @@ async function main() {
         constructorParams: deploy_params,
         initParams: {
             userDataCode: UserData.code,
-            deploy_nonce: 0
+            deploy_nonce: getRandomNonce()
         },
         keyPair,
     }, convertCrystal(3, 'nano'));

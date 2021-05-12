@@ -15,15 +15,15 @@
 				{"name":"_answer_id","type":"uint32"}
 			],
 			"outputs": [
-				{"components":[{"name":"amount","type":"uint128"},{"name":"rewardDebt","type":"uint128"},{"name":"farmPool","type":"address"},{"name":"user","type":"address"}],"name":"value0","type":"tuple"}
+				{"components":[{"name":"amount","type":"uint256"},{"name":"rewardDebt","type":"uint256"},{"name":"farmPool","type":"address"},{"name":"user","type":"address"}],"name":"value0","type":"tuple"}
 			]
 		},
 		{
 			"name": "processDeposit",
 			"inputs": [
 				{"name":"nonce","type":"uint64"},
-				{"name":"_amount","type":"uint128"},
-				{"name":"_accTonPerShare","type":"uint128"}
+				{"name":"_amount","type":"uint256"},
+				{"name":"_accTonPerShare","type":"uint256"}
 			],
 			"outputs": [
 			]
@@ -31,8 +31,8 @@
 		{
 			"name": "processWithdraw",
 			"inputs": [
-				{"name":"_amount","type":"uint128"},
-				{"name":"_accTonPerShare","type":"uint128"},
+				{"name":"_amount","type":"uint256"},
+				{"name":"_accTonPerShare","type":"uint256"},
 				{"name":"send_gas_to","type":"address"}
 			],
 			"outputs": [
@@ -41,7 +41,7 @@
 		{
 			"name": "processWithdrawAll",
 			"inputs": [
-				{"name":"_accTonPerShare","type":"uint128"},
+				{"name":"_accTonPerShare","type":"uint256"},
 				{"name":"send_gas_to","type":"address"}
 			],
 			"outputs": [
@@ -60,7 +60,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"amount","type":"uint128"}
+				{"name":"amount","type":"uint256"}
 			]
 		},
 		{
@@ -68,7 +68,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"rewardDebt","type":"uint128"}
+				{"name":"rewardDebt","type":"uint256"}
 			]
 		},
 		{

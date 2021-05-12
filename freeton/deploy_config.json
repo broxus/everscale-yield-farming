@@ -4,5 +4,6 @@
   "_minDeposit": "2133517730",
   "_farmStartTime": "1618995600",
   "_farmEndTime": "1620810000",
-  "_lpTokenRoot": "0:72cad0c97cc8d84eef6837ee110f8f67c9d376cae57d684308fe30e831df734a"
+  "_tokenRoot": "0:72cad0c97cc8d84eef6837ee110f8f67c9d376cae57d684308fe30e831df734a",
+  "_rewardTokenRoot": ""
 }

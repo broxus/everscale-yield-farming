@@ -5,8 +5,8 @@ import "./interfaces/ITonFarmPool.sol";
 import "./interfaces/IUserData.sol";
 
 contract UserData is IUserData {
-    uint128 public amount;
-    uint128 public rewardDebt;
+    uint256 public amount;
+    uint256 public rewardDebt;
     address public static farmPool;
     address public static user; // setup from initData
     uint8 constant NOT_FARM_POOL = 101;
@@ -22,12 +22,12 @@ contract UserData is IUserData {
     }
 
 
-    function processDeposit(uint64 nonce, uint128 _amount, uint128 _accTonPerShare) external override {
+    function processDeposit(uint64 nonce, uint256 _amount, uint256 _accTonPerShare) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(address(this).balance - msg.value, 2);
 
-        uint128 prevAmount = amount;
-        uint128 prevRewardDebt = rewardDebt;
+        uint256 prevAmount = amount;
+        uint256 prevRewardDebt = rewardDebt;
 
         amount += _amount;
         rewardDebt = (amount * _accTonPerShare) / 1e18;
@@ -35,7 +35,7 @@ contract UserData is IUserData {
         ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: 128}(nonce, prevAmount, prevRewardDebt, _accTonPerShare);
     }
 
-    function processWithdraw(uint128 _amount, uint128 _accTonPerShare, address send_gas_to) external override {
+    function processWithdraw(uint256 _amount, uint256 _accTonPerShare, address send_gas_to) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(address(this).balance - msg.value, 2);
 
@@ -45,8 +45,8 @@ contract UserData is IUserData {
             return;
         }
 
-        uint128 prevAmount = amount;
-        uint128 prevRewardDebt = rewardDebt;
+        uint256 prevAmount = amount;
+        uint256 prevRewardDebt = rewardDebt;
 
         amount -= _amount;
         rewardDebt = (amount * _accTonPerShare) / 1e18;
@@ -54,7 +54,7 @@ contract UserData is IUserData {
         ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _amount, _accTonPerShare, send_gas_to);
     }
 
-    function processWithdrawAll(uint128 _accTonPerShare, address send_gas_to) external override {
+    function processWithdrawAll(uint256 _accTonPerShare, address send_gas_to) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(address(this).balance - msg.value, 2);
 
@@ -64,8 +64,8 @@ contract UserData is IUserData {
             return;
         }
 
-        uint128 prevAmount = amount;
-        uint128 prevRewardDebt = rewardDebt;
+        uint256 prevAmount = amount;
+        uint256 prevRewardDebt = rewardDebt;
 
         amount = 0;
         rewardDebt = 0;
@@ -76,7 +76,7 @@ contract UserData is IUserData {
     function processSafeWithdraw(address send_gas_to) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(address(this).balance - msg.value, 2);
-        uint128 prevAmount = amount;
+        uint256 prevAmount = amount;
         amount = 0;
         rewardDebt = 0;
         ITonFarmPool(msg.sender).finishSafeWithdraw{value: 0, flag: 128}(user, prevAmount, send_gas_to);

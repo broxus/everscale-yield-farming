@@ -80,19 +80,21 @@ PUSHCONT {
 	STSLICECONST 0
 	STSLICECONST 1
 	NEWC
-	STSLICECONST xd9ff4e9c
+	STSLICECONST xe83b4671
 	PUSH S2
 	UNTUPLE 4
 	BLKSWAP 1, 4
 	PUSH S4
-	STUR 128
+	STUR 256
 	PUSH S3
-	STUR 128
+	STUR 256
 	PUSH S2
 	STSLICER
-	PUSH S1
+	NEWC
+	PUSH S2
 	STSLICER
-	BLKDROP2 4, 1
+	BLKDROP2 4, 2
+	STBREFR
 	STBREFR
 	ENDC
 	PUSHINT 0
@@ -129,14 +131,16 @@ PUSHCONT {
 	UNTUPLE 4
 	BLKSWAP 1, 4
 	PUSH S4
-	STUR 128
+	STUR 256
 	PUSH S3
-	STUR 128
+	STUR 256
 	PUSH S2
 	STSLICER
-	PUSH S1
+	NEWC
+	PUSH S2
 	STSLICER
-	BLKDROP2 4, 1
+	BLKDROP2 4, 2
+	STBREFR
 	STBREFR
 	ENDC
 	GETGLOB 4
@@ -162,9 +166,17 @@ IFREF {
 ; Decode nonce
 LDU 64
 ; Decode _amount
-LDU 128
+LDU 256
 ; Decode _accTonPerShare
-LDU 128
+LDUQ 256
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 256
+}
+IFNOT
 ENDS
 ;; param: nonce
 ;; param: _amount
@@ -202,7 +214,6 @@ GETGLOB 10
 ; end expValue
 SWAP
 ADD
-UFITS 128
 ; colValue
 SETGLOB 10
 ; end colValue
@@ -214,7 +225,6 @@ GETGLOB 10
 ;; push identifier _accTonPerShare
 PUSH S3
 MUL
-UFITS 128
 ;; /
 PUSHINT 1000000000000000000
 DIV
@@ -230,24 +240,26 @@ STSLICE
 PUSHINT 109
 STZEROES
 STSLICECONST 0
-STSLICECONST 0
-STSLICECONST x795b0669
+STSLICECONST 1
+NEWC
+STSLICECONST x022cb1c4
 ;; _nonce
 ;; push identifier nonce
-PUSH S5
+PUSH S6
 STUR 64
 ;; prevAmount
 ;; push identifier prevAmount
-PUSH S2
-STUR 128
+PUSH S3
+STUR 256
 ;; prevRewardDebt
 ;; push identifier prevRewardDebt
-PUSH S1
-STUR 128
+PUSH S2
+STUR 256
 ;; accTonPerShare
 ;; push identifier _accTonPerShare
-PUSH S3
-STUR 128
+PUSH S4
+STUR 256
+STBREFR
 ENDC
 PUSHINT 128
 SENDRAWMSG
@@ -269,9 +281,17 @@ IFREF {
 }
 ; Decode input parameters
 ; Decode _amount
-LDU 128
+LDU 256
 ; Decode _accTonPerShare
-LDU 128
+LDUQ 256
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 256
+}
+IFNOT
 ; Decode send_gas_to
 LDMSGADDRQ
 PUSHCONT {
@@ -346,7 +366,7 @@ PUSHCONT {
 	; end expValue
 	SWAP
 	SUB
-	UFITS 128
+	UFITS 256
 	; colValue
 	SETGLOB 10
 	; end colValue
@@ -358,7 +378,6 @@ PUSHCONT {
 	;; push identifier _accTonPerShare
 	PUSH S4
 	MUL
-	UFITS 128
 	;; /
 	PUSHINT 1000000000000000000
 	DIV
@@ -376,7 +395,7 @@ PUSHCONT {
 	STSLICECONST 0
 	STSLICECONST 1
 	NEWC
-	STSLICECONST x5e53a44e
+	STSLICECONST x11f040ee
 	;; user
 	;; push identifier user
 	GETGLOB 13
@@ -384,20 +403,20 @@ PUSHCONT {
 	;; prevAmount
 	;; push identifier prevAmount
 	PUSH S3
-	STUR 128
+	STUR 256
 	;; prevRewardDebt
 	;; push identifier prevRewardDebt
 	PUSH S2
-	STUR 128
+	STUR 256
+	NEWC
 	;; withdrawAmount
 	;; push identifier _amount
-	PUSH S6
-	STUR 128
+	PUSH S7
+	STUR 256
 	;; accTonPerShare
 	;; push identifier _accTonPerShare
-	PUSH S5
-	STUR 128
-	NEWC
+	PUSH S6
+	STUR 256
 	;; send_gas_to
 	;; push identifier send_gas_to
 	PUSH S5
@@ -427,7 +446,7 @@ IFREF {
 }
 ; Decode input parameters
 ; Decode _accTonPerShare
-LDU 128
+LDU 256
 ; Decode send_gas_to
 LDMSGADDRQ
 PUSHCONT {
@@ -512,7 +531,7 @@ PUSHCONT {
 	STSLICECONST 0
 	STSLICECONST 1
 	NEWC
-	STSLICECONST x7c5be670
+	STSLICECONST x167cdaf5
 	;; user
 	;; push identifier user
 	GETGLOB 13
@@ -520,19 +539,21 @@ PUSHCONT {
 	;; _prevAmount
 	;; push identifier prevAmount
 	PUSH S3
-	STUR 128
+	STUR 256
 	;; _prevRewardDebt
 	;; push identifier prevRewardDebt
 	PUSH S2
-	STUR 128
+	STUR 256
+	NEWC
 	;; _accTonPerShare
 	;; push identifier _accTonPerShare
-	PUSH S5
-	STUR 128
+	PUSH S6
+	STUR 256
 	;; send_gas_to
 	;; push identifier send_gas_to
-	PUSH S4
+	PUSH S5
 	STSLICER
+	STBREFR
 	STBREFR
 	ENDC
 	PUSHINT 128
@@ -605,7 +626,7 @@ STZEROES
 STSLICECONST 0
 STSLICECONST 1
 NEWC
-STSLICECONST x53b9408c
+STSLICECONST x70d5aeab
 ;; user
 ;; push identifier user
 GETGLOB 13
@@ -613,7 +634,7 @@ STSLICER
 ;; amount
 ;; push identifier prevAmount
 PUSH S2
-STUR 128
+STUR 256
 ;; send_gas_to
 ;; push identifier send_gas_to
 PUSH S3
@@ -640,17 +661,17 @@ STUR 64
 GETGLOB 6
 STUR 1
 NEWC
+GETGLOB 12
 GETGLOB 13
-SWAP
+XCHG s2
+STSLICE
 STSLICE
 GETGLOB 10
 GETGLOB 11
-GETGLOB 12
-REVERSE 5, 0
+REVERSE 4, 0
 STBREF
-STU 128
-STU 128
-STSLICE
+STU 256
+STU 256
 ENDC
 POP C4
 
@@ -661,12 +682,11 @@ LDU 256      ; pubkey c4
 LDU 64      ; pubkey timestamp c4
 LDU 1       ; pubkey [timestamp] constructor_flag memory
 LDREFRTOS
-SETGLOB 13
-LDU 128
-LDU 128
 LDMSGADDR
-DROP
+SETGLOB 13
 SETGLOB 12
+LDU 256
+PLDU 256
 SETGLOB 11
 SETGLOB 10
 TRUE
@@ -686,12 +706,11 @@ PUSHCONT {
 	LDU 64      ; pubkey timestamp c4
 	LDU 1       ; pubkey [timestamp] constructor_flag memory
 	LDREFRTOS
-	SETGLOB 13
-	LDU 128
-	LDU 128
 	LDMSGADDR
-	DROP
+	SETGLOB 13
 	SETGLOB 12
+	LDU 256
+	PLDU 256
 	SETGLOB 11
 	SETGLOB 10
 	TRUE
@@ -842,9 +861,9 @@ PUSHSLICE xc0000000000000000000000002_
 STSLICER
 STSLICECONST 0
 STSLICECONST 0
-STSLICECONST x920f88cd
+STSLICECONST xfad46b66
 PUSH S1
-STUR 128
+STUR 256
 ENDC
 PUSHINT 0
 SENDRAWMSG
@@ -861,9 +880,9 @@ PUSHSLICE xc0000000000000000000000002_
 STSLICER
 STSLICECONST 0
 STSLICECONST 0
-STSLICECONST x8e6b5f5c
+STSLICECONST xbb06655a
 PUSH S1
-STUR 128
+STUR 256
 ENDC
 PUSHINT 0
 SENDRAWMSG
@@ -910,15 +929,9 @@ SETGLOB 7
 
 .macro public_function_selector
 DUP
-PUSHINT 219453673
+PUSHINT 546186255
 LEQ
 PUSHCONT {
-	DUP
-	PUSHINT 14448874
-	EQUAL
-	IFJMPREF {
-		CALL $processDeposit$
-	}
 	DUP
 	PUSHINT 126922600
 	EQUAL
@@ -931,41 +944,29 @@ PUSHCONT {
 	IFJMPREF {
 		CALL $farmPool$
 	}
+	DUP
+	PUSHINT 546186255
+	EQUAL
+	IFJMPREF {
+		CALL $processWithdrawAll$
+	}
 }
 IFJMP
 DUP
-PUSHINT 454259415
+PUSHINT 1115286010
 LEQ
 PUSHCONT {
 	DUP
-	PUSHINT 241917788
+	PUSHINT 990274906
 	EQUAL
 	IFJMPREF {
 		CALL $rewardDebt$
 	}
 	DUP
-	PUSHINT 303007949
+	PUSHINT 1003259743
 	EQUAL
 	IFJMPREF {
-		CALL $amount$
-	}
-	DUP
-	PUSHINT 454259415
-	EQUAL
-	IFJMPREF {
-		CALL $processWithdraw$
-	}
-}
-IFJMP
-DUP
-PUSHINT 1509904028
-LEQ
-PUSHCONT {
-	DUP
-	PUSHINT 483056562
-	EQUAL
-	IFJMPREF {
-		CALL $processWithdrawAll$
+		CALL $processDeposit$
 	}
 	DUP
 	PUSHINT 1115286010
@@ -973,17 +974,35 @@ PUSHCONT {
 	IFJMPREF {
 		CALL $processSafeWithdraw$
 	}
-	DUP
-	PUSHINT 1509904028
-	EQUAL
-	IFJMPREF {
-		CALL $getDetails$
-	}
 }
 IFJMP
 DUP
 PUSHINT 1756716863
+LEQ
+PUSHCONT {
+	DUP
+	PUSHINT 1416625695
+	EQUAL
+	IFJMPREF {
+		CALL $processWithdraw$
+	}
+	DUP
+	PUSHINT 1748715121
+	EQUAL
+	IFJMPREF {
+		CALL $getDetails$
+	}
+	DUP
+	PUSHINT 1756716863
+	EQUAL
+	IFJMPREF {
+		CALL $constructor$
+	}
+}
+IFJMP
+DUP
+PUSHINT 2060741478
 EQUAL
 IFJMPREF {
-	CALL $constructor$
+	CALL $amount$
 }
