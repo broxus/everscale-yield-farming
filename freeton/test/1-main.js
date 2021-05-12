@@ -315,7 +315,6 @@ describe('Test Ton Farm Pool', async function() {
                     constructorParams: {
                         _owner: admin_user.address,
                         _rewardPerSecond: rewardPerSec,
-                        _minDeposit: minDeposit,
                         _farmStartTime: farmStart,
                         _farmEndTime: farmEnd,
                         _tokenRoot: root.address,

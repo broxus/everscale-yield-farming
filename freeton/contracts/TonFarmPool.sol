@@ -60,8 +60,6 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
     uint256 public rewardTokenBalance;
 
-    uint256 public minDeposit;
-
     address public owner;
 
     // contract is considered active only after it got all required reward tokens
@@ -81,13 +79,12 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     
     uint64 public static deploy_nonce;
 
-    constructor(address _owner, uint256 _rewardPerSecond, uint256 _minDeposit, uint256 _farmStartTime, uint256 _farmEndTime, address _tokenRoot, address _rewardTokenRoot) public {
+    constructor(address _owner, uint256 _rewardPerSecond, uint256 _farmStartTime, uint256 _farmEndTime, address _tokenRoot, address _rewardTokenRoot) public {
         require (tvm.pubkey() == msg.pubkey(), WRONG_PUBKEY);
         require (_farmStartTime < _farmEndTime, WRONG_INTERVAL);
         tvm.accept();
 
         rewardPerSecond = _rewardPerSecond;
-        minDeposit = _minDeposit;
         farmStartTime = _farmStartTime;
         farmEndTime = _farmEndTime;
         tokenRoot = _tokenRoot;
@@ -177,7 +174,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         tvm.rawReserve(address(this).balance - msg.value, 2);
 
         if (msg.sender == tokenWallet) {
-            if (sender_address.value == 0 || amount < minDeposit || msg.value < MIN_DEPOSIT_MSG_VALUE || !active) {
+            if (sender_address.value == 0 || msg.value < MIN_DEPOSIT_MSG_VALUE || !active) {
                 // external owner or too low deposit value or too lov msg.value or farming contract is not active
                 TvmCell tvmcell;
                 ITONTokenWallet(tokenWallet).transfer{value: 0, flag: 128}(
@@ -424,7 +421,6 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         builder.store(rewardTokenWallet);
         builder.store(rewardTokenBalance);
         builder.store(active);
-        builder.store(minDeposit);
         builder.store(owner);
         builder.store(deposit_nonce);
         builder.store(deploy_nonce);
