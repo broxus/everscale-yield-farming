@@ -15,7 +15,6 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     event Withdraw(address user, uint256 amount);
 
     // ERRORS
-    uint8 public constant WRONG_PUBKEY = 100;
     uint8 public constant NOT_OWNER = 101;
     uint8 public constant NOT_ROOT = 102;
     uint8 public constant NOT_TOKEN_WALLET = 103;
@@ -80,7 +79,6 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     uint64 public static deploy_nonce;
 
     constructor(address _owner, uint256 _rewardPerSecond, uint256 _farmStartTime, uint256 _farmEndTime, address _tokenRoot, address _rewardTokenRoot) public {
-        require (tvm.pubkey() == msg.pubkey(), WRONG_PUBKEY);
         require (_farmStartTime < _farmEndTime, WRONG_INTERVAL);
         tvm.accept();
 
@@ -278,7 +276,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     }
 
     function withdrawUnclaimed(address to) external onlyOwner {
-        require (now >= farmEndTime, FARMING_NOT_ENDED);
+        require (now >= (farmEndTime + 24 hours), FARMING_NOT_ENDED);
         // minimum value that should remain on contract
         tvm.rawReserve(CONTRACT_MIN_BALANCE, 2);
 
@@ -404,36 +402,6 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
         }
     }
-
-    function upgrade(TvmCell new_code) public onlyOwner {
-        TvmBuilder builder;
-
-        // storage vars
-        builder.store(rewardPerSecond);
-        builder.store(lastRewardTime);
-        builder.store(accTonPerShare);
-        builder.store(farmStartTime);
-        builder.store(farmEndTime);
-        builder.store(tokenRoot);
-        builder.store(tokenWallet);
-        builder.store(tokenBalance);
-        builder.store(rewardTokenRoot);
-        builder.store(rewardTokenWallet);
-        builder.store(rewardTokenBalance);
-        builder.store(active);
-        builder.store(owner);
-        builder.store(deposit_nonce);
-        builder.store(deploy_nonce);
-        builder.store(deposits);
-        builder.store(userDataCode); // ref
-
-        tvm.setcode(new_code);
-        tvm.setCurrentCode(new_code);
-
-        onCodeUpgrade(builder.toCell());
-    }
-
-    function onCodeUpgrade(TvmCell data) internal {}
 
     modifier onlyOwner() {
         require(msg.sender == owner, NOT_OWNER);

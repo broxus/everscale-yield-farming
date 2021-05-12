@@ -72,18 +72,6 @@ ENDS
 ;; param: _tokenRoot
 ;; param: _rewardTokenRoot
 ; constructor TonFarmPool
-GETGLOB 2
-;; ==
-GETGLOB 5
-DUP
-ISNULL
-PUSHCONT {
-	DROP
-	PUSHINT 0
-}
-IF
-EQUAL
-THROWIFNOT 100
 ;; push identifier _farmStartTime
 PUSH S3
 ;; <
@@ -1531,6 +1519,9 @@ NOW
 ;; >=
 ;; push identifier farmEndTime
 GETGLOB 14
+;; +
+PUSHINT 86400
+ADD
 GEQ
 THROWIFNOT 109
 PUSHINT 1000000000
@@ -2463,229 +2454,6 @@ CALLREF {
 	CALL $c7_to_c4$
 }
 
-.macro upgrade
-DROP
-GETGLOB 1
-ISNULL
-IFREF {
-	CALL $c4_to_c7$
-}
-; Decode input parameters
-; Decode new_code
-;; decode TvmCell
-LDREF
-ENDS
-;; param: new_code
-CALLREF {
-	CALL $upgrade_internal_macro$
-}
-CALLREF {
-	CALL $c7_to_c4$
-}
-TRUE
-SETGLOB 7
-
-.globl	upgrade_internal
-.type	upgrade_internal, @function
-CALL $upgrade_internal_macro$
-
-.macro upgrade_internal_macro
-;; param: new_code
-; modifier onlyOwner
-;; get member sender
-GETGLOB 9
-;; push identifier owner
-GETGLOB 21
-SDEQ
-THROWIFNOT 101
-; function upgrade
-NEWC
-;; decl: builder
-; expValue
-DUP
-; end expValue
-;; push identifier rewardPerSecond
-GETGLOB 10
-STUR 256
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier lastRewardTime
-GETGLOB 12
-STUR 256
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier accTonPerShare
-GETGLOB 11
-STUR 256
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier farmStartTime
-GETGLOB 13
-STUR 256
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier farmEndTime
-GETGLOB 14
-STUR 256
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier tokenRoot
-GETGLOB 15
-STSLICER
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier tokenWallet
-GETGLOB 16
-STSLICER
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier tokenBalance
-GETGLOB 17
-STUR 256
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier rewardTokenRoot
-GETGLOB 18
-STSLICER
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier rewardTokenWallet
-GETGLOB 19
-STSLICER
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier rewardTokenBalance
-GETGLOB 20
-STUR 256
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier active
-GETGLOB 22
-STIR 1
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier owner
-GETGLOB 21
-STSLICER
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier deposit_nonce
-GETGLOB 23
-STUR 64
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier deploy_nonce
-GETGLOB 26
-STUR 64
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier deposits
-GETGLOB 24
-SWAP
-STDICT
-; colValue
-NIP
-; end colValue
-; expValue
-DUP
-; end expValue
-;; push identifier userDataCode
-GETGLOB 25
-STREFR
-; colValue
-NIP
-; end colValue
-;; push identifier new_code
-PUSH S1
-SETCODE
-;; push identifier new_code
-PUSH S1
-CTOS
-BLESS
-POP c3
-;; push identifier builder
-DUP
-ENDC
-CALLREF {
-	CALL $:onCodeUpgrade$
-}
-DROP
-; end function upgrade
-; end modifier onlyOwner
-DROP
-
-.internal-alias :onCodeUpgrade, 2
-.internal :onCodeUpgrade
-;; param: data
-; function onCodeUpgrade
-; end function onCodeUpgrade
-DROP
-CALLREF {
-	CALL $c7_to_c4$
-}
-COMMIT
-THROW 0
-
 .macro c7_to_c4
 GETGLOB 2
 NEWC
@@ -2993,8 +2761,6 @@ PUSHCONT {
 	HASHSU   ; signatureSlice msgSlice hashMsgSlice
 	ROT
 	GETGLOB 2
-	DUP
-	SETGLOB 5
 	CHKSIGNU      ; msgSlice isSigned
 	THROWIFNOT 40 ; msgSlice
 }
@@ -3322,7 +3088,7 @@ SETGLOB 7
 
 .macro public_function_selector
 DUP
-PUSHINT 400749881
+PUSHINT 405308824
 LEQ
 PUSHCONT {
 	DUP
@@ -3380,176 +3146,176 @@ PUSHCONT {
 	}
 	IFJMP
 	DUP
-	PUSHINT 400749881
+	PUSHINT 405308824
 	LEQ
 	PUSHCONT {
-		DUP
-		PUSHINT 388172858
-		EQUAL
-		IFJMPREF {
-			CALL $upgrade$
-		}
 		DUP
 		PUSHINT 400749881
 		EQUAL
 		IFJMPREF {
 			CALL $withdrawUnclaimed$
 		}
-	}
-	IFJMP
-}
-IFJMP
-DUP
-PUSHINT 1362549419
-LEQ
-PUSHCONT {
-	DUP
-	PUSHINT 950929501
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 405308824
 		EQUAL
 		IFJMPREF {
 			CALL $rewardTokenRoot$
 		}
+	}
+	IFJMP
+}
+IFJMP
+DUP
+PUSHINT 1436663460
+LEQ
+PUSHCONT {
+	DUP
+	PUSHINT 1157537247
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 950929501
 		EQUAL
 		IFJMPREF {
 			CALL $pendingReward$
 		}
-	}
-	IFJMP
-	DUP
-	PUSHINT 1211472804
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 1157537247
 		EQUAL
 		IFJMPREF {
 			CALL $rewardTokenBalance$
 		}
+	}
+	IFJMP
+	DUP
+	PUSHINT 1263887443
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 1211472804
 		EQUAL
 		IFJMPREF {
 			CALL $getUserDataAddress$
 		}
-	}
-	IFJMP
-	DUP
-	PUSHINT 1317447873
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 1263887443
 		EQUAL
 		IFJMPREF {
 			CALL $rewardTokenWallet$
 		}
+	}
+	IFJMP
+	DUP
+	PUSHINT 1354746527
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 1317447873
 		EQUAL
 		IFJMPREF {
 			CALL $farmStartTime$
 		}
-	}
-	IFJMP
-	DUP
-	PUSHINT 1362549419
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 1354746527
 		EQUAL
 		IFJMPREF {
 			CALL $receiveTokenWalletAddress$
 		}
+	}
+	IFJMP
+	DUP
+	PUSHINT 1436663460
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 1362549419
 		EQUAL
 		IFJMPREF {
 			CALL $rewardPerSecond$
 		}
-	}
-	IFJMP
-}
-IFJMP
-DUP
-PUSHINT 1737663397
-LEQ
-PUSHCONT {
-	DUP
-	PUSHINT 1477987064
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 1436663460
 		EQUAL
 		IFJMPREF {
 			CALL $withdraw$
 		}
+	}
+	IFJMP
+}
+IFJMP
+DUP
+PUSHINT 1893052075
+LEQ
+PUSHCONT {
+	DUP
+	PUSHINT 1481880474
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 1477987064
 		EQUAL
 		IFJMPREF {
 			CALL $active$
 		}
-	}
-	IFJMP
-	DUP
-	PUSHINT 1497440185
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 1481880474
 		EQUAL
 		IFJMPREF {
 			CALL $accTonPerShare$
 		}
+	}
+	IFJMP
+	DUP
+	PUSHINT 1594609630
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 1497440185
 		EQUAL
 		IFJMPREF {
 			CALL $tokensReceivedCallback$
 		}
-	}
-	IFJMP
-	DUP
-	PUSHINT 1608577153
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 1594609630
 		EQUAL
 		IFJMPREF {
 			CALL $owner$
 		}
+	}
+	IFJMP
+	DUP
+	PUSHINT 1689290577
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 1608577153
 		EQUAL
 		IFJMPREF {
 			CALL $farmEndTime$
 		}
-	}
-	IFJMP
-	DUP
-	PUSHINT 1737663397
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 1689290577
 		EQUAL
 		IFJMPREF {
 			CALL $deposit_nonce$
 		}
+	}
+	IFJMP
+	DUP
+	PUSHINT 1893052075
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 1737663397
 		EQUAL
 		IFJMPREF {
 			CALL $userDataCode$
+		}
+		DUP
+		PUSHINT 1893052075
+		EQUAL
+		IFJMPREF {
+			CALL $finishSafeWithdraw$
 		}
 	}
 	IFJMP
@@ -3560,64 +3326,58 @@ PUSHINT 2127992050
 LEQ
 PUSHCONT {
 	DUP
-	PUSHINT 1896024939
+	PUSHINT 2011107298
 	LEQ
 	PUSHCONT {
-		DUP
-		PUSHINT 1893052075
-		EQUAL
-		IFJMPREF {
-			CALL $finishSafeWithdraw$
-		}
 		DUP
 		PUSHINT 1896024939
 		EQUAL
 		IFJMPREF {
 			CALL $tokenWallet$
 		}
-	}
-	IFJMP
-	DUP
-	PUSHINT 2068813800
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 2011107298
 		EQUAL
 		IFJMPREF {
 			CALL $getMultiplier$
 		}
+	}
+	IFJMP
+	DUP
+	PUSHINT 2068909698
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 2068813800
 		EQUAL
 		IFJMPREF {
 			CALL $safeWithdraw$
 		}
-	}
-	IFJMP
-	DUP
-	PUSHINT 2092935922
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 2068909698
 		EQUAL
 		IFJMPREF {
 			CALL $deploy_nonce$
 		}
+	}
+	IFJMP
+	DUP
+	PUSHINT 2127992050
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 2092935922
 		EQUAL
 		IFJMPREF {
 			CALL $tokenRoot$
 		}
+		DUP
+		PUSHINT 2127992050
+		EQUAL
+		IFJMPREF {
+			CALL $tokenBalance$
+		}
 	}
 	IFJMP
-	DUP
-	PUSHINT 2127992050
-	EQUAL
-	IFJMPREF {
-		CALL $tokenBalance$
-	}
 }
 IFJMP

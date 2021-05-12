@@ -29,6 +29,7 @@ describe('Test Ton Farm Pool', async function() {
     let user2;
     let admin_user;
 
+    let fabric;
     let root;
     let farming_root;
     let userTokenWallet1;
@@ -236,7 +237,7 @@ describe('Test Ton Farm Pool', async function() {
                             _randomNonce: getRandomNonce()
                         },
                         keyPair,
-                    }, convertCrystal(10, 'nano'));
+                    }, convertCrystal(25, 'nano'));
 
                     _user.afterRun = afterRun;
 
@@ -294,7 +295,12 @@ describe('Test Ton Farm Pool', async function() {
         });
 
         describe('Farm pool', async function() {
-            it('Deploy farm pool contract', async function() {
+            it('Deploy fabric contract', async function () {
+                const PoolFabric = await locklift.factory.getContract(
+                    'FarmFabric',
+                    './build'
+                );
+
                 const TonFarmPool = await locklift.factory.getContract(
                     'TonFarmPool',
                     './build'
@@ -307,27 +313,75 @@ describe('Test Ton Farm Pool', async function() {
 
                 const [keyPair] = await locklift.keys.getKeyPairs();
 
+                fabric = await locklift.giver.deployContract({
+                    contract: PoolFabric,
+                    constructorParams: {
+                        _owner: admin_user.address
+                    },
+                    initParams: {
+                        FarmPoolCode: TonFarmPool.code,
+                        FarmPoolUserDataCode: UserData.code,
+                        nonce: getRandomNonce()
+                    },
+                    keyPair,
+                }, convertCrystal(1, 'nano'));
+
+                logger.log(`Pool Fabric address: ${fabric.address}`);
+
+                const {
+                    acc_type_name
+                } = await locklift.ton.getAccountType(fabric.address);
+
+                expect(acc_type_name).to.be.equal('Active', 'Fabric account not active');
+            });
+
+            it('Deploy farm pool contract', async function() {
                 farmStart = Math.floor(Date.now() / 1000);
                 farmEnd = Math.floor(Date.now() / 1000) + 1000;
 
-                farm_pool = await locklift.giver.deployContract({
-                    contract: TonFarmPool,
-                    constructorParams: {
-                        _owner: admin_user.address,
-                        _rewardPerSecond: rewardPerSec,
-                        _farmStartTime: farmStart,
-                        _farmEndTime: farmEnd,
-                        _tokenRoot: root.address,
-                        _rewardTokenRoot: farming_root.address
+                const deploy_tx = await admin_user.runTarget({
+                    contract: fabric,
+                    method: 'deployFarmPool',
+                    params: {
+                        owner: admin_user.address,
+                        rewardPerSecond: rewardPerSec,
+                        farmStartTime: farmStart,
+                        farmEndTime: farmEnd,
+                        tokenRoot: root.address,
+                        rewardTokenRoot: farming_root.address
                     },
-                    initParams: {
-                        userDataCode: UserData.code,
-                        deploy_nonce: getRandomNonce()
-                    },
-                    keyPair,
-                }, convertCrystal(5, 'nano'));
+                    value: convertCrystal(6, 'nano')
+                });
 
-                logger.log(`Farm Pool address: ${farm_pool.address}`);
+                const {
+                    value: {
+                        pool: _pool,
+                        owner: _owner,
+                        rewardPerSecond: _rewardPerSecond,
+                        farmStartTime: _farmStartTime,
+                        farmEndTime: _farmEndTime,
+                        tokenRoot: _tokenRoot,
+                        rewardTokenRoot: _rewardTokenRoot
+                    }
+                } = (await fabric.getEvents('NewFarmPool')).pop();
+
+                logger.log(`Farm Pool address: ${_pool}`);
+                // Wait until farm farm pool is indexed
+                await locklift.ton.client.net.wait_for_collection({
+                    collection: 'accounts',
+                    filter: {
+                        id: { eq: _pool },
+                        balance: { gt: `0x0` }
+                    },
+                    result: 'id'
+                });
+
+                const _farm_pool = await locklift.factory.getContract(
+                    'TonFarmPool',
+                    './build'
+                );
+                _farm_pool.setAddress(_pool);
+                farm_pool = _farm_pool;
 
                 const expectedWalletAddr = await root.call({
                     method: 'getWalletAddress',
@@ -633,23 +687,5 @@ describe('Test Ton Farm Pool', async function() {
                 expect(parseInt(_amount, 16)).to.be.equal(minDeposit, 'Bad event');
             });
         });
-    });
-
-    return;
-    describe('Admin functions', async function() {
-        it('Upgrade', async  function() {
-            await admin_user.runTarget({
-                contract: farm_pool,
-                method: 'upgrade',
-                params: {
-                    new_code: farm_pool.code
-                },
-                value: convertCrystal(1, 'nano')
-            });
-
-            // try to read any var
-            await farm_pool.call({method: 'rewardPerSecond'});
-        })
-
     });
 });

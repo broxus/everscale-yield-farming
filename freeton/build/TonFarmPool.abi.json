@@ -147,14 +147,6 @@
 			]
 		},
 		{
-			"name": "upgrade",
-			"inputs": [
-				{"name":"new_code","type":"cell"}
-			],
-			"outputs": [
-			]
-		},
-		{
 			"name": "rewardPerSecond",
 			"inputs": [
 			],
