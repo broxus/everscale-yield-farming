@@ -11,7 +11,7 @@ async function sleep(ms) {
 }
 
 const afterRun = async (tx) => {
-    if (locklift.network === 'dev' || locklift.network == 'main') {
+    if (locklift.network === 'dev' || locklift.network === 'main') {
         await sleep(80000);
     }
 };
@@ -59,7 +59,7 @@ async function main() {
     const {
         value: {
             pool: _pool,
-            owner: _owner,
+            pool_owner: _owner,
             rewardPerSecond: _rewardPerSecond,
             farmStartTime: _farmStartTime,
             farmEndTime: _farmEndTime,
@@ -69,6 +69,8 @@ async function main() {
     } = (await fabric.getEvents('NewFarmPool')).pop();
 
     console.log(`Farm Pool address: ${_pool}`);
+    console.log(`Pool owner ${_owner}`);
+
     // Wait until farm farm pool is indexed
     await locklift.ton.client.net.wait_for_collection({
         collection: 'accounts',
@@ -76,7 +78,8 @@ async function main() {
             id: { eq: _pool },
             balance: { gt: `0x0` }
         },
-        result: 'id'
+        result: 'id',
+        timeout: 120000
     });
 
     const _farm_pool = await locklift.factory.getContract(

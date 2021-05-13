@@ -13,7 +13,7 @@
 		{
 			"name": "deployFarmPool",
 			"inputs": [
-				{"name":"owner","type":"address"},
+				{"name":"pool_owner","type":"address"},
 				{"name":"rewardPerSecond","type":"uint256"},
 				{"name":"farmStartTime","type":"uint256"},
 				{"name":"farmEndTime","type":"uint256"},
@@ -83,7 +83,7 @@
 			"name": "NewFarmPool",
 			"inputs": [
 				{"name":"pool","type":"address"},
-				{"name":"owner","type":"address"},
+				{"name":"pool_owner","type":"address"},
 				{"name":"rewardPerSecond","type":"uint256"},
 				{"name":"farmStartTime","type":"uint256"},
 				{"name":"farmEndTime","type":"uint256"},

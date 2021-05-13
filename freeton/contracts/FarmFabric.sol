@@ -7,7 +7,7 @@ import './UserData.sol';
 contract FarmFabric {
     event NewFarmPool(
         address pool,
-        address owner,
+        address pool_owner,
         uint256 rewardPerSecond,
         uint256 farmStartTime,
         uint256 farmEndTime,
@@ -37,7 +37,7 @@ contract FarmFabric {
     }
 
     function deployFarmPool(
-        address owner,
+        address pool_owner,
         uint256 rewardPerSecond,
         uint256 farmStartTime,
         uint256 farmEndTime,
@@ -59,9 +59,9 @@ contract FarmFabric {
             value: FARM_POOL_DEPLOY_VALUE,
             wid: address(this).wid,
             flag: 1
-        }(owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
+        }(pool_owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
 
-        emit NewFarmPool(farm_pool, owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
+        emit NewFarmPool(farm_pool, pool_owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
     }
 
 

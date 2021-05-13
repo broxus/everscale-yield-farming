@@ -53,7 +53,7 @@ IFREF {
 	CALL $c4_to_c7$
 }
 ; Decode input parameters
-; Decode owner
+; Decode pool_owner
 LDMSGADDR
 ; Decode rewardPerSecond
 LDUQ 256
@@ -106,7 +106,7 @@ PUSHCONT {
 }
 IFNOT
 ENDS
-;; param: owner
+;; param: pool_owner
 ;; param: rewardPerSecond
 ;; param: farmStartTime
 ;; param: farmEndTime
@@ -152,7 +152,7 @@ SETGLOB 7
 CALL $deployFarmPool_internal_macro$
 
 .macro deployFarmPool_internal_macro
-;; param: owner
+;; param: pool_owner
 ;; param: rewardPerSecond
 ;; param: farmStartTime
 ;; param: farmEndTime
@@ -251,7 +251,7 @@ STSLICECONST 1
 NEWC
 STSLICECONST x083ae3f1
 ;; _owner
-;; push identifier owner
+;; push identifier pool_owner
 PUSH S11
 STSLICER
 ;; _rewardPerSecond
@@ -294,8 +294,8 @@ STSLICECONST x30bbfd6e
 ;; push identifier farm_pool
 PUSH S2
 STSLICER
-;; owner
-;; push identifier owner
+;; pool_owner
+;; push identifier pool_owner
 PUSH S10
 STSLICER
 ;; rewardPerSecond

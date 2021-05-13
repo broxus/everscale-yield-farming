@@ -344,7 +344,7 @@ describe('Test Ton Farm Pool', async function() {
                     contract: fabric,
                     method: 'deployFarmPool',
                     params: {
-                        owner: admin_user.address,
+                        pool_owner: admin_user.address,
                         rewardPerSecond: rewardPerSec,
                         farmStartTime: farmStart,
                         farmEndTime: farmEnd,
@@ -357,7 +357,7 @@ describe('Test Ton Farm Pool', async function() {
                 const {
                     value: {
                         pool: _pool,
-                        owner: _owner,
+                        pool_owner: _owner,
                         rewardPerSecond: _rewardPerSecond,
                         farmStartTime: _farmStartTime,
                         farmEndTime: _farmEndTime,
@@ -365,6 +365,8 @@ describe('Test Ton Farm Pool', async function() {
                         rewardTokenRoot: _rewardTokenRoot
                     }
                 } = (await fabric.getEvents('NewFarmPool')).pop();
+
+                expect(_owner).to.be.equal(admin_user.address, "Wrong owner");
 
                 logger.log(`Farm Pool address: ${_pool}`);
                 // Wait until farm farm pool is indexed

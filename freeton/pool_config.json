@@ -1,6 +1,6 @@
 {
   "fabric": "0:587e4c728a21652d814cb470b6d32c0cdc2596aa4f61d186c2b0e2827e336823",
-  "owner": "0:a59b53c5a3584371e92dbb5ca9742f7eb5bd28e445603b28057603a8ae0c01e4",
+  "pool_owner": "0:a59b53c5a3584371e92dbb5ca9742f7eb5bd28e445603b28057603a8ae0c01e4",
   "rewardPerSecond": "1000",
   "farmStartTime": "1000",
   "farmEndTime": "2000",
