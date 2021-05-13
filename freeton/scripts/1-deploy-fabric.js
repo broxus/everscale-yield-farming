@@ -38,7 +38,7 @@ async function main() {
             nonce: getRandomNonce()
         },
         keyPair,
-    }, convertCrystal(1, 'nano'));
+    }, convertCrystal(2, 'nano'));
 
     // Wait until farm token wallet is indexed
     await locklift.ton.client.net.wait_for_collection({
