@@ -27,6 +27,7 @@ contract FarmFabric {
     uint8 public constant WRONG_PUBKEY = 101;
     uint8 public constant NOT_OWNER = 102;
     uint128 public constant FARM_POOL_DEPLOY_VALUE = 5 ton;
+    uint128 constant CONTRACT_MIN_BALANCE = 1 ton;
 
     constructor(address _owner) public {
         require (tvm.pubkey() == msg.pubkey(), WRONG_PUBKEY);
@@ -43,7 +44,7 @@ contract FarmFabric {
         address tokenRoot,
         address rewardTokenRoot
     ) public returns (address) {
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE), 2);
 
         TvmCell stateInit = tvm.buildStateInit({
             contr: TonFarmPool,

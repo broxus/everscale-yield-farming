@@ -89,6 +89,10 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         setUpTokenWallets();
     }
 
+    function _reserve() internal view returns (uint128) {
+        return math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE);
+    }
+
     /*
         @notice Creates token wallet for configured root token
     */
@@ -166,7 +170,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         uint128 updated_balance,
         TvmCell payload
     ) external override {
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
 
         if (msg.sender == tokenWallet) {
             if (sender_address.value == 0 || msg.value < MIN_DEPOSIT_MSG_VALUE) {
@@ -201,7 +205,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         address expectedAddr = getUserDataAddress(deposit.user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
 
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
 
         uint256 pending = 0;
         if (_prevAmount > 0) {
@@ -224,7 +228,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         require (msg.sender.value != 0, EXTERNAL_CALL);
         require (amount > 0, ZERO_AMOUNT_INPUT);
         require (msg.value >= MIN_WITHDRAW_MSG_VALUE, LOW_WITHDRAW_MSG_VALUE);
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
 
         updatePoolInfo();
 
@@ -236,7 +240,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     function withdrawAll() public {
         require (msg.sender.value != 0, EXTERNAL_CALL);
         require (msg.value >= MIN_WITHDRAW_MSG_VALUE, LOW_WITHDRAW_MSG_VALUE);
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
 
         updatePoolInfo();
 
@@ -248,7 +252,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     function finishWithdraw(address user, uint256 _prevAmount, uint256 _prevRewardDebt, uint256 _withdrawAmount, uint256 _accTonPerShare, address send_gas_to) public override {
         address expectedAddr = getUserDataAddress(user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
 
         uint256 pending = ((_prevAmount * _accTonPerShare) / 1e18) - _prevRewardDebt;
 
@@ -311,7 +315,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     function safeWithdraw(address send_gas_to) external {
         require (msg.sender.value != 0, EXTERNAL_CALL);
         require (msg.value >= MIN_WITHDRAW_MSG_VALUE, LOW_WITHDRAW_MSG_VALUE);
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
 
         address user_data_addr = getUserDataAddress(msg.sender);
         IUserData(user_data_addr).processSafeWithdraw{value: 0, flag: 128}(send_gas_to);
@@ -320,7 +324,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     function finishSafeWithdraw(address user, uint256 amount, address send_gas_to) external override {
         address expectedAddr = getUserDataAddress(user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
 
         tokenBalance -= amount;
 
@@ -380,7 +384,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         uint32 functionId = slice.decode(uint32);
         // if processing failed - contract was not deployed. Deploy and try again
         if (functionId == tvm.functionId(UserData.processDeposit)) {
-            tvm.rawReserve(address(this).balance - msg.value, 2);
+            tvm.rawReserve(_reserve(), 2);
 
             uint64 _deposit_nonce = slice.decode(uint64);
             PendingDeposit deposit = deposits[_deposit_nonce];

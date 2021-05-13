@@ -28,6 +28,27 @@ CALLREF {
 TRUE
 SETGLOB 7
 
+.globl	_reserve_internal
+.type	_reserve_internal, @function
+CALL $_reserve_internal_macro$
+
+.macro _reserve_internal_macro
+; function _reserve
+;; return
+;; get member balance
+GETPARAM 7
+INDEX 0
+;; -
+;; get member value
+CALLREF {
+	CALL $message_balance_macro$
+}
+SUB
+UFITS 128
+PUSHINT 100000000
+MAX
+; end function _reserve
+
 .macro getDetails
 DROP
 GETGLOB 1
@@ -188,16 +209,9 @@ GETGLOB 9
 GETGLOB 12
 SDEQ
 THROWIFNOT 101
-;; get member balance
-GETPARAM 7
-INDEX 0
-;; -
-;; get member value
 CALLREF {
-	CALL $message_balance_macro$
+	CALL $_reserve_internal_macro$
 }
-SUB
-UFITS 128
 PUSHINT 2
 RAWRESERVE
 ;; push identifier amount
@@ -314,16 +328,9 @@ PUSHCONT {
 	GETGLOB 12
 	SDEQ
 	THROWIFNOT 101
-	;; get member balance
-	GETPARAM 7
-	INDEX 0
-	;; -
-	;; get member value
 	CALLREF {
-		CALL $message_balance_macro$
+		CALL $_reserve_internal_macro$
 	}
-	SUB
-	UFITS 128
 	PUSHINT 2
 	RAWRESERVE
 	;; if
@@ -468,16 +475,9 @@ PUSHCONT {
 	GETGLOB 12
 	SDEQ
 	THROWIFNOT 101
-	;; get member balance
-	GETPARAM 7
-	INDEX 0
-	;; -
-	;; get member value
 	CALLREF {
-		CALL $message_balance_macro$
+		CALL $_reserve_internal_macro$
 	}
-	SUB
-	UFITS 128
 	PUSHINT 2
 	RAWRESERVE
 	;; if
@@ -588,16 +588,9 @@ GETGLOB 9
 GETGLOB 12
 SDEQ
 THROWIFNOT 101
-;; get member balance
-GETPARAM 7
-INDEX 0
-;; -
-;; get member value
 CALLREF {
-	CALL $message_balance_macro$
+	CALL $_reserve_internal_macro$
 }
-SUB
-UFITS 128
 PUSHINT 2
 RAWRESERVE
 ;; push identifier amount

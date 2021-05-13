@@ -133,6 +133,27 @@ CALLREF {
 TRUE
 SETGLOB 7
 
+.globl	_reserve_internal
+.type	_reserve_internal, @function
+CALL $_reserve_internal_macro$
+
+.macro _reserve_internal_macro
+; function _reserve
+;; return
+;; get member balance
+GETPARAM 7
+INDEX 0
+;; -
+;; get member value
+CALLREF {
+	CALL $message_balance_macro$
+}
+SUB
+UFITS 128
+PUSHINT 1000000000
+MAX
+; end function _reserve
+
 .globl	setUpTokenWallets_internal
 .type	setUpTokenWallets_internal, @function
 CALL $setUpTokenWallets_internal_macro$
@@ -526,16 +547,9 @@ ENDS
 ;; param: payload
 ; function tokensReceivedCallback
 PUSHCONT {
-	;; get member balance
-	GETPARAM 7
-	INDEX 0
-	;; -
-	;; get member value
 	CALLREF {
-		CALL $message_balance_macro$
+		CALL $_reserve_internal_macro$
 	}
-	SUB
-	UFITS 128
 	PUSHINT 2
 	RAWRESERVE
 	;; if
@@ -818,16 +832,9 @@ DUP
 GETGLOB 9
 SDEQ
 THROWIFNOT 105
-;; get member balance
-GETPARAM 7
-INDEX 0
-;; -
-;; get member value
 CALLREF {
-	CALL $message_balance_macro$
+	CALL $_reserve_internal_macro$
 }
-SUB
-UFITS 128
 PUSHINT 2
 RAWRESERVE
 PUSHINT 0
@@ -1012,16 +1019,9 @@ CALLREF {
 PUSHINT 1000000000
 GEQ
 THROWIFNOT 108
-;; get member balance
-GETPARAM 7
-INDEX 0
-;; -
-;; get member value
 CALLREF {
-	CALL $message_balance_macro$
+	CALL $_reserve_internal_macro$
 }
-SUB
-UFITS 128
 PUSHINT 2
 RAWRESERVE
 CALLREF {
@@ -1105,16 +1105,9 @@ CALLREF {
 PUSHINT 1000000000
 GEQ
 THROWIFNOT 108
-;; get member balance
-GETPARAM 7
-INDEX 0
-;; -
-;; get member value
 CALLREF {
-	CALL $message_balance_macro$
+	CALL $_reserve_internal_macro$
 }
-SUB
-UFITS 128
 PUSHINT 2
 RAWRESERVE
 CALLREF {
@@ -1251,16 +1244,9 @@ DUP
 GETGLOB 9
 SDEQ
 THROWIFNOT 105
-;; get member balance
-GETPARAM 7
-INDEX 0
-;; -
-;; get member value
 CALLREF {
-	CALL $message_balance_macro$
+	CALL $_reserve_internal_macro$
 }
-SUB
-UFITS 128
 PUSHINT 2
 RAWRESERVE
 ;; push identifier _prevAmount
@@ -1819,16 +1805,9 @@ CALLREF {
 PUSHINT 1000000000
 GEQ
 THROWIFNOT 108
-;; get member balance
-GETPARAM 7
-INDEX 0
-;; -
-;; get member value
 CALLREF {
-	CALL $message_balance_macro$
+	CALL $_reserve_internal_macro$
 }
-SUB
-UFITS 128
 PUSHINT 2
 RAWRESERVE
 ;; get member sender
@@ -1911,16 +1890,9 @@ DUP
 GETGLOB 9
 SDEQ
 THROWIFNOT 105
-;; get member balance
-GETPARAM 7
-INDEX 0
-;; -
-;; get member value
 CALLREF {
-	CALL $message_balance_macro$
+	CALL $_reserve_internal_macro$
 }
-SUB
-UFITS 128
 PUSHINT 2
 RAWRESERVE
 ;; push identifier amount
@@ -2292,16 +2264,9 @@ DUP
 PUSHINT 1003259743
 EQUAL
 PUSHCONT {
-	;; get member balance
-	GETPARAM 7
-	INDEX 0
-	;; -
-	;; get member value
 	CALLREF {
-		CALL $message_balance_macro$
+		CALL $_reserve_internal_macro$
 	}
-	SUB
-	UFITS 128
 	PUSHINT 2
 	RAWRESERVE
 	; expValue

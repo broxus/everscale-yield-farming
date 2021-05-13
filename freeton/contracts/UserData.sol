@@ -10,11 +10,16 @@ contract UserData is IUserData {
     address public static farmPool;
     address public static user; // setup from initData
     uint8 constant NOT_FARM_POOL = 101;
+    uint128 constant CONTRACT_MIN_BALANCE = 0.1 ton;
 
 
     constructor() public {
         require (farmPool == msg.sender, NOT_FARM_POOL);
         tvm.accept();
+    }
+
+    function _reserve() internal view returns (uint128) {
+        return math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE);
     }
 
     function getDetails() external responsible view override returns (UserDataDetails) {
@@ -24,7 +29,7 @@ contract UserData is IUserData {
 
     function processDeposit(uint64 nonce, uint256 _amount, uint256 _accTonPerShare) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
 
         uint256 prevAmount = amount;
         uint256 prevRewardDebt = rewardDebt;
@@ -37,7 +42,7 @@ contract UserData is IUserData {
 
     function processWithdraw(uint256 _amount, uint256 _accTonPerShare, address send_gas_to) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
 
         // bad input. User does not have enough staked balance. At least we can return some gas
         if (_amount > amount) {
@@ -56,7 +61,7 @@ contract UserData is IUserData {
 
     function processWithdrawAll(uint256 _accTonPerShare, address send_gas_to) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
 
         // bad input. User does not have enough staked balance. At least we can return some gas
         if (amount == 0) {
@@ -75,7 +80,7 @@ contract UserData is IUserData {
 
     function processSafeWithdraw(address send_gas_to) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(address(this).balance - msg.value, 2);
+        tvm.rawReserve(_reserve(), 2);
         uint256 prevAmount = amount;
         amount = 0;
         rewardDebt = 0;
