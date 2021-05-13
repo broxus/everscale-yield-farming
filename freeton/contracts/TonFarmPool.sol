@@ -61,9 +61,6 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
     address public owner;
 
-    // contract is considered active only after it got all required reward tokens
-    bool public active;
-
     struct PendingDeposit {
         address user;
         uint256 amount;
@@ -172,8 +169,8 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         tvm.rawReserve(address(this).balance - msg.value, 2);
 
         if (msg.sender == tokenWallet) {
-            if (sender_address.value == 0 || msg.value < MIN_DEPOSIT_MSG_VALUE || !active) {
-                // external owner or too low deposit value or too lov msg.value or farming contract is not active
+            if (sender_address.value == 0 || msg.value < MIN_DEPOSIT_MSG_VALUE) {
+                // external owner or too low deposit value or too lov msg.value
                 TvmCell tvmcell;
                 ITONTokenWallet(tokenWallet).transfer{value: 0, flag: 128}(
                     sender_wallet,
@@ -195,9 +192,6 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
             UserData(userDataAddr).processDeposit{value: 0, flag: 128}(deposit_nonce, amount, accTonPerShare);
         } else if (msg.sender == rewardTokenWallet) {
             rewardTokenBalance += amount;
-            if (rewardTokenBalance >= (farmEndTime - farmStartTime) * rewardPerSecond) {
-                active = true;
-            }
             original_gas_to.transfer(0, false, 128);
         }
     }
@@ -259,6 +253,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         uint256 pending = ((_prevAmount * _accTonPerShare) / 1e18) - _prevRewardDebt;
 
         tokenBalance -= _withdrawAmount;
+
         if (pending > 0) {
             transferReward(user, pending);
         }

@@ -100,6 +100,7 @@ describe('Test Ton Farm Pool', async function() {
         const expected_reward = rewardPerSec * time_passed;
 
         expect(reward).to.be.greaterThanOrEqual(expected_reward, 'Bad reward');
+        expect(reward).to.be.below(expected_reward * 1.1, 'Bad reward 2');
     }
 
     const getUserTokenWallet = async function(_root, user) {
@@ -452,20 +453,14 @@ describe('Test Ton Farm Pool', async function() {
             it('Sending reward tokens to pool', async function() {
                 const amount = adminInitialTokenBal;
 
-                await depositTokens(admin_user, adminFarmTokenWallet, farm_pool, 1);
-                await afterRun();
-
-                const active = await farm_pool.call({method: 'active'});
-                expect(active).to.be.equal(false, "Farm pool active with low balance");
-
-                await depositTokens(admin_user, adminFarmTokenWallet, farm_pool, amount - 1);
+                await depositTokens(admin_user, adminFarmTokenWallet, farm_pool, amount);
                 await afterRun();
 
                 const farm_pool_balance = await farm_pool_reward_wallet.call({method: 'balance'});
-                const active2 = await farm_pool.call({method: 'active'});
+                const farm_pool_balance_2 = await farm_pool.call({method: 'rewardTokenBalance'});
 
                 expect(farm_pool_balance.toString()).to.be.equal(amount.toString(), 'Farm pool balance empty');
-                expect(active2).to.be.equal(true, "Farm pool not active");
+                expect(farm_pool_balance_2.toString()).to.be.equal(amount.toString(), 'Farm pool balance not recognized');
             });
         });
     });

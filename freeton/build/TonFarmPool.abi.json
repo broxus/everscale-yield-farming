@@ -243,14 +243,6 @@
 			]
 		},
 		{
-			"name": "active",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"active","type":"bool"}
-			]
-		},
-		{
 			"name": "deposit_nonce",
 			"inputs": [
 			],
