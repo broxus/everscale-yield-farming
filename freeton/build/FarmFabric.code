@@ -115,11 +115,11 @@ ENDS
 CALLREF {
 	CALL $deployFarmPool_internal_macro$
 }
-;; emitting 7 value(s)
-PUSH S7
+;; emitting 1 value(s)
+PUSH S1
 EQINT -1
 PUSHCONT {
-	PUSH S9
+	PUSH S3
 	CTOS
 	LDU 2
 	LDMSGADDR
@@ -131,34 +131,16 @@ PUSHCONT {
 	PUSHINT 96
 	STZEROES
 	STSLICECONST 0
-	STSLICECONST 1
-	NEWC
-	STSLICECONST xd0863369
-	PUSH S8
+	STSLICECONST 0
+	STSLICECONST xee2d3629
+	PUSH S1
 	STSLICER
-	PUSH S7
-	STSLICER
-	PUSH S6
-	STUR 256
-	NEWC
-	PUSH S6
-	STUR 256
-	PUSH S5
-	STUR 256
-	PUSH S4
-	STSLICER
-	NEWC
-	PUSH S4
-	STSLICER
-	STBREFR
-	STBREFR
-	STBREFR
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
 }
 IF
-BLKDROP 7
+DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -176,6 +158,8 @@ CALL $deployFarmPool_internal_macro$
 ;; param: farmEndTime
 ;; param: tokenRoot
 ;; param: rewardTokenRoot
+;; ret param: retParam@0
+PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
 ; function deployFarmPool
 ;; get member balance
 GETPARAM 7
@@ -268,28 +252,28 @@ NEWC
 STSLICECONST x083ae3f1
 ;; _owner
 ;; push identifier pool_owner
-PUSH S10
+PUSH S11
 STSLICER
 ;; _rewardPerSecond
 ;; push identifier rewardPerSecond
-PUSH S9
+PUSH S10
 STUR 256
 ;; _farmStartTime
 ;; push identifier farmStartTime
-PUSH S8
+PUSH S9
 STUR 256
 NEWC
 ;; _farmEndTime
 ;; push identifier farmEndTime
-PUSH S8
+PUSH S9
 STUR 256
 ;; _tokenRoot
 ;; push identifier tokenRoot
-PUSH S7
+PUSH S8
 STSLICER
 ;; _rewardTokenRoot
 ;; push identifier rewardTokenRoot
-PUSH S6
+PUSH S7
 STSLICER
 STBREFR
 STBREFR
@@ -298,24 +282,53 @@ PUSHINT 1
 SENDRAWMSG
 NIP
 ;; decl: farm_pool
-;; return
+;; emit NewFarmPool
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 1
+NEWC
+STSLICECONST x30bbfd6e
+;; pool
 ;; push identifier farm_pool
-DUP
+PUSH S2
+STSLICER
+;; pool_owner
 ;; push identifier pool_owner
-PUSH S8
+PUSH S10
+STSLICER
+;; rewardPerSecond
 ;; push identifier rewardPerSecond
-PUSH S8
+PUSH S9
+STUR 256
+NEWC
+;; farmStartTime
 ;; push identifier farmStartTime
-PUSH S8
+PUSH S9
+STUR 256
+;; farmEndTime
 ;; push identifier farmEndTime
 PUSH S8
+STUR 256
+;; tokenRoot
 ;; push identifier tokenRoot
-PUSH S8
+PUSH S7
+STSLICER
+NEWC
+;; rewardTokenRoot
 ;; push identifier rewardTokenRoot
-PUSH S8
-BLKDROP2 2, 7
+PUSH S7
+STSLICER
+STBREFR
+STBREFR
+STBREFR
+ENDC
+PUSHINT 0
+SENDRAWMSG
+DROP2
 ; end function deployFarmPool
-BLKDROP2 6, 7
+BLKDROP2 6, 1
 
 .macro upgrade
 DROP
@@ -768,7 +781,7 @@ PUSHCONT {
 }
 IFJMP
 DUP
-PUSHINT 1350972265
+PUSHINT 1454300485
 LEQ
 PUSHCONT {
 	DUP
@@ -778,28 +791,28 @@ PUSHCONT {
 		CALL $constructor$
 	}
 	DUP
-	PUSHINT 1350972265
-	EQUAL
-	IFJMPREF {
-		CALL $deployFarmPool$
-	}
-}
-IFJMP
-DUP
-PUSHINT 1594609630
-LEQ
-PUSHCONT {
-	DUP
 	PUSHINT 1454300485
 	EQUAL
 	IFJMPREF {
 		CALL $pools_count$
 	}
+}
+IFJMP
+DUP
+PUSHINT 1848456745
+LEQ
+PUSHCONT {
 	DUP
 	PUSHINT 1594609630
 	EQUAL
 	IFJMPREF {
 		CALL $owner$
+	}
+	DUP
+	PUSHINT 1848456745
+	EQUAL
+	IFJMPREF {
+		CALL $deployFarmPool$
 	}
 }
 IFJMP

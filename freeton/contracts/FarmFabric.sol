@@ -5,6 +5,16 @@ import './TonFarmPool.sol';
 import './UserData.sol';
 
 contract FarmFabric {
+    event NewFarmPool(
+        address pool,
+        address pool_owner,
+        uint256 rewardPerSecond,
+        uint256 farmStartTime,
+        uint256 farmEndTime,
+        address tokenRoot,
+        address rewardTokenRoot
+    );
+
     uint64 public pools_count = 0;
     address public owner;
 
@@ -33,7 +43,7 @@ contract FarmFabric {
         uint256 farmEndTime,
         address tokenRoot,
         address rewardTokenRoot
-    ) public returns (address, address, uint256, uint256, uint256, address, address) {
+    ) public returns (address) {
         tvm.rawReserve(math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE), 2);
 
         TvmCell stateInit = tvm.buildStateInit({
@@ -51,7 +61,7 @@ contract FarmFabric {
             flag: 1
         }(pool_owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
 
-        return (farm_pool, pool_owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
+        emit NewFarmPool(farm_pool, pool_owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
     }
 
 

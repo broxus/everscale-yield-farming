@@ -21,13 +21,7 @@
 				{"name":"rewardTokenRoot","type":"address"}
 			],
 			"outputs": [
-				{"name":"value0","type":"address"},
-				{"name":"value1","type":"address"},
-				{"name":"value2","type":"uint256"},
-				{"name":"value3","type":"uint256"},
-				{"name":"value4","type":"uint256"},
-				{"name":"value5","type":"address"},
-				{"name":"value6","type":"address"}
+				{"name":"value0","type":"address"}
 			]
 		},
 		{
@@ -85,5 +79,19 @@
 		{"key":3,"name":"nonce","type":"uint128"}
 	],
 	"events": [
+		{
+			"name": "NewFarmPool",
+			"inputs": [
+				{"name":"pool","type":"address"},
+				{"name":"pool_owner","type":"address"},
+				{"name":"rewardPerSecond","type":"uint256"},
+				{"name":"farmStartTime","type":"uint256"},
+				{"name":"farmEndTime","type":"uint256"},
+				{"name":"tokenRoot","type":"address"},
+				{"name":"rewardTokenRoot","type":"address"}
+			],
+			"outputs": [
+			]
+		}
 	]
 }
