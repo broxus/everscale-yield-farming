@@ -43,7 +43,7 @@ contract FarmFabric {
         uint256 farmEndTime,
         address tokenRoot,
         address rewardTokenRoot
-    ) public returns (address) {
+    ) public {
         tvm.rawReserve(math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE), 2);
 
         TvmCell stateInit = tvm.buildStateInit({

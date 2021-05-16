@@ -21,7 +21,6 @@
 				{"name":"rewardTokenRoot","type":"address"}
 			],
 			"outputs": [
-				{"name":"value0","type":"address"}
 			]
 		},
 		{
