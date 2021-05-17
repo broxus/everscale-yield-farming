@@ -235,6 +235,22 @@
 			]
 		},
 		{
+			"name": "rewardTokenBalanceCumulative",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"rewardTokenBalanceCumulative","type":"uint256"}
+			]
+		},
+		{
+			"name": "unclaimedReward",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"unclaimedReward","type":"uint256"}
+			]
+		},
+		{
 			"name": "owner",
 			"inputs": [
 			],

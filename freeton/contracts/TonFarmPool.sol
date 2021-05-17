@@ -59,6 +59,10 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
     uint256 public rewardTokenBalance;
 
+    uint256 public rewardTokenBalanceCumulative;
+
+    uint256 public unclaimedReward;
+
     address public owner;
 
     struct PendingDeposit {
@@ -190,12 +194,15 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
             updatePoolInfo();
 
             deposit_nonce += 1;
+            tokenBalance += amount;
+
             deposits[deposit_nonce] = PendingDeposit(sender_address, amount, original_gas_to);
 
             address userDataAddr = getUserDataAddress(sender_address);
             UserData(userDataAddr).processDeposit{value: 0, flag: 128}(deposit_nonce, amount, accTonPerShare);
         } else if (msg.sender == rewardTokenWallet) {
             rewardTokenBalance += amount;
+            rewardTokenBalanceCumulative += amount;
             original_gas_to.transfer(0, false, 128);
         }
     }
@@ -212,14 +219,12 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
             pending = ((_prevAmount * _accTonPerShare) / 1e18) - _prevRewardDebt;
         }
 
-        tokenBalance += deposit.amount;
-
         if (pending > 0) {
             transferReward(deposit.user, pending);
         }
 
-        delete deposits[_deposit_nonce];
         emit Deposit(deposit.user, deposit.amount);
+        delete deposits[_deposit_nonce];
 
         deposit.send_gas_to.transfer(0, false, 128);
     }
@@ -275,11 +280,12 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     }
 
     function withdrawUnclaimed(address to) external onlyOwner {
-        require (now >= (farmEndTime + 24 hours), FARMING_NOT_ENDED);
+        require (msg.value >= MIN_WITHDRAW_MSG_VALUE);
         // minimum value that should remain on contract
-        tvm.rawReserve(CONTRACT_MIN_BALANCE, 2);
+        tvm.rawReserve(_reserve(), 2);
 
-        transferReward(to, rewardTokenBalance);
+        transferReward(to, unclaimedReward);
+        unclaimedReward = 0;
     }
 
     // user_amount and user_reward_debt should be fetched from UserData at first
@@ -341,14 +347,16 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
             return;
         }
 
+        uint256 multiplier = getMultiplier(lastRewardTime, now);
+        uint256 new_reward = rewardPerSecond * multiplier;
+
         if (tokenBalance == 0) {
+            unclaimedReward += new_reward;
             lastRewardTime = now;
             return;
         }
 
-        uint256 multiplier = getMultiplier(lastRewardTime, now);
-        uint256 tonReward = rewardPerSecond * multiplier;
-        accTonPerShare += tonReward * 1e18 / tokenBalance;
+        accTonPerShare += new_reward * 1e18 / tokenBalance;
         lastRewardTime = now;
     }
 
