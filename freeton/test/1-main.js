@@ -466,6 +466,7 @@ describe('Test Ton Farm Pool', async function() {
                 const amount = (farmEnd - farmStart) * rewardPerSec;
 
                 await depositTokens(admin_user, adminFarmTokenWallet, farm_pool, amount);
+
                 await afterRun();
 
                 const farm_pool_balance = await farm_pool_reward_wallet.call({method: 'balance'});
@@ -585,6 +586,10 @@ describe('Test Ton Farm Pool', async function() {
                 await withdrawTokens(user1, farm_pool, minDeposit);
                 const reward_time_3 = await farm_pool.call({method: 'lastRewardTime'});
 
+                const cumulative = await farm_pool.call({method: 'rewardTokenBalanceCumulative'});
+                const cumulative_expected = (farmEnd - farmStart) * rewardPerSec;
+                expect(cumulative.toString()).to.be.equal(cumulative_expected.toString(), 'Bad cumulative');
+
                 const unclaimed_remote = await farm_pool.call({method: 'unclaimedReward'});
                 expect(unclaimed.toString()).to.be.equal(unclaimed_remote.toString(), "Bad unclaimed reward");
 
@@ -598,7 +603,7 @@ describe('Test Ton Farm Pool', async function() {
             });
 
         });
-        
+
         describe('Multiple users farming', async function() {
             let user1_deposit_time;
             let user2_deposit_time;
