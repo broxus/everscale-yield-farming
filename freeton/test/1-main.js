@@ -469,6 +469,10 @@ describe('Test Ton Farm Pool', async function() {
 
                 await afterRun();
 
+                const { value: { amount: _amount } } = (await farm_pool.getEvents('RewardDeposit')).pop();
+                expect(parseInt(_amount, 16)).to.be.equal(amount, 'Bad event');
+
+
                 const farm_pool_balance = await farm_pool_reward_wallet.call({method: 'balance'});
                 const farm_pool_balance_2 = await farm_pool.call({method: 'rewardTokenBalance'});
 

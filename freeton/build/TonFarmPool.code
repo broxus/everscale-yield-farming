@@ -802,6 +802,20 @@ PUSHCONT {
 			; colValue
 			SETGLOB 21
 			; end colValue
+			;; emit RewardDeposit
+			NEWC
+			PUSHSLICE xc0000000000000000000000002_
+			STSLICER
+			STSLICECONST 0
+			STSLICECONST 0
+			STSLICECONST x3c05b157
+			;; amount
+			;; push identifier amount
+			PUSH S8
+			STUR 256
+			ENDC
+			PUSHINT 0
+			SENDRAWMSG
 			;; transfer()
 			;; push identifier original_gas_to
 			PUSH S3

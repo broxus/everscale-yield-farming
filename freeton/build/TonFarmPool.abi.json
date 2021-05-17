@@ -315,6 +315,14 @@
 			],
 			"outputs": [
 			]
+		},
+		{
+			"name": "RewardDeposit",
+			"inputs": [
+				{"name":"amount","type":"uint256"}
+			],
+			"outputs": [
+			]
 		}
 	]
 }

@@ -13,6 +13,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     // Events
     event Deposit(address user, uint256 amount);
     event Withdraw(address user, uint256 amount);
+    event RewardDeposit(uint256 amount);
 
     // ERRORS
     uint8 public constant NOT_OWNER = 101;
@@ -207,6 +208,8 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         } else if (msg.sender == rewardTokenWallet) {
             rewardTokenBalance += amount;
             rewardTokenBalanceCumulative += amount;
+            
+            emit RewardDeposit(amount);
             original_gas_to.transfer(0, false, 128);
         }
     }
