@@ -16,6 +16,16 @@
 			]
 		},
 		{
+			"name": "getVersion",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint8"},
+				{"name":"value1","type":"uint8"},
+				{"name":"value2","type":"uint8"}
+			]
+		},
+		{
 			"name": "receiveTokenWalletAddress",
 			"inputs": [
 				{"name":"wallet","type":"address"}

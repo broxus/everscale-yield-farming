@@ -97,6 +97,10 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         return math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE);
     }
 
+    function getVersion() external view returns (uint8, uint8, uint8) {
+        return (1, 0, 0);
+    }
+
     /*
         @notice Creates token wallet for configured root token
     */
