@@ -6,7 +6,6 @@ interface IRootTokenContract {
         bytes name;
         bytes symbol;
         uint8 decimals;
-        TvmCell wallet_code;
         uint256 root_public_key;
         address root_owner_address;
         uint128 total_supply;

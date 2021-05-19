@@ -13,7 +13,6 @@ interface ITONTokenWallet is AllowanceInfoStructure {
 
     struct ITONTokenWalletDetails {
         address root_address;
-        TvmCell code;
         uint256 wallet_public_key;
         address owner_address;
         uint128 balance;
@@ -24,6 +23,8 @@ interface ITONTokenWallet is AllowanceInfoStructure {
     }
 
     function getDetails() external view responsible returns (ITONTokenWalletDetails);
+
+    function getWalletCode() external view responsible returns (TvmCell);
 
     function accept(uint128 tokens) external;
 
