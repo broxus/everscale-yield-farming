@@ -56,15 +56,11 @@ IFREF {
 ; Decode pool_owner
 LDMSGADDR
 ; Decode rewardPerSecond
-LDUQ 256
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDU 256
-}
-IFNOT
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ; Decode farmStartTime
 LDUQ 256
 PUSHCONT {
@@ -96,15 +92,19 @@ PUSHCONT {
 }
 IFNOT
 ; Decode rewardTokenRoot
-LDMSGADDRQ
+DUP
+SDEMPTY
 PUSHCONT {
-	;; load next cell
 	LDREF
 	ENDS
 	CTOS
-	LDMSGADDR
 }
-IFNOT
+IF
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ENDS
 ;; param: pool_owner
 ;; param: rewardPerSecond
@@ -221,7 +221,7 @@ PUSH S2
 STREFR
 STSLICECONST 1
 NEWC
-STSLICECONST x083ae3f1
+STSLICECONST x7c69bf19
 ;; _owner
 ;; push identifier pool_owner
 PUSH S10
@@ -229,16 +229,19 @@ STSLICER
 ;; _rewardPerSecond
 ;; push identifier rewardPerSecond
 PUSH S9
-STUR 256
+UNPAIR
+XCHG s2
+STU 32
+STDICT
 ;; _farmStartTime
 ;; push identifier farmStartTime
 PUSH S8
 STUR 256
-NEWC
 ;; _farmEndTime
 ;; push identifier farmEndTime
-PUSH S8
+PUSH S7
 STUR 256
+NEWC
 ;; _tokenRoot
 ;; push identifier tokenRoot
 PUSH S7
@@ -246,7 +249,10 @@ STSLICER
 ;; _rewardTokenRoot
 ;; push identifier rewardTokenRoot
 PUSH S6
-STSLICER
+UNPAIR
+XCHG s2
+STU 32
+STDICT
 STBREFR
 STBREFR
 ENDC
@@ -261,7 +267,7 @@ STSLICER
 STSLICECONST 0
 STSLICECONST 1
 NEWC
-STSLICECONST x30bbfd6e
+STSLICECONST x7a4916e1
 ;; pool
 ;; push identifier farm_pool
 PUSH S2
@@ -273,12 +279,15 @@ STSLICER
 ;; rewardPerSecond
 ;; push identifier rewardPerSecond
 PUSH S8
-STUR 256
-NEWC
+UNPAIR
+XCHG s2
+STU 32
+STDICT
 ;; farmStartTime
 ;; push identifier farmStartTime
-PUSH S8
+PUSH S7
 STUR 256
+NEWC
 ;; farmEndTime
 ;; push identifier farmEndTime
 PUSH S7
@@ -287,12 +296,13 @@ STUR 256
 ;; push identifier tokenRoot
 PUSH S6
 STSLICER
-NEWC
 ;; rewardTokenRoot
 ;; push identifier rewardTokenRoot
-PUSH S6
-STSLICER
-STBREFR
+PUSH S5
+UNPAIR
+XCHG s2
+STU 32
+STDICT
 STBREFR
 STBREFR
 ENDC
@@ -780,7 +790,7 @@ PUSHCONT {
 }
 IFJMP
 DUP
-PUSHINT 1095887233
+PUSHINT 1187817425
 LEQ
 PUSHCONT {
 	DUP
@@ -790,46 +800,46 @@ PUSHCONT {
 		CALL $FarmPoolUserDataCode$
 	}
 	DUP
-	PUSHINT 1095887233
-	EQUAL
-	IFJMPREF {
-		CALL $deployFarmPool$
-	}
-}
-IFJMP
-DUP
-PUSHINT 1196840156
-LEQ
-PUSHCONT {
-	DUP
 	PUSHINT 1187817425
 	EQUAL
 	IFJMPREF {
 		CALL $nonce$
 	}
+}
+IFJMP
+DUP
+PUSHINT 1454300485
+LEQ
+PUSHCONT {
 	DUP
 	PUSHINT 1196840156
 	EQUAL
 	IFJMPREF {
 		CALL $constructor$
 	}
-}
-IFJMP
-DUP
-PUSHINT 1594609630
-LEQ
-PUSHCONT {
 	DUP
 	PUSHINT 1454300485
 	EQUAL
 	IFJMPREF {
 		CALL $pools_count$
 	}
+}
+IFJMP
+DUP
+PUSHINT 2052196749
+LEQ
+PUSHCONT {
 	DUP
 	PUSHINT 1594609630
 	EQUAL
 	IFJMPREF {
 		CALL $owner$
+	}
+	DUP
+	PUSHINT 2052196749
+	EQUAL
+	IFJMPREF {
+		CALL $deployFarmPool$
 	}
 }
 IFJMP

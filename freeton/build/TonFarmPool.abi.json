@@ -6,11 +6,11 @@
 			"name": "constructor",
 			"inputs": [
 				{"name":"_owner","type":"address"},
-				{"name":"_rewardPerSecond","type":"uint256"},
+				{"name":"_rewardPerSecond","type":"uint256[]"},
 				{"name":"_farmStartTime","type":"uint256"},
 				{"name":"_farmEndTime","type":"uint256"},
 				{"name":"_tokenRoot","type":"address"},
-				{"name":"_rewardTokenRoot","type":"address"}
+				{"name":"_rewardTokenRoot","type":"address[]"}
 			],
 			"outputs": [
 			]
@@ -54,8 +54,8 @@
 			"inputs": [
 				{"name":"_deposit_nonce","type":"uint64"},
 				{"name":"_prevAmount","type":"uint256"},
-				{"name":"_prevRewardDebt","type":"uint256"},
-				{"name":"_accTonPerShare","type":"uint256"}
+				{"name":"_prevRewardDebt","type":"uint256[]"},
+				{"name":"_accTonPerShare","type":"uint256[]"}
 			],
 			"outputs": [
 			]
@@ -81,21 +81,9 @@
 			"inputs": [
 				{"name":"user","type":"address"},
 				{"name":"_prevAmount","type":"uint256"},
-				{"name":"_prevRewardDebt","type":"uint256"},
+				{"name":"_prevRewardDebt","type":"uint256[]"},
 				{"name":"_withdrawAmount","type":"uint256"},
-				{"name":"_accTonPerShare","type":"uint256"},
-				{"name":"send_gas_to","type":"address"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "finishWithdrawAll",
-			"inputs": [
-				{"name":"user","type":"address"},
-				{"name":"_prevAmount","type":"uint256"},
-				{"name":"_prevRewardDebt","type":"uint256"},
-				{"name":"_accTonPerShare","type":"uint256"},
+				{"name":"_accTonPerShare","type":"uint256[]"},
 				{"name":"send_gas_to","type":"address"}
 			],
 			"outputs": [
@@ -113,10 +101,10 @@
 			"name": "pendingReward",
 			"inputs": [
 				{"name":"user_amount","type":"uint256"},
-				{"name":"user_reward_debt","type":"uint256"}
+				{"name":"user_reward_debt","type":"uint256[]"}
 			],
 			"outputs": [
-				{"name":"value0","type":"uint256"}
+				{"name":"value0","type":"uint256[]"}
 			]
 		},
 		{
@@ -154,22 +142,6 @@
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "rewardPerSecond",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"rewardPerSecond","type":"uint256"}
-			]
-		},
-		{
-			"name": "accTonPerShare",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"accTonPerShare","type":"uint256"}
 			]
 		},
 		{
@@ -221,11 +193,27 @@
 			]
 		},
 		{
+			"name": "rewardPerSecond",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"rewardPerSecond","type":"uint256[]"}
+			]
+		},
+		{
+			"name": "accTonPerShare",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"accTonPerShare","type":"uint256[]"}
+			]
+		},
+		{
 			"name": "rewardTokenRoot",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"rewardTokenRoot","type":"address"}
+				{"name":"rewardTokenRoot","type":"address[]"}
 			]
 		},
 		{
@@ -233,7 +221,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"rewardTokenWallet","type":"address"}
+				{"name":"rewardTokenWallet","type":"address[]"}
 			]
 		},
 		{
@@ -241,7 +229,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"rewardTokenBalance","type":"uint256"}
+				{"name":"rewardTokenBalance","type":"uint256[]"}
 			]
 		},
 		{
@@ -249,7 +237,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"rewardTokenBalanceCumulative","type":"uint256"}
+				{"name":"rewardTokenBalanceCumulative","type":"uint256[]"}
 			]
 		},
 		{
@@ -257,7 +245,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"unclaimedReward","type":"uint256"}
+				{"name":"unclaimedReward","type":"uint256[]"}
 			]
 		},
 		{
@@ -319,6 +307,7 @@
 		{
 			"name": "RewardDeposit",
 			"inputs": [
+				{"name":"token_root","type":"address"},
 				{"name":"amount","type":"uint256"}
 			],
 			"outputs": [

@@ -14,11 +14,11 @@
 			"name": "deployFarmPool",
 			"inputs": [
 				{"name":"pool_owner","type":"address"},
-				{"name":"rewardPerSecond","type":"uint256"},
+				{"name":"rewardPerSecond","type":"uint256[]"},
 				{"name":"farmStartTime","type":"uint256"},
 				{"name":"farmEndTime","type":"uint256"},
 				{"name":"tokenRoot","type":"address"},
-				{"name":"rewardTokenRoot","type":"address"}
+				{"name":"rewardTokenRoot","type":"address[]"}
 			],
 			"outputs": [
 			]
@@ -83,11 +83,11 @@
 			"inputs": [
 				{"name":"pool","type":"address"},
 				{"name":"pool_owner","type":"address"},
-				{"name":"rewardPerSecond","type":"uint256"},
+				{"name":"rewardPerSecond","type":"uint256[]"},
 				{"name":"farmStartTime","type":"uint256"},
 				{"name":"farmEndTime","type":"uint256"},
 				{"name":"tokenRoot","type":"address"},
-				{"name":"rewardTokenRoot","type":"address"}
+				{"name":"rewardTokenRoot","type":"address[]"}
 			],
 			"outputs": [
 			]

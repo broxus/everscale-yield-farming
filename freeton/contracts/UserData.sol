@@ -6,19 +6,22 @@ import "./interfaces/IUserData.sol";
 
 contract UserData is IUserData {
     uint256 public amount;
-    uint256 public rewardDebt;
+    uint256[] public rewardDebt;
     address public static farmPool;
     address public static user; // setup from initData
     uint8 constant NOT_FARM_POOL = 101;
     uint128 constant CONTRACT_MIN_BALANCE = 0.1 ton;
 
 
-    constructor() public {
+    constructor(uint256 reward_tokens_count) public {
         require (farmPool == msg.sender, NOT_FARM_POOL);
         tvm.accept();
+        for (uint i = 0; i < reward_tokens_count; i++) {
+            rewardDebt.push(0);
+        }
     }
 
-    function _reserve() internal view returns (uint128) {
+    function _reserve() internal pure returns (uint128) {
         return math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE);
     }
 
@@ -27,23 +30,22 @@ contract UserData is IUserData {
     }
 
 
-    function processDeposit(uint64 nonce, uint256 _amount, uint256 _accTonPerShare) external override {
+    function processDeposit(uint64 nonce, uint256 _amount, uint256[] _accTonPerShare) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(_reserve(), 2);
 
         uint256 prevAmount = amount;
-        uint256 prevRewardDebt = rewardDebt;
+        uint256[] prevRewardDebt = rewardDebt;
 
         amount += _amount;
-        rewardDebt = (amount * _accTonPerShare) / 1e18;
+        for (uint i = 0; i < rewardDebt.length; i++) {
+            rewardDebt[i] = (amount * _accTonPerShare[i]) / 1e18;
+        }
 
         ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: 128}(nonce, prevAmount, prevRewardDebt, _accTonPerShare);
     }
 
-    function processWithdraw(uint256 _amount, uint256 _accTonPerShare, address send_gas_to) external override {
-        require (msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(_reserve(), 2);
-
+    function _withdraw(uint256 _amount, uint256[] _accTonPerShare, address send_gas_to) internal {
         // bad input. User does not have enough staked balance. At least we can return some gas
         if (_amount > amount) {
             send_gas_to.transfer(0, false, 128);
@@ -51,31 +53,28 @@ contract UserData is IUserData {
         }
 
         uint256 prevAmount = amount;
-        uint256 prevRewardDebt = rewardDebt;
+        uint256[] prevRewardDebt = rewardDebt;
 
         amount -= _amount;
-        rewardDebt = (amount * _accTonPerShare) / 1e18;
+        for (uint i = 0; i < _accTonPerShare.length; i++) {
+            rewardDebt[i] = (amount * _accTonPerShare[i]) / 1e18;
+        }
 
         ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _amount, _accTonPerShare, send_gas_to);
     }
 
-    function processWithdrawAll(uint256 _accTonPerShare, address send_gas_to) external override {
+    function processWithdraw(uint256 _amount, uint256[] _accTonPerShare, address send_gas_to) public override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(_reserve(), 2);
 
-        // bad input. User does not have enough staked balance. At least we can return some gas
-        if (amount == 0) {
-            send_gas_to.transfer(0, false, 128);
-            return;
-        }
+        _withdraw(_amount, _accTonPerShare, send_gas_to);
+    }
 
-        uint256 prevAmount = amount;
-        uint256 prevRewardDebt = rewardDebt;
+    function processWithdrawAll(uint256[] _accTonPerShare, address send_gas_to) external override {
+        require (msg.sender == farmPool, NOT_FARM_POOL);
+        tvm.rawReserve(_reserve(), 2);
 
-        amount = 0;
-        rewardDebt = 0;
-
-        ITonFarmPool(msg.sender).finishWithdrawAll{value: 0, flag: 128}(user, prevAmount, prevRewardDebt, _accTonPerShare, send_gas_to);
+        _withdraw(amount, _accTonPerShare, send_gas_to);
     }
 
     function processSafeWithdraw(address send_gas_to) external override {
@@ -83,7 +82,9 @@ contract UserData is IUserData {
         tvm.rawReserve(_reserve(), 2);
         uint256 prevAmount = amount;
         amount = 0;
-        rewardDebt = 0;
+        for (uint i = 0; i < rewardDebt.length; i++) {
+            rewardDebt[i] = 0;
+        }
         ITonFarmPool(msg.sender).finishSafeWithdraw{value: 0, flag: 128}(user, prevAmount, send_gas_to);
     }
 }

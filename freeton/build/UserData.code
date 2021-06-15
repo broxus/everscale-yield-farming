@@ -12,7 +12,10 @@ PUSHINT 1
 SETGLOB 6
 ;; end constructor protection
 ; Decode input parameters
+; Decode reward_tokens_count
+LDU 256
 ENDS
+;; param: reward_tokens_count
 ; constructor UserData
 ;; push identifier farmPool
 GETGLOB 12
@@ -21,7 +24,50 @@ GETGLOB 9
 SDEQ
 THROWIFNOT 101
 ACCEPT
+; for
+PUSHINT 0
+;; decl: i
+PUSHCONT {
+	;; push identifier i
+	DUP
+	;; <
+	;; push identifier reward_tokens_count
+	PUSH S2
+	LESS
+}
+PUSHCONT {
+	; expValue
+	;; fetch rewardDebt
+	GETGLOB 11
+	; end expValue
+	PUSHINT 0
+	;; array.push(..)
+	NEWC
+	STU 256
+	SWAP
+	UNPAIR
+	PUSH S1
+	INC
+	XCHG s3
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	; colValue
+	SETGLOB 11
+	; end colValue
+	;; ++
+	; expValue
+	; end expValue
+	INC
+	; colValue
+	; end colValue
+}
+WHILE
+DROP
+; end for
 ; end constructor UserData
+DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -101,21 +147,22 @@ PUSHCONT {
 	STSLICECONST 0
 	STSLICECONST 1
 	NEWC
-	STSLICECONST xe83b4671
+	STSLICECONST xd338e6c0
 	PUSH S2
 	UNTUPLE 4
 	BLKSWAP 1, 4
 	PUSH S4
 	STUR 256
 	PUSH S3
-	STUR 256
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	PUSH S2
 	STSLICER
-	NEWC
-	PUSH S2
+	PUSH S1
 	STSLICER
-	BLKDROP2 4, 2
-	STBREFR
+	BLKDROP2 4, 1
 	STBREFR
 	ENDC
 	PUSHINT 0
@@ -154,14 +201,15 @@ PUSHCONT {
 	PUSH S4
 	STUR 256
 	PUSH S3
-	STUR 256
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	PUSH S2
 	STSLICER
-	NEWC
-	PUSH S2
+	PUSH S1
 	STSLICER
-	BLKDROP2 4, 2
-	STBREFR
+	BLKDROP2 4, 1
 	STBREFR
 	ENDC
 	GETGLOB 4
@@ -189,15 +237,11 @@ LDU 64
 ; Decode _amount
 LDU 256
 ; Decode _accTonPerShare
-LDUQ 256
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDU 256
-}
-IFNOT
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ENDS
 ;; param: nonce
 ;; param: _amount
@@ -231,20 +275,67 @@ ADD
 ; colValue
 SETGLOB 10
 ; end colValue
-; expValue
-; end expValue
-;; push identifier amount
-GETGLOB 10
-;; *
-;; push identifier _accTonPerShare
-PUSH S3
-MUL
-;; /
-PUSHINT 1000000000000000000
-DIV
-; colValue
-SETGLOB 11
-; end colValue
+; for
+PUSHINT 0
+;; decl: i
+PUSHCONT {
+	;; push identifier i
+	DUP
+	;; <
+	;; get member length
+	;; push identifier rewardDebt
+	GETGLOB 11
+	INDEX 0
+	LESS
+}
+PUSHCONT {
+	; expValue
+	;; fetch rewardDebt
+	GETGLOB 11
+	UNPAIR
+	;; push identifier i
+	PUSH S2
+	SWAP
+	PUSH2 s1,s2
+	LESS
+	THROWIFNOT 50
+	; end expValue
+	;; push identifier amount
+	GETGLOB 10
+	;; *
+	;; index
+	;; push identifier i
+	PUSH S4
+	;; push identifier _accTonPerShare
+	PUSH S8
+	INDEX 1
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 256
+	MUL
+	;; /
+	PUSHINT 1000000000000000000
+	DIV
+	; colValue
+	NEWC
+	STU 256
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 11
+	; end colValue
+	;; ++
+	; expValue
+	; end expValue
+	INC
+	; colValue
+	; end colValue
+}
+WHILE
+DROP
+; end for
 ;; Remote call ITonFarmPool.finishDeposit
 ;; get member sender
 GETGLOB 9
@@ -254,26 +345,30 @@ STSLICE
 PUSHINT 109
 STZEROES
 STSLICECONST 0
-STSLICECONST 1
-NEWC
-STSLICECONST x022cb1c4
+STSLICECONST 0
+STSLICECONST x1470ba44
 ;; _nonce
 ;; push identifier nonce
-PUSH S6
+PUSH S5
 STUR 64
 ;; prevAmount
 ;; push identifier prevAmount
-PUSH S3
+PUSH S2
 STUR 256
 ;; prevRewardDebt
 ;; push identifier prevRewardDebt
-PUSH S2
-STUR 256
+PUSH S1
+UNPAIR
+XCHG s2
+STU 32
+STDICT
 ;; accTonPerShare
 ;; push identifier _accTonPerShare
-PUSH S4
-STUR 256
-STBREFR
+PUSH S3
+UNPAIR
+XCHG s2
+STU 32
+STDICT
 ENDC
 PUSHINT 128
 SENDRAWMSG
@@ -286,53 +381,16 @@ CALLREF {
 TRUE
 SETGLOB 7
 
-.macro processWithdraw
-DROP
-GETGLOB 1
-ISNULL
-IFREF {
-	CALL $c4_to_c7$
-}
-; Decode input parameters
-; Decode _amount
-LDU 256
-; Decode _accTonPerShare
-LDUQ 256
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDU 256
-}
-IFNOT
-; Decode send_gas_to
-LDMSGADDRQ
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDMSGADDR
-}
-IFNOT
-ENDS
+.globl	_withdraw_internal
+.type	_withdraw_internal, @function
+CALL $_withdraw_internal_macro$
+
+.macro _withdraw_internal_macro
 ;; param: _amount
 ;; param: _accTonPerShare
 ;; param: send_gas_to
-; function processWithdraw
+; function _withdraw
 PUSHCONT {
-	;; get member sender
-	GETGLOB 9
-	;; push identifier farmPool
-	GETGLOB 12
-	SDEQ
-	THROWIFNOT 101
-	CALLREF {
-		CALL $_reserve_internal_macro$
-	}
-	PUSHINT 2
-	RAWRESERVE
 	;; if
 	;; push identifier _amount
 	PUSH S2
@@ -377,20 +435,67 @@ PUSHCONT {
 	; colValue
 	SETGLOB 10
 	; end colValue
-	; expValue
-	; end expValue
-	;; push identifier amount
-	GETGLOB 10
-	;; *
-	;; push identifier _accTonPerShare
-	PUSH S4
-	MUL
-	;; /
-	PUSHINT 1000000000000000000
-	DIV
-	; colValue
-	SETGLOB 11
-	; end colValue
+	; for
+	PUSHINT 0
+	;; decl: i
+	PUSHCONT {
+		;; push identifier i
+		DUP
+		;; <
+		;; get member length
+		;; push identifier _accTonPerShare
+		PUSH S5
+		INDEX 0
+		LESS
+	}
+	PUSHCONT {
+		; expValue
+		;; fetch rewardDebt
+		GETGLOB 11
+		UNPAIR
+		;; push identifier i
+		PUSH S2
+		SWAP
+		PUSH2 s1,s2
+		LESS
+		THROWIFNOT 50
+		; end expValue
+		;; push identifier amount
+		GETGLOB 10
+		;; *
+		;; index
+		;; push identifier i
+		PUSH S4
+		;; push identifier _accTonPerShare
+		PUSH S9
+		INDEX 1
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 256
+		MUL
+		;; /
+		PUSHINT 1000000000000000000
+		DIV
+		; colValue
+		NEWC
+		STU 256
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		SETGLOB 11
+		; end colValue
+		;; ++
+		; expValue
+		; end expValue
+		INC
+		; colValue
+		; end colValue
+	}
+	WHILE
+	DROP
+	; end for
 	;; Remote call ITonFarmPool.finishWithdraw
 	;; get member sender
 	GETGLOB 9
@@ -402,7 +507,7 @@ PUSHCONT {
 	STSLICECONST 0
 	STSLICECONST 1
 	NEWC
-	STSLICECONST x11f040ee
+	STSLICECONST x7abd372c
 	;; user
 	;; push identifier user
 	GETGLOB 13
@@ -414,16 +519,22 @@ PUSHCONT {
 	;; prevRewardDebt
 	;; push identifier prevRewardDebt
 	PUSH S2
-	STUR 256
-	NEWC
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	;; withdrawAmount
 	;; push identifier _amount
-	PUSH S7
+	PUSH S6
 	STUR 256
 	;; accTonPerShare
 	;; push identifier _accTonPerShare
-	PUSH S6
-	STUR 256
+	PUSH S5
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
+	NEWC
 	;; send_gas_to
 	;; push identifier send_gas_to
 	PUSH S5
@@ -436,15 +547,10 @@ PUSHCONT {
 	DROP2
 }
 CALLX
-; end function processWithdraw
+; end function _withdraw
 BLKDROP 3
-CALLREF {
-	CALL $c7_to_c4$
-}
-TRUE
-SETGLOB 7
 
-.macro processWithdrawAll
+.macro processWithdraw
 DROP
 GETGLOB 1
 ISNULL
@@ -452,8 +558,14 @@ IFREF {
 	CALL $c4_to_c7$
 }
 ; Decode input parameters
-; Decode _accTonPerShare
+; Decode _amount
 LDU 256
+; Decode _accTonPerShare
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ; Decode send_gas_to
 LDMSGADDRQ
 PUSHCONT {
@@ -465,102 +577,90 @@ PUSHCONT {
 }
 IFNOT
 ENDS
+;; param: _amount
+;; param: _accTonPerShare
+;; param: send_gas_to
+CALLREF {
+	CALL $processWithdraw_internal_macro$
+}
+CALLREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	processWithdraw_internal
+.type	processWithdraw_internal, @function
+CALL $processWithdraw_internal_macro$
+
+.macro processWithdraw_internal_macro
+;; param: _amount
+;; param: _accTonPerShare
+;; param: send_gas_to
+; function processWithdraw
+;; get member sender
+GETGLOB 9
+;; push identifier farmPool
+GETGLOB 12
+SDEQ
+THROWIFNOT 101
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 2
+RAWRESERVE
+;; push identifier _amount
+PUSH S2
+;; push identifier _accTonPerShare
+PUSH S2
+;; push identifier send_gas_to
+PUSH S2
+CALLREF {
+	CALL $_withdraw_internal_macro$
+}
+; end function processWithdraw
+BLKDROP 3
+
+.macro processWithdrawAll
+DROP
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+; Decode input parameters
+; Decode _accTonPerShare
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+; Decode send_gas_to
+LDMSGADDR
+ENDS
 ;; param: _accTonPerShare
 ;; param: send_gas_to
 ; function processWithdrawAll
-PUSHCONT {
-	;; get member sender
-	GETGLOB 9
-	;; push identifier farmPool
-	GETGLOB 12
-	SDEQ
-	THROWIFNOT 101
-	CALLREF {
-		CALL $_reserve_internal_macro$
-	}
-	PUSHINT 2
-	RAWRESERVE
-	;; if
-	;; push identifier amount
-	GETGLOB 10
-	PUSHCONT {
-		;; transfer()
-		;; push identifier send_gas_to
-		DUP
-		NEWC
-		STSLICECONST x42_
-		STSLICE
-		PUSHINT 109
-		STZEROES
-		STSLICECONST 0
-		STSLICECONST 0
-		ENDC
-		PUSHINT 128
-		SENDRAWMSG
-		;; return
-		RET
-	}
-	IFNOTJMP
-	;; end if
-	;; push identifier amount
-	GETGLOB 10
-	;; decl: prevAmount
-	;; push identifier rewardDebt
-	GETGLOB 11
-	;; decl: prevRewardDebt
-	; expValue
-	; end expValue
-	PUSHINT 0
-	; colValue
-	SETGLOB 10
-	; end colValue
-	; expValue
-	; end expValue
-	PUSHINT 0
-	; colValue
-	SETGLOB 11
-	; end colValue
-	;; Remote call ITonFarmPool.finishWithdrawAll
-	;; get member sender
-	GETGLOB 9
-	NEWC
-	STSLICECONST x62_
-	STSLICE
-	PUSHINT 109
-	STZEROES
-	STSLICECONST 0
-	STSLICECONST 1
-	NEWC
-	STSLICECONST x167cdaf5
-	;; user
-	;; push identifier user
-	GETGLOB 13
-	STSLICER
-	;; _prevAmount
-	;; push identifier prevAmount
-	PUSH S3
-	STUR 256
-	;; _prevRewardDebt
-	;; push identifier prevRewardDebt
-	PUSH S2
-	STUR 256
-	NEWC
-	;; _accTonPerShare
-	;; push identifier _accTonPerShare
-	PUSH S6
-	STUR 256
-	;; send_gas_to
-	;; push identifier send_gas_to
-	PUSH S5
-	STSLICER
-	STBREFR
-	STBREFR
-	ENDC
-	PUSHINT 128
-	SENDRAWMSG
-	DROP2
+;; get member sender
+GETGLOB 9
+;; push identifier farmPool
+GETGLOB 12
+SDEQ
+THROWIFNOT 101
+CALLREF {
+	CALL $_reserve_internal_macro$
 }
-CALLX
+PUSHINT 2
+RAWRESERVE
+;; push identifier amount
+GETGLOB 10
+;; push identifier _accTonPerShare
+PUSH S2
+;; push identifier send_gas_to
+PUSH S2
+CALLREF {
+	CALL $_withdraw_internal_macro$
+}
 ; end function processWithdrawAll
 DROP2
 CALLREF {
@@ -602,12 +702,51 @@ PUSHINT 0
 ; colValue
 SETGLOB 10
 ; end colValue
-; expValue
-; end expValue
+; for
 PUSHINT 0
-; colValue
-SETGLOB 11
-; end colValue
+;; decl: i
+PUSHCONT {
+	;; push identifier i
+	DUP
+	;; <
+	;; get member length
+	;; push identifier rewardDebt
+	GETGLOB 11
+	INDEX 0
+	LESS
+}
+PUSHCONT {
+	; expValue
+	;; fetch rewardDebt
+	GETGLOB 11
+	UNPAIR
+	;; push identifier i
+	PUSH S2
+	SWAP
+	PUSH2 s1,s2
+	LESS
+	THROWIFNOT 50
+	; end expValue
+	PUSHINT 0
+	; colValue
+	NEWC
+	STU 256
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 11
+	; end colValue
+	;; ++
+	; expValue
+	; end expValue
+	INC
+	; colValue
+	; end colValue
+}
+WHILE
+DROP
+; end for
 ;; Remote call ITonFarmPool.finishSafeWithdraw
 ;; get member sender
 GETGLOB 9
@@ -654,17 +793,19 @@ STUR 64
 GETGLOB 6
 STUR 1
 NEWC
-GETGLOB 12
 GETGLOB 13
-XCHG s2
-STSLICE
+SWAP
 STSLICE
 GETGLOB 10
 GETGLOB 11
-REVERSE 4, 0
+UNTUPLE 2
+GETGLOB 12
+REVERSE 6, 0
 STBREF
 STU 256
-STU 256
+STU 32
+STDICT
+STSLICE
 ENDC
 POP C4
 
@@ -675,12 +816,14 @@ LDU 256      ; pubkey c4
 LDU 64      ; pubkey timestamp c4
 LDU 1       ; pubkey [timestamp] constructor_flag memory
 LDREFRTOS
-LDMSGADDR
 SETGLOB 13
-SETGLOB 12
 LDU 256
-PLDU 256
+LDU 32
+LDDICT
+ROTREV
+PAIR
 SETGLOB 11
+SETGLOB 12
 SETGLOB 10
 TRUE
 SETGLOB 1   ; pubkey [timestamp] constructor_flag
@@ -699,12 +842,14 @@ PUSHCONT {
 	LDU 64      ; pubkey timestamp c4
 	LDU 1       ; pubkey [timestamp] constructor_flag memory
 	LDREFRTOS
-	LDMSGADDR
 	SETGLOB 13
-	SETGLOB 12
 	LDU 256
-	PLDU 256
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
 	SETGLOB 11
+	SETGLOB 12
 	SETGLOB 10
 	TRUE
 	SETGLOB 1   ; pubkey [timestamp] constructor_flag
@@ -719,6 +864,8 @@ PUSHCONT {
 	SETGLOB 10
 	; init rewardDebt
 	PUSHINT 0
+	NEWDICT
+	PAIR
 	SETGLOB 11
 	; init farmPool
 	PUSHINT 1
@@ -888,9 +1035,12 @@ PUSHCONT {
 	STSLICER
 	STSLICECONST 0
 	STSLICECONST 0
-	STSLICECONST xbb06655a
+	STSLICECONST x83d624bf
 	PUSH S1
-	STUR 256
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -958,9 +1108,15 @@ SETGLOB 7
 
 .macro public_function_selector
 DUP
-PUSHINT 546186255
+PUSHINT 219453673
 LEQ
 PUSHCONT {
+	DUP
+	PUSHINT 64365759
+	EQUAL
+	IFJMPREF {
+		CALL $rewardDebt$
+	}
 	DUP
 	PUSHINT 126922600
 	EQUAL
@@ -973,59 +1129,53 @@ PUSHCONT {
 	IFJMPREF {
 		CALL $farmPool$
 	}
-	DUP
-	PUSHINT 546186255
-	EQUAL
-	IFJMPREF {
-		CALL $processWithdrawAll$
-	}
 }
 IFJMP
 DUP
-PUSHINT 1115286010
+PUSHINT 1016193477
 LEQ
 PUSHCONT {
 	DUP
-	PUSHINT 990274906
-	EQUAL
-	IFJMPREF {
-		CALL $rewardDebt$
-	}
-	DUP
-	PUSHINT 1003259743
+	PUSHINT 302517117
 	EQUAL
 	IFJMPREF {
 		CALL $processDeposit$
 	}
+	DUP
+	PUSHINT 571355122
+	EQUAL
+	IFJMPREF {
+		CALL $processWithdraw$
+	}
+	DUP
+	PUSHINT 1016193477
+	EQUAL
+	IFJMPREF {
+		CALL $constructor$
+	}
+}
+IFJMP
+DUP
+PUSHINT 1843793773
+LEQ
+PUSHCONT {
 	DUP
 	PUSHINT 1115286010
 	EQUAL
 	IFJMPREF {
 		CALL $processSafeWithdraw$
 	}
-}
-IFJMP
-DUP
-PUSHINT 1756716863
-LEQ
-PUSHCONT {
 	DUP
-	PUSHINT 1416625695
-	EQUAL
-	IFJMPREF {
-		CALL $processWithdraw$
-	}
-	DUP
-	PUSHINT 1748715121
+	PUSHINT 1396238016
 	EQUAL
 	IFJMPREF {
 		CALL $getDetails$
 	}
 	DUP
-	PUSHINT 1756716863
+	PUSHINT 1843793773
 	EQUAL
 	IFJMPREF {
-		CALL $constructor$
+		CALL $processWithdrawAll$
 	}
 }
 IFJMP

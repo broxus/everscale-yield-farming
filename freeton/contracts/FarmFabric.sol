@@ -8,11 +8,11 @@ contract FarmFabric {
     event NewFarmPool(
         address pool,
         address pool_owner,
-        uint256 rewardPerSecond,
+        uint256[] rewardPerSecond,
         uint256 farmStartTime,
         uint256 farmEndTime,
         address tokenRoot,
-        address rewardTokenRoot
+        address[] rewardTokenRoot
     );
 
     uint64 public pools_count = 0;
@@ -38,11 +38,11 @@ contract FarmFabric {
 
     function deployFarmPool(
         address pool_owner,
-        uint256 rewardPerSecond,
+        uint256[] rewardPerSecond,
         uint256 farmStartTime,
         uint256 farmEndTime,
         address tokenRoot,
-        address rewardTokenRoot
+        address[] rewardTokenRoot
     ) public {
         tvm.rawReserve(math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE), 2);
 

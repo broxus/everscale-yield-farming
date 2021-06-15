@@ -15,15 +15,11 @@ SETGLOB 6
 ; Decode _owner
 LDMSGADDR
 ; Decode _rewardPerSecond
-LDUQ 256
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDU 256
-}
-IFNOT
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ; Decode _farmStartTime
 LDUQ 256
 PUSHCONT {
@@ -55,15 +51,19 @@ PUSHCONT {
 }
 IFNOT
 ; Decode _rewardTokenRoot
-LDMSGADDRQ
+DUP
+SDEMPTY
 PUSHCONT {
-	;; load next cell
 	LDREF
 	ENDS
 	CTOS
-	LDMSGADDR
 }
-IFNOT
+IF
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ENDS
 ;; param: _owner
 ;; param: _rewardPerSecond
@@ -79,34 +79,45 @@ PUSH S3
 PUSH S3
 LESS
 THROWIFNOT 110
+;; get member length
+;; push identifier _rewardPerSecond
+PUSH S4
+INDEX 0
+;; ==
+;; get member length
+;; push identifier _rewardTokenRoot
+PUSH S1
+INDEX 0
+EQUAL
+THROWIFNOT 111
 ACCEPT
 ; expValue
 ; end expValue
 ;; push identifier _rewardPerSecond
 PUSH S4
 ; colValue
-SETGLOB 10
+SETGLOB 16
 ; end colValue
 ; expValue
 ; end expValue
 ;; push identifier _farmStartTime
 PUSH S3
 ; colValue
-SETGLOB 13
+SETGLOB 11
 ; end colValue
 ; expValue
 ; end expValue
 ;; push identifier _farmEndTime
 PUSH S2
 ; colValue
-SETGLOB 14
+SETGLOB 12
 ; end colValue
 ; expValue
 ; end expValue
 ;; push identifier _tokenRoot
 PUSH S1
 ; colValue
-SETGLOB 15
+SETGLOB 13
 ; end colValue
 ; expValue
 ; end expValue
@@ -123,6 +134,9 @@ PUSH S5
 SETGLOB 23
 ; end colValue
 CALLREF {
+	CALL $_initialize_reward_arrays_internal_macro$
+}
+CALLREF {
 	CALL $setUpTokenWallets_internal_macro$
 }
 ; end constructor TonFarmPool
@@ -132,6 +146,137 @@ CALLREF {
 }
 TRUE
 SETGLOB 7
+
+.globl	_initialize_reward_arrays_internal
+.type	_initialize_reward_arrays_internal, @function
+CALL $_initialize_reward_arrays_internal_macro$
+
+.macro _initialize_reward_arrays_internal_macro
+; function _initialize_reward_arrays
+; for
+PUSHINT 0
+;; decl: i
+PUSHCONT {
+	;; push identifier i
+	DUP
+	;; <
+	;; get member length
+	;; push identifier rewardTokenRoot
+	GETGLOB 18
+	INDEX 0
+	LESS
+}
+PUSHCONT {
+	; expValue
+	;; fetch accTonPerShare
+	GETGLOB 17
+	; end expValue
+	PUSHINT 0
+	;; array.push(..)
+	NEWC
+	STU 256
+	SWAP
+	UNPAIR
+	PUSH S1
+	INC
+	XCHG s3
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	; colValue
+	SETGLOB 17
+	; end colValue
+	; expValue
+	;; fetch rewardTokenWallet
+	GETGLOB 19
+	; end expValue
+	;; address.makeAddrNone()
+	PUSHSLICE x2_
+	;; array.push(..)
+	SWAP
+	UNPAIR
+	PUSH S1
+	INC
+	XCHG s3
+	ROTREV
+	PUSHINT 32
+	DICTUSET
+	PAIR
+	; colValue
+	SETGLOB 19
+	; end colValue
+	; expValue
+	;; fetch rewardTokenBalance
+	GETGLOB 20
+	; end expValue
+	PUSHINT 0
+	;; array.push(..)
+	NEWC
+	STU 256
+	SWAP
+	UNPAIR
+	PUSH S1
+	INC
+	XCHG s3
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	; colValue
+	SETGLOB 20
+	; end colValue
+	; expValue
+	;; fetch rewardTokenBalanceCumulative
+	GETGLOB 21
+	; end expValue
+	PUSHINT 0
+	;; array.push(..)
+	NEWC
+	STU 256
+	SWAP
+	UNPAIR
+	PUSH S1
+	INC
+	XCHG s3
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	; colValue
+	SETGLOB 21
+	; end colValue
+	; expValue
+	;; fetch unclaimedReward
+	GETGLOB 22
+	; end expValue
+	PUSHINT 0
+	;; array.push(..)
+	NEWC
+	STU 256
+	SWAP
+	UNPAIR
+	PUSH S1
+	INC
+	XCHG s3
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	; colValue
+	SETGLOB 22
+	; end colValue
+	;; ++
+	; expValue
+	; end expValue
+	INC
+	; colValue
+	; end colValue
+}
+WHILE
+DROP
+; end for
+; end function _initialize_reward_arrays
 
 .globl	_reserve_internal
 .type	_reserve_internal, @function
@@ -156,17 +301,12 @@ MAX
 
 .macro getVersion
 DROP
-GETGLOB 1
-ISNULL
-IFREF {
-	CALL $c4_to_c7$
-}
 ; Decode input parameters
 ENDS
 ; function getVersion
 ;; return
 PUSHINT 1
-PUSHINT 0
+PUSHINT 1
 PUSHINT 0
 ; end function getVersion
 ;; emitting 3 value(s)
@@ -213,21 +353,18 @@ CALL $setUpTokenWallets_internal_macro$
 ; function setUpTokenWallets
 ;; Remote call IRootTokenContract.deployEmptyWallet
 ;; push identifier tokenRoot
-GETGLOB 15
+GETGLOB 13
 NEWC
 STSLICECONST x62_
 STSLICE
-PUSHSLICE x43b9aca00000000000000000000000000004_
+PUSHSLICE x41dcd6500000000000000000000000000004_
 STSLICER
 STSLICECONST 0
 STSLICECONST 1
 NEWC
 STSLICECONST x542b1672
 ;; deploy_grams
-PUSHINT 1000000000
-;; /
-PUSHINT 2
-DIV
+PUSHINT 100000000
 STUR 128
 ;; wallet_public_key
 PUSHINT 0
@@ -244,7 +381,7 @@ PUSHINT 0
 SENDRAWMSG
 ;; Remote call IRootTokenContract.getWalletAddress
 ;; push identifier tokenRoot
-GETGLOB 15
+GETGLOB 13
 NEWC
 STSLICECONST x62_
 STSLICE
@@ -265,60 +402,95 @@ STBREFR
 ENDC
 PUSHINT 0
 SENDRAWMSG
-;; Remote call IRootTokenContract.deployEmptyWallet
-;; push identifier rewardTokenRoot
-GETGLOB 18
-NEWC
-STSLICECONST x62_
-STSLICE
-PUSHSLICE x43b9aca00000000000000000000000000004_
-STSLICER
-STSLICECONST 0
-STSLICECONST 1
-NEWC
-STSLICECONST x542b1672
-;; deploy_grams
-PUSHINT 1000000000
-;; /
-PUSHINT 2
-DIV
-STUR 128
-;; wallet_public_key
+; for
 PUSHINT 0
-STUR 256
-;; owner_address
-MYADDR
-STSLICER
-;; gas_back_address
-MYADDR
-STSLICER
-STBREFR
-ENDC
-PUSHINT 0
-SENDRAWMSG
-;; Remote call IRootTokenContract.getWalletAddress
-;; push identifier rewardTokenRoot
-GETGLOB 18
-NEWC
-STSLICECONST x62_
-STSLICE
-PUSHSLICE x41dcd6500000000000000000000000000004_
-STSLICER
-STSLICECONST 0
-STSLICECONST 1
-NEWC
-STSLICECONST x069a08f8
-STSLICECONST x50bfca9f
-;; wallet_public_key
-PUSHINT 0
-STUR 256
-;; owner_address
-MYADDR
-STSLICER
-STBREFR
-ENDC
-PUSHINT 0
-SENDRAWMSG
+;; decl: i
+PUSHCONT {
+	;; push identifier i
+	DUP
+	;; <
+	;; get member length
+	;; push identifier rewardTokenRoot
+	GETGLOB 18
+	INDEX 0
+	LESS
+}
+PUSHCONT {
+	;; Remote call IRootTokenContract.deployEmptyWallet
+	;; index
+	;; push identifier i
+	DUP
+	;; push identifier rewardTokenRoot
+	GETGLOB 18
+	INDEX 1
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	NEWC
+	STSLICECONST x62_
+	STSLICE
+	PUSHSLICE x41dcd6500000000000000000000000000004_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 1
+	NEWC
+	STSLICECONST x542b1672
+	;; deploy_grams
+	PUSHINT 100000000
+	STUR 128
+	;; wallet_public_key
+	PUSHINT 0
+	STUR 256
+	;; owner_address
+	MYADDR
+	STSLICER
+	;; gas_back_address
+	MYADDR
+	STSLICER
+	STBREFR
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+	;; Remote call IRootTokenContract.getWalletAddress
+	;; index
+	;; push identifier i
+	DUP
+	;; push identifier rewardTokenRoot
+	GETGLOB 18
+	INDEX 1
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	NEWC
+	STSLICECONST x62_
+	STSLICE
+	PUSHSLICE x41dcd6500000000000000000000000000004_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 1
+	NEWC
+	STSLICECONST x069a08f8
+	STSLICECONST x50bfca9f
+	;; wallet_public_key
+	PUSHINT 0
+	STUR 256
+	;; owner_address
+	MYADDR
+	STSLICER
+	STBREFR
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+	;; ++
+	; expValue
+	; end expValue
+	INC
+	; colValue
+	; end colValue
+}
+WHILE
+DROP
+; end for
 ; end function setUpTokenWallets
 
 .macro receiveTokenWalletAddress
@@ -338,7 +510,7 @@ ENDS
 ;; get member sender
 GETGLOB 9
 ;; push identifier tokenRoot
-GETGLOB 15
+GETGLOB 13
 SDEQ
 PUSHCONT {
 	; expValue
@@ -346,7 +518,7 @@ PUSHCONT {
 	;; push identifier wallet
 	DUP
 	; colValue
-	SETGLOB 16
+	SETGLOB 14
 	; end colValue
 	;; Remote call ITONTokenWallet.setReceiveCallback
 	;; push identifier wallet
@@ -370,43 +542,87 @@ PUSHCONT {
 	SENDRAWMSG
 }
 PUSHCONT {
-	;; if
-	;; get member sender
-	GETGLOB 9
-	;; push identifier rewardTokenRoot
-	GETGLOB 18
-	SDEQ
+	; for
+	PUSHINT 0
+	;; decl: i
 	PUSHCONT {
+		;; push identifier i
+		DUP
+		;; <
+		;; get member length
+		;; push identifier rewardTokenRoot
+		GETGLOB 18
+		INDEX 0
+		LESS
+	}
+	PUSHCONT {
+		;; if
+		;; get member sender
+		GETGLOB 9
+		;; index
+		;; push identifier i
+		PUSH S1
+		;; push identifier rewardTokenRoot
+		GETGLOB 18
+		INDEX 1
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		SDEQ
+		PUSHCONT {
+			; expValue
+			;; fetch rewardTokenWallet
+			GETGLOB 19
+			UNPAIR
+			;; push identifier i
+			PUSH S2
+			SWAP
+			PUSH2 s1,s2
+			LESS
+			THROWIFNOT 50
+			; end expValue
+			;; push identifier wallet
+			PUSH S4
+			; colValue
+			ROTREV
+			PUSHINT 32
+			DICTUSET
+			PAIR
+			SETGLOB 19
+			; end colValue
+			;; Remote call ITONTokenWallet.setReceiveCallback
+			;; push identifier wallet
+			PUSH S1
+			NEWC
+			STSLICECONST x62_
+			STSLICE
+			PUSHSLICE x402faf080000000000000000000000000004_
+			STSLICER
+			STSLICECONST 0
+			STSLICECONST 0
+			STSLICECONST x71eee875
+			;; receive_callback
+			MYADDR
+			STSLICER
+			;; allow_non_notifiable
+			FALSE
+			STIR 1
+			ENDC
+			PUSHINT 0
+			SENDRAWMSG
+		}
+		IF
+		;; end if
+		;; ++
 		; expValue
 		; end expValue
-		;; push identifier wallet
-		DUP
+		INC
 		; colValue
-		SETGLOB 19
 		; end colValue
-		;; Remote call ITONTokenWallet.setReceiveCallback
-		;; push identifier wallet
-		DUP
-		NEWC
-		STSLICECONST x62_
-		STSLICE
-		PUSHSLICE x402faf080000000000000000000000000004_
-		STSLICER
-		STSLICECONST 0
-		STSLICECONST 0
-		STSLICECONST x71eee875
-		;; receive_callback
-		MYADDR
-		STSLICER
-		;; allow_non_notifiable
-		FALSE
-		STIR 1
-		ENDC
-		PUSHINT 0
-		SENDRAWMSG
 	}
-	IF
-	;; end if
+	WHILE
+	DROP
+	; end for
 }
 IFELSE
 ;; end if
@@ -429,76 +645,146 @@ CALL $transferReward_internal_macro$
 NEWC
 ENDC
 ;; decl: tvmcell
-;; push identifier rewardTokenBalance
-GETGLOB 20
-;; push identifier amount
-PUSH S2
-MIN
-; expValue
-; end expValue
-; colValue
-POP S2
-; end colValue
-;; Remote call ITONTokenWallet.transferToRecipient
-;; push identifier rewardTokenWallet
-GETGLOB 19
-NEWC
-STSLICECONST x62_
-STSLICE
-PUSHSLICE x41dcd6500000000000000000000000000004_
-STSLICER
-STSLICECONST 0
-STSLICECONST 1
-NEWC
-STSLICECONST x3f10d1ab
-;; recipient_public_key
+; for
 PUSHINT 0
-STUR 256
-;; recipient_address
-;; push identifier receiver_addr
-PUSH S4
-STSLICER
-;; tokens
-;; push identifier amount
-PUSH S3
-;; uint128
-UFITS 128
-STUR 128
-;; deploy_grams
-PUSHINT 0
-STUR 128
-;; transfer_grams
-PUSHINT 0
-STUR 128
-NEWC
-;; send_gas_to
-;; push identifier receiver_addr
-PUSH S5
-STSLICER
-;; notify_receiver
-FALSE
-STIR 1
-;; payload
-;; push identifier tvmcell
-PUSH S3
-STREFR
-STBREFR
-STBREFR
-ENDC
-PUSHINT 0
-SENDRAWMSG
-;; push identifier amount
-PUSH S1
-; expValue
-;; fetch rewardTokenBalance
-GETGLOB 20
-; end expValue
-SWAP
-SUB
-UFITS 256
-; colValue
-SETGLOB 20
-; end colValue
+;; decl: i
+PUSHCONT {
+	;; push identifier i
+	DUP
+	;; <
+	;; get member length
+	;; push identifier amount
+	PUSH S3
+	INDEX 0
+	LESS
+}
+PUSHCONT {
+	;; index
+	;; push identifier i
+	DUP
+	;; push identifier rewardTokenBalance
+	GETGLOB 20
+	INDEX 1
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 256
+	;; index
+	;; push identifier i
+	PUSH S1
+	;; push identifier amount
+	PUSH S4
+	INDEX 1
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 256
+	MIN
+	;; decl: _amount
+	;; if
+	;; push identifier _amount
+	DUP
+	GTINT 0
+	PUSHCONT {
+		;; Remote call ITONTokenWallet.transferToRecipient
+		;; index
+		;; push identifier i
+		PUSH S1
+		;; push identifier rewardTokenWallet
+		GETGLOB 19
+		INDEX 1
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		NEWC
+		STSLICECONST x62_
+		STSLICE
+		PUSHSLICE x41dcd6500000000000000000000000000004_
+		STSLICER
+		STSLICECONST 0
+		STSLICECONST 1
+		NEWC
+		STSLICECONST x3f10d1ab
+		;; recipient_public_key
+		PUSHINT 0
+		STUR 256
+		;; recipient_address
+		;; push identifier receiver_addr
+		PUSH S6
+		STSLICER
+		;; tokens
+		;; push identifier _amount
+		PUSH S2
+		;; uint128
+		UFITS 128
+		STUR 128
+		;; deploy_grams
+		PUSHINT 0
+		STUR 128
+		;; transfer_grams
+		PUSHINT 0
+		STUR 128
+		NEWC
+		;; send_gas_to
+		;; push identifier receiver_addr
+		PUSH S7
+		STSLICER
+		;; notify_receiver
+		FALSE
+		STIR 1
+		;; payload
+		;; push identifier tvmcell
+		PUSH S5
+		STREFR
+		STBREFR
+		STBREFR
+		ENDC
+		PUSHINT 0
+		SENDRAWMSG
+		;; push identifier _amount
+		DUP
+		; expValue
+		;; fetch rewardTokenBalance
+		GETGLOB 20
+		UNPAIR
+		;; push identifier i
+		PUSH S4
+		SWAP
+		PUSH2 s1,s2
+		LESS
+		THROWIFNOT 50
+		PUSH2 S1, S0
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 256
+		; end expValue
+		BLKSWAP 1, 4
+		SUB
+		UFITS 256
+		; colValue
+		NEWC
+		STU 256
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		SETGLOB 20
+		; end colValue
+	}
+	IF
+	;; end if
+	DROP
+	;; ++
+	; expValue
+	; end expValue
+	INC
+	; colValue
+	; end colValue
+}
+WHILE
+DROP
+; end for
 DROP
 ; end function transferReward
 DROP2
@@ -608,7 +894,7 @@ PUSHCONT {
 	;; get member sender
 	GETGLOB 9
 	;; push identifier tokenWallet
-	GETGLOB 16
+	GETGLOB 14
 	SDEQ
 	PUSHCONT {
 		;; if
@@ -638,7 +924,7 @@ PUSHCONT {
 			;; decl: tvmcell
 			;; Remote call ITONTokenWallet.transfer
 			;; push identifier tokenWallet
-			GETGLOB 16
+			GETGLOB 14
 			NEWC
 			STSLICECONST x62_
 			STSLICE
@@ -699,12 +985,12 @@ PUSHCONT {
 		PUSH S7
 		; expValue
 		;; fetch tokenBalance
-		GETGLOB 17
+		GETGLOB 15
 		; end expValue
 		SWAP
 		ADD
 		; colValue
-		SETGLOB 17
+		SETGLOB 15
 		; end colValue
 		;; push identifier sender_address
 		PUSH S5
@@ -751,87 +1037,159 @@ PUSHCONT {
 		PUSHINT 109
 		STZEROES
 		STSLICECONST 0
-		STSLICECONST 1
-		NEWC
-		STSLICECONST x3bcc875f
+		STSLICECONST 0
+		STSLICECONST x12080b7d
 		;; nonce
 		;; push identifier deposit_nonce
 		GETGLOB 24
 		STUR 64
 		;; _amount
 		;; push identifier amount
-		PUSH S10
+		PUSH S9
 		STUR 256
 		;; _accTonPerShare
 		;; push identifier accTonPerShare
-		GETGLOB 11
-		STUR 256
-		STBREFR
+		GETGLOB 17
+		UNPAIR
+		XCHG s2
+		STU 32
+		STDICT
 		ENDC
 		PUSHINT 128
 		SENDRAWMSG
 		DROP
 	}
 	PUSHCONT {
-		;; if
-		;; get member sender
-		GETGLOB 9
-		;; push identifier rewardTokenWallet
-		GETGLOB 19
-		SDEQ
+		; for
+		PUSHINT 0
+		;; decl: i
 		PUSHCONT {
-			;; push identifier amount
-			PUSH S7
-			; expValue
-			;; fetch rewardTokenBalance
-			GETGLOB 20
-			; end expValue
-			SWAP
-			ADD
-			; colValue
-			SETGLOB 20
-			; end colValue
-			;; push identifier amount
-			PUSH S7
-			; expValue
-			;; fetch rewardTokenBalanceCumulative
-			GETGLOB 21
-			; end expValue
-			SWAP
-			ADD
-			; colValue
-			SETGLOB 21
-			; end colValue
-			;; emit RewardDeposit
-			NEWC
-			PUSHSLICE xc0000000000000000000000002_
-			STSLICER
-			STSLICECONST 0
-			STSLICECONST 0
-			STSLICECONST x3c05b157
-			;; amount
-			;; push identifier amount
-			PUSH S8
-			STUR 256
-			ENDC
-			PUSHINT 0
-			SENDRAWMSG
-			;; transfer()
-			;; push identifier original_gas_to
-			PUSH S3
-			NEWC
-			STSLICECONST x42_
-			STSLICE
-			PUSHINT 109
-			STZEROES
-			STSLICECONST 0
-			STSLICECONST 0
-			ENDC
-			PUSHINT 128
-			SENDRAWMSG
+			;; push identifier i
+			DUP
+			;; <
+			;; get member length
+			;; push identifier rewardTokenRoot
+			GETGLOB 18
+			INDEX 0
+			LESS
 		}
-		IF
-		;; end if
+		PUSHCONT {
+			;; if
+			;; get member sender
+			GETGLOB 9
+			;; index
+			;; push identifier i
+			PUSH S1
+			;; push identifier rewardTokenRoot
+			GETGLOB 18
+			INDEX 1
+			PUSHINT 32
+			DICTUGET
+			THROWIFNOT 50
+			SDEQ
+			PUSHCONT {
+				;; push identifier amount
+				PUSH S8
+				; expValue
+				;; fetch rewardTokenBalance
+				GETGLOB 20
+				UNPAIR
+				;; push identifier i
+				PUSH S3
+				SWAP
+				PUSH2 s1,s2
+				LESS
+				THROWIFNOT 50
+				PUSH2 S1, S0
+				PUSHINT 32
+				DICTUGET
+				THROWIFNOT 50
+				PLDU 256
+				; end expValue
+				BLKSWAP 1, 4
+				ADD
+				; colValue
+				NEWC
+				STU 256
+				ROTREV
+				PUSHINT 32
+				DICTUSETB
+				PAIR
+				SETGLOB 20
+				; end colValue
+				;; push identifier amount
+				PUSH S8
+				; expValue
+				;; fetch rewardTokenBalanceCumulative
+				GETGLOB 21
+				UNPAIR
+				;; push identifier i
+				PUSH S3
+				SWAP
+				PUSH2 s1,s2
+				LESS
+				THROWIFNOT 50
+				PUSH2 S1, S0
+				PUSHINT 32
+				DICTUGET
+				THROWIFNOT 50
+				PLDU 256
+				; end expValue
+				BLKSWAP 1, 4
+				ADD
+				; colValue
+				NEWC
+				STU 256
+				ROTREV
+				PUSHINT 32
+				DICTUSETB
+				PAIR
+				SETGLOB 21
+				; end colValue
+				;; emit RewardDeposit
+				NEWC
+				PUSHSLICE xc0000000000000000000000002_
+				STSLICER
+				STSLICECONST 0
+				STSLICECONST 0
+				STSLICECONST x2fd6292c
+				;; token_root
+				;; get member sender
+				GETGLOB 9
+				STSLICER
+				;; amount
+				;; push identifier amount
+				PUSH S9
+				STUR 256
+				ENDC
+				PUSHINT 0
+				SENDRAWMSG
+				;; transfer()
+				;; push identifier original_gas_to
+				PUSH S4
+				NEWC
+				STSLICECONST x42_
+				STSLICE
+				PUSHINT 109
+				STZEROES
+				STSLICECONST 0
+				STSLICECONST 0
+				ENDC
+				PUSHINT 128
+				SENDRAWMSG
+			}
+			IF
+			;; end if
+			;; ++
+			; expValue
+			; end expValue
+			INC
+			; colValue
+			; end colValue
+		}
+		WHILE
+		DROP
+		; end for
 	}
 	IFELSE
 	EQINT 4
@@ -860,25 +1218,25 @@ LDU 64
 ; Decode _prevAmount
 LDU 256
 ; Decode _prevRewardDebt
-LDUQ 256
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDU 256
-}
-IFNOT
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ; Decode _accTonPerShare
-LDUQ 256
+DUP
+SDEMPTY
 PUSHCONT {
-	;; load next cell
 	LDREF
 	ENDS
 	CTOS
-	LDU 256
 }
-IFNOT
+IF
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ENDS
 ;; param: _deposit_nonce
 ;; param: _prevAmount
@@ -925,37 +1283,94 @@ CALLREF {
 PUSHINT 2
 RAWRESERVE
 PUSHINT 0
+NEWDICT
+PAIR
 ;; decl: pending
 ;; if
 ;; push identifier _prevAmount
 PUSH S5
 GTINT 0
 PUSHCONT {
-	; expValue
-	; end expValue
-	;; push identifier _prevAmount
-	PUSH S5
-	;; *
-	;; push identifier _accTonPerShare
-	PUSH S4
-	MUL
-	;; /
-	PUSHINT 1000000000000000000
-	DIV
-	;; -
-	;; push identifier _prevRewardDebt
-	PUSH S5
-	SUB
-	UFITS 256
-	; colValue
-	NIP
-	; end colValue
+	; for
+	PUSHINT 0
+	;; decl: i
+	PUSHCONT {
+		;; push identifier i
+		DUP
+		;; <
+		;; get member length
+		;; push identifier _prevRewardDebt
+		PUSH S6
+		INDEX 0
+		LESS
+	}
+	PUSHCONT {
+		; expValue
+		PUSH S1
+		; end expValue
+		;; push identifier _prevAmount
+		PUSH S7
+		;; *
+		;; index
+		;; push identifier i
+		PUSH S2
+		;; push identifier _accTonPerShare
+		PUSH S7
+		INDEX 1
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 256
+		MUL
+		;; /
+		PUSHINT 1000000000000000000
+		DIV
+		;; -
+		;; index
+		;; push identifier i
+		PUSH S2
+		;; push identifier _prevRewardDebt
+		PUSH S8
+		INDEX 1
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 256
+		SUB
+		UFITS 256
+		;; array.push(..)
+		NEWC
+		STU 256
+		SWAP
+		UNPAIR
+		PUSH S1
+		INC
+		XCHG s3
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		; colValue
+		POP S2
+		; end colValue
+		;; ++
+		; expValue
+		; end expValue
+		INC
+		; colValue
+		; end colValue
+	}
+	WHILE
+	DROP
+	; end for
 }
 IF
 ;; end if
 ;; if
+;; get member length
 ;; push identifier pending
 DUP
+INDEX 0
 GTINT 0
 PUSHCONT {
 	;; get member user
@@ -1118,15 +1533,18 @@ STZEROES
 STSLICECONST 0
 STSLICECONST 1
 NEWC
-STSLICECONST x546ffe1f
+STSLICECONST x220e2ff2
 ;; _amount
 ;; push identifier amount
 PUSH S4
 STUR 256
 ;; _accTonPerShare
 ;; push identifier accTonPerShare
-GETGLOB 11
-STUR 256
+GETGLOB 17
+UNPAIR
+XCHG s2
+STU 32
+STDICT
 ;; send_gas_to
 ;; push identifier send_gas_to
 PUSH S3
@@ -1203,11 +1621,14 @@ PUSHINT 109
 STZEROES
 STSLICECONST 0
 STSLICECONST 0
-STSLICECONST x208e240f
+STSLICECONST x6de60f6d
 ;; _accTonPerShare
 ;; push identifier accTonPerShare
-GETGLOB 11
-STUR 256
+GETGLOB 17
+UNPAIR
+XCHG s2
+STU 32
+STDICT
 ;; send_gas_to
 ;; get member sender
 GETGLOB 9
@@ -1239,15 +1660,19 @@ PUSHCONT {
 }
 IFNOT
 ; Decode _prevRewardDebt
-LDUQ 256
+DUP
+SDEMPTY
 PUSHCONT {
-	;; load next cell
 	LDREF
 	ENDS
 	CTOS
-	LDU 256
 }
-IFNOT
+IF
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ; Decode _withdrawAmount
 LDUQ 256
 PUSHCONT {
@@ -1259,15 +1684,19 @@ PUSHCONT {
 }
 IFNOT
 ; Decode _accTonPerShare
-LDUQ 256
+DUP
+SDEMPTY
 PUSHCONT {
-	;; load next cell
 	LDREF
 	ENDS
 	CTOS
-	LDU 256
 }
-IFNOT
+IF
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ; Decode send_gas_to
 LDMSGADDRQ
 PUSHCONT {
@@ -1323,36 +1752,99 @@ CALLREF {
 }
 PUSHINT 2
 RAWRESERVE
-;; push identifier _prevAmount
-PUSH S5
-;; *
-;; push identifier _accTonPerShare
-PUSH S3
-MUL
-;; /
-PUSHINT 1000000000000000000
-DIV
-;; -
-;; push identifier _prevRewardDebt
-PUSH S5
-SUB
-UFITS 256
+PUSHINT 0
+NEWDICT
+PAIR
 ;; decl: pending
+; for
+PUSHINT 0
+;; decl: i
+PUSHCONT {
+	;; push identifier i
+	DUP
+	;; <
+	;; get member length
+	;; push identifier _accTonPerShare
+	PUSH S5
+	INDEX 0
+	LESS
+}
+PUSHCONT {
+	; expValue
+	PUSH S1
+	; end expValue
+	;; push identifier _prevAmount
+	PUSH S8
+	;; *
+	;; index
+	;; push identifier i
+	PUSH S2
+	;; push identifier _accTonPerShare
+	PUSH S7
+	INDEX 1
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 256
+	MUL
+	;; /
+	PUSHINT 1000000000000000000
+	DIV
+	;; -
+	;; index
+	;; push identifier i
+	PUSH S2
+	;; push identifier _prevRewardDebt
+	PUSH S9
+	INDEX 1
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 256
+	SUB
+	UFITS 256
+	;; array.push(..)
+	NEWC
+	STU 256
+	SWAP
+	UNPAIR
+	PUSH S1
+	INC
+	XCHG s3
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	; colValue
+	POP S2
+	; end colValue
+	;; ++
+	; expValue
+	; end expValue
+	INC
+	; colValue
+	; end colValue
+}
+WHILE
+DROP
+; end for
 ;; push identifier _withdrawAmount
 PUSH S4
 ; expValue
 ;; fetch tokenBalance
-GETGLOB 17
+GETGLOB 15
 ; end expValue
 SWAP
 SUB
 UFITS 256
 ; colValue
-SETGLOB 17
+SETGLOB 15
 ; end colValue
 ;; if
+;; get member length
 ;; push identifier pending
 DUP
+INDEX 0
 GTINT 0
 PUSHCONT {
 	;; push identifier user
@@ -1388,7 +1880,7 @@ PUSHINT 0
 SENDRAWMSG
 ;; Remote call ITONTokenWallet.transferToRecipient
 ;; push identifier tokenWallet
-GETGLOB 16
+GETGLOB 14
 NEWC
 STSLICECONST x62_
 STSLICE
@@ -1438,86 +1930,6 @@ BLKDROP 3
 ; end function finishWithdraw
 BLKDROP 6
 
-.macro finishWithdrawAll
-DROP
-GETGLOB 1
-ISNULL
-IFREF {
-	CALL $c4_to_c7$
-}
-; Decode input parameters
-; Decode user
-LDMSGADDR
-; Decode _prevAmount
-LDUQ 256
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDU 256
-}
-IFNOT
-; Decode _prevRewardDebt
-LDUQ 256
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDU 256
-}
-IFNOT
-; Decode _accTonPerShare
-LDUQ 256
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDU 256
-}
-IFNOT
-; Decode send_gas_to
-LDMSGADDRQ
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDMSGADDR
-}
-IFNOT
-ENDS
-;; param: user
-;; param: _prevAmount
-;; param: _prevRewardDebt
-;; param: _accTonPerShare
-;; param: send_gas_to
-; function finishWithdrawAll
-;; push identifier user
-PUSH S4
-;; push identifier _prevAmount
-PUSH S4
-;; push identifier _prevRewardDebt
-PUSH S4
-;; push identifier _prevAmount
-PUSH S6
-;; push identifier _accTonPerShare
-PUSH S5
-;; push identifier send_gas_to
-PUSH S5
-CALLREF {
-	CALL $finishWithdraw_internal_macro$
-}
-; end function finishWithdrawAll
-BLKDROP 5
-CALLREF {
-	CALL $c7_to_c4$
-}
-TRUE
-SETGLOB 7
-
 .macro withdrawUnclaimed
 DROP
 GETGLOB 1
@@ -1558,12 +1970,51 @@ GETGLOB 22
 CALLREF {
 	CALL $transferReward_internal_macro$
 }
-; expValue
-; end expValue
+; for
 PUSHINT 0
-; colValue
-SETGLOB 22
-; end colValue
+;; decl: i
+PUSHCONT {
+	;; push identifier i
+	DUP
+	;; <
+	;; get member length
+	;; push identifier unclaimedReward
+	GETGLOB 22
+	INDEX 0
+	LESS
+}
+PUSHCONT {
+	; expValue
+	;; fetch unclaimedReward
+	GETGLOB 22
+	UNPAIR
+	;; push identifier i
+	PUSH S2
+	SWAP
+	PUSH2 s1,s2
+	LESS
+	THROWIFNOT 50
+	; end expValue
+	PUSHINT 0
+	; colValue
+	NEWC
+	STU 256
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 22
+	; end colValue
+	;; ++
+	; expValue
+	; end expValue
+	INC
+	; colValue
+	; end colValue
+}
+WHILE
+DROP
+; end for
 ; end function withdrawUnclaimed
 ; end modifier onlyOwner
 DROP
@@ -1584,91 +2035,230 @@ IFREF {
 ; Decode user_amount
 LDU 256
 ; Decode user_reward_debt
-LDUQ 256
-PUSHCONT {
-	;; load next cell
-	LDREF
-	ENDS
-	CTOS
-	LDU 256
-}
-IFNOT
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 ENDS
 ;; param: user_amount
 ;; param: user_reward_debt
 ; function pendingReward
 ;; push identifier accTonPerShare
-GETGLOB 11
+GETGLOB 17
 ;; decl: _accTonPerShare
 ;; if
 ;; push identifier now
 NOW
 ;; >
 ;; push identifier lastRewardTime
-GETGLOB 12
+GETGLOB 10
 GREATER
 ;; short-circuiting &&
 DUP
 PUSHCONT {
 	DROP
 	;; push identifier tokenBalance
-	GETGLOB 17
+	GETGLOB 15
 	NEQINT 0
 }
 IF
 PUSHCONT {
 	;; push identifier lastRewardTime
-	GETGLOB 12
+	GETGLOB 10
 	;; push identifier now
 	NOW
 	CALLREF {
 		CALL $getMultiplier_internal_macro$
 	}
 	;; decl: multiplier
-	;; push identifier multiplier
-	DUP
-	;; *
-	;; push identifier rewardPerSecond
-	GETGLOB 10
-	MUL
-	;; decl: tonReward
-	;; push identifier tonReward
-	DUP
-	;; *
-	PUSHINT 1000000000000000000
-	MUL
-	;; /
-	;; push identifier tokenBalance
-	GETGLOB 17
-	DIV
-	; expValue
-	PUSH S3
-	; end expValue
-	SWAP
-	ADD
-	; colValue
-	POP S3
-	; end colValue
+	PUSHINT 0
+	NEWDICT
+	PAIR
+	;; decl: _reward
+	; for
+	PUSHINT 0
+	;; decl: i
+	PUSHCONT {
+		;; push identifier i
+		DUP
+		;; <
+		;; get member length
+		;; push identifier rewardPerSecond
+		GETGLOB 16
+		INDEX 0
+		LESS
+	}
+	PUSHCONT {
+		; expValue
+		PUSH S1
+		; end expValue
+		;; push identifier multiplier
+		PUSH S3
+		;; *
+		;; index
+		;; push identifier i
+		PUSH S2
+		;; push identifier rewardPerSecond
+		GETGLOB 16
+		INDEX 1
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 256
+		MUL
+		;; array.push(..)
+		NEWC
+		STU 256
+		SWAP
+		UNPAIR
+		PUSH S1
+		INC
+		XCHG s3
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		; colValue
+		POP S2
+		; end colValue
+		;; index
+		;; push identifier i
+		DUP
+		;; push identifier _reward
+		PUSH S2
+		INDEX 1
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 256
+		;; *
+		PUSHINT 1000000000000000000
+		MUL
+		;; /
+		;; push identifier tokenBalance
+		GETGLOB 15
+		DIV
+		; expValue
+		PUSH S4
+		UNPAIR
+		;; push identifier i
+		PUSH S3
+		SWAP
+		PUSH2 s1,s2
+		LESS
+		THROWIFNOT 50
+		PUSH2 S1, S0
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 256
+		; end expValue
+		BLKSWAP 1, 4
+		ADD
+		; colValue
+		NEWC
+		STU 256
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		POP S4
+		; end colValue
+		;; ++
+		; expValue
+		; end expValue
+		INC
+		; colValue
+		; end colValue
+	}
+	WHILE
+	DROP
+	; end for
 	DROP2
 }
 IF
 ;; end if
+PUSHINT 0
+NEWDICT
+PAIR
+;; decl: _final_reward
+; for
+PUSHINT 0
+;; decl: i
+PUSHCONT {
+	;; push identifier i
+	DUP
+	;; <
+	;; get member length
+	;; push identifier rewardPerSecond
+	GETGLOB 16
+	INDEX 0
+	LESS
+}
+PUSHCONT {
+	; expValue
+	PUSH S1
+	; end expValue
+	;; push identifier user_amount
+	PUSH S5
+	;; *
+	;; index
+	;; push identifier i
+	PUSH S2
+	;; push identifier _accTonPerShare
+	PUSH S5
+	INDEX 1
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 256
+	MUL
+	;; /
+	PUSHINT 1000000000000000000
+	DIV
+	;; -
+	;; index
+	;; push identifier i
+	PUSH S2
+	;; push identifier user_reward_debt
+	PUSH S6
+	INDEX 1
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 256
+	SUB
+	UFITS 256
+	;; array.push(..)
+	NEWC
+	STU 256
+	SWAP
+	UNPAIR
+	PUSH S1
+	INC
+	XCHG s3
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	; colValue
+	POP S2
+	; end colValue
+	;; ++
+	; expValue
+	; end expValue
+	INC
+	; colValue
+	; end colValue
+}
+WHILE
+DROP
+; end for
 ;; return
-;; push identifier user_amount
-PUSH S2
-;; *
-;; push identifier _accTonPerShare
-PUSH S1
-MUL
-;; /
-PUSHINT 1000000000000000000
-DIV
-;; -
-;; push identifier user_reward_debt
-PUSH S2
-SUB
-UFITS 256
-NIP
+;; push identifier _final_reward
+DUP
+BLKDROP2 2, 1
 ; end function pendingReward
 BLKDROP2 2, 1
 ;; emitting 1 value(s)
@@ -1688,9 +2278,12 @@ PUSHCONT {
 	STZEROES
 	STSLICECONST 0
 	STSLICECONST 0
-	STSLICECONST xb8ae085d
+	STSLICECONST x9780371f
 	PUSH S1
-	STUR 256
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -1784,7 +2377,7 @@ PUSHCONT {
 	PUSH S2
 	;; >
 	;; push identifier farmEndTime
-	GETGLOB 14
+	GETGLOB 12
 	GREATER
 	;; short-circuiting ||
 	DUP
@@ -1794,7 +2387,7 @@ PUSHCONT {
 		PUSH S1
 		;; <
 		;; push identifier farmStartTime
-		GETGLOB 13
+		GETGLOB 11
 		LESS
 	}
 	IFNOT
@@ -1811,13 +2404,13 @@ PUSHCONT {
 	PUSH S1
 	;; >
 	;; push identifier farmEndTime
-	GETGLOB 14
+	GETGLOB 12
 	GREATER
 	PUSHCONT {
 		; expValue
 		; end expValue
 		;; push identifier farmEndTime
-		GETGLOB 14
+		GETGLOB 12
 		; colValue
 		POP S2
 		; end colValue
@@ -1829,13 +2422,13 @@ PUSHCONT {
 	PUSH S2
 	;; <
 	;; push identifier farmStartTime
-	GETGLOB 13
+	GETGLOB 11
 	LESS
 	PUSHCONT {
 		; expValue
 		; end expValue
 		;; push identifier farmStartTime
-		GETGLOB 13
+		GETGLOB 11
 		; colValue
 		POP S3
 		; end colValue
@@ -1917,7 +2510,7 @@ SENDRAWMSG
 DROP
 ; end function safeWithdraw
 DROP
-CALLREF {
+IFREF {
 	CALL $c7_to_c4$
 }
 TRUE
@@ -1979,13 +2572,13 @@ RAWRESERVE
 PUSH S2
 ; expValue
 ;; fetch tokenBalance
-GETGLOB 17
+GETGLOB 15
 ; end expValue
 SWAP
 SUB
 UFITS 256
 ; colValue
-SETGLOB 17
+SETGLOB 15
 ; end colValue
 NEWC
 ENDC
@@ -2010,7 +2603,7 @@ PUSHINT 0
 SENDRAWMSG
 ;; Remote call ITONTokenWallet.transferToRecipient
 ;; push identifier tokenWallet
-GETGLOB 16
+GETGLOB 14
 NEWC
 STSLICECONST x62_
 STSLICE
@@ -2077,7 +2670,7 @@ PUSHCONT {
 	NOW
 	;; <=
 	;; push identifier lastRewardTime
-	GETGLOB 12
+	GETGLOB 10
 	LEQ
 	PUSHCONT {
 		;; return
@@ -2086,41 +2679,144 @@ PUSHCONT {
 	IFJMP
 	;; end if
 	;; push identifier lastRewardTime
-	GETGLOB 12
+	GETGLOB 10
 	;; push identifier now
 	NOW
 	CALLREF {
 		CALL $getMultiplier_internal_macro$
 	}
 	;; decl: multiplier
-	;; push identifier rewardPerSecond
-	GETGLOB 10
-	;; *
-	;; push identifier multiplier
-	PUSH S1
-	MUL
+	PUSHINT 0
+	NEWDICT
+	PAIR
 	;; decl: new_reward
+	; for
+	PUSHINT 0
+	;; decl: i
+	PUSHCONT {
+		;; push identifier i
+		DUP
+		;; <
+		;; get member length
+		;; push identifier rewardPerSecond
+		GETGLOB 16
+		INDEX 0
+		LESS
+	}
+	PUSHCONT {
+		; expValue
+		PUSH S1
+		; end expValue
+		;; index
+		;; push identifier i
+		PUSH S1
+		;; push identifier rewardPerSecond
+		GETGLOB 16
+		INDEX 1
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 256
+		;; *
+		;; push identifier multiplier
+		PUSH S4
+		MUL
+		;; array.push(..)
+		NEWC
+		STU 256
+		SWAP
+		UNPAIR
+		PUSH S1
+		INC
+		XCHG s3
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		; colValue
+		POP S2
+		; end colValue
+		;; ++
+		; expValue
+		; end expValue
+		INC
+		; colValue
+		; end colValue
+	}
+	WHILE
+	DROP
+	; end for
 	;; if
 	;; push identifier tokenBalance
-	GETGLOB 17
+	GETGLOB 15
 	PUSHCONT {
-		;; push identifier new_reward
-		DUP
-		; expValue
-		;; fetch unclaimedReward
-		GETGLOB 22
-		; end expValue
-		SWAP
-		ADD
-		; colValue
-		SETGLOB 22
-		; end colValue
+		; for
+		PUSHINT 0
+		;; decl: i
+		PUSHCONT {
+			;; push identifier i
+			DUP
+			;; <
+			;; get member length
+			;; push identifier rewardPerSecond
+			GETGLOB 16
+			INDEX 0
+			LESS
+		}
+		PUSHCONT {
+			;; index
+			;; push identifier i
+			DUP
+			;; push identifier new_reward
+			PUSH S2
+			INDEX 1
+			PUSHINT 32
+			DICTUGET
+			THROWIFNOT 50
+			PLDU 256
+			; expValue
+			;; fetch unclaimedReward
+			GETGLOB 22
+			UNPAIR
+			;; push identifier i
+			PUSH S3
+			SWAP
+			PUSH2 s1,s2
+			LESS
+			THROWIFNOT 50
+			PUSH2 S1, S0
+			PUSHINT 32
+			DICTUGET
+			THROWIFNOT 50
+			PLDU 256
+			; end expValue
+			BLKSWAP 1, 4
+			ADD
+			; colValue
+			NEWC
+			STU 256
+			ROTREV
+			PUSHINT 32
+			DICTUSETB
+			PAIR
+			SETGLOB 22
+			; end colValue
+			;; ++
+			; expValue
+			; end expValue
+			INC
+			; colValue
+			; end colValue
+		}
+		WHILE
+		DROP
+		; end for
 		; expValue
 		; end expValue
 		;; push identifier now
 		NOW
 		; colValue
-		SETGLOB 12
+		SETGLOB 10
 		; end colValue
 		;; return
 		DROP2
@@ -2128,30 +2824,80 @@ PUSHCONT {
 	}
 	IFNOTJMP
 	;; end if
-	;; push identifier new_reward
-	DUP
-	;; *
-	PUSHINT 1000000000000000000
-	MUL
-	;; /
-	;; push identifier tokenBalance
-	GETGLOB 17
-	DIV
-	; expValue
-	;; fetch accTonPerShare
-	GETGLOB 11
-	; end expValue
-	SWAP
-	ADD
-	; colValue
-	SETGLOB 11
-	; end colValue
+	; for
+	PUSHINT 0
+	;; decl: i
+	PUSHCONT {
+		;; push identifier i
+		DUP
+		;; <
+		;; get member length
+		;; push identifier rewardPerSecond
+		GETGLOB 16
+		INDEX 0
+		LESS
+	}
+	PUSHCONT {
+		;; index
+		;; push identifier i
+		DUP
+		;; push identifier new_reward
+		PUSH S2
+		INDEX 1
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 256
+		;; *
+		PUSHINT 1000000000000000000
+		MUL
+		;; /
+		;; push identifier tokenBalance
+		GETGLOB 15
+		DIV
+		; expValue
+		;; fetch accTonPerShare
+		GETGLOB 17
+		UNPAIR
+		;; push identifier i
+		PUSH S3
+		SWAP
+		PUSH2 s1,s2
+		LESS
+		THROWIFNOT 50
+		PUSH2 S1, S0
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 256
+		; end expValue
+		BLKSWAP 1, 4
+		ADD
+		; colValue
+		NEWC
+		STU 256
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		SETGLOB 17
+		; end colValue
+		;; ++
+		; expValue
+		; end expValue
+		INC
+		; colValue
+		; end colValue
+	}
+	WHILE
+	DROP
+	; end for
 	; expValue
 	; end expValue
 	;; push identifier now
 	NOW
 	; colValue
-	SETGLOB 12
+	SETGLOB 10
 	; end colValue
 	DROP2
 }
@@ -2225,7 +2971,13 @@ STSLICECONST 1
 PUSH S2
 STREFR
 STSLICECONST 0
-STSLICECONST x68b55f3f
+STSLICECONST x3c91e1c5
+;; reward_tokens_count
+;; get member length
+;; push identifier rewardTokenRoot
+GETGLOB 18
+INDEX 0
+STUR 256
 ENDC
 PUSHINT 1
 SENDRAWMSG
@@ -2353,7 +3105,7 @@ POP S2
 ;; push identifier functionId
 DUP
 ;; ==
-PUSHINT 1003259743
+PUSHINT 302517117
 EQUAL
 PUSHCONT {
 	CALLREF {
@@ -2397,43 +3149,71 @@ PUSHCONT {
 		CALL $deployUserData_internal_macro$
 	}
 	;; decl: user_data_addr
-	;; Remote call IRootTokenContract.deployEmptyWallet
-	;; push identifier rewardTokenRoot
-	GETGLOB 18
-	NEWC
-	STSLICECONST x62_
-	STSLICE
-	PUSHSLICE x43b9aca00000000000000000000000000004_
-	STSLICER
-	STSLICECONST 0
-	STSLICECONST 1
-	NEWC
-	STSLICECONST x542b1672
-	;; deploy_grams
-	PUSHINT 1000000000
-	;; /
-	PUSHINT 2
-	DIV
-	STUR 128
-	;; wallet_public_key
+	; for
 	PUSHINT 0
-	STUR 256
-	;; owner_address
-	;; get member user
-	;; push identifier deposit
-	PUSH S3
-	INDEX 0
-	STSLICER
-	;; gas_back_address
-	;; get member user
-	;; push identifier deposit
-	PUSH S3
-	INDEX 0
-	STSLICER
-	STBREFR
-	ENDC
-	PUSHINT 0
-	SENDRAWMSG
+	;; decl: i
+	PUSHCONT {
+		;; push identifier i
+		DUP
+		;; <
+		;; get member length
+		;; push identifier rewardTokenRoot
+		GETGLOB 18
+		INDEX 0
+		LESS
+	}
+	PUSHCONT {
+		;; Remote call IRootTokenContract.deployEmptyWallet
+		;; index
+		;; push identifier i
+		DUP
+		;; push identifier rewardTokenRoot
+		GETGLOB 18
+		INDEX 1
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		NEWC
+		STSLICECONST x62_
+		STSLICE
+		PUSHSLICE x41dcd6500000000000000000000000000004_
+		STSLICER
+		STSLICECONST 0
+		STSLICECONST 1
+		NEWC
+		STSLICECONST x542b1672
+		;; deploy_grams
+		PUSHINT 100000000
+		STUR 128
+		;; wallet_public_key
+		PUSHINT 0
+		STUR 256
+		;; owner_address
+		;; get member user
+		;; push identifier deposit
+		PUSH S4
+		INDEX 0
+		STSLICER
+		;; gas_back_address
+		;; get member user
+		;; push identifier deposit
+		PUSH S4
+		INDEX 0
+		STSLICER
+		STBREFR
+		ENDC
+		PUSHINT 0
+		SENDRAWMSG
+		;; ++
+		; expValue
+		; end expValue
+		INC
+		; colValue
+		; end colValue
+	}
+	WHILE
+	DROP
+	; end for
 	;; Remote call UserData.processDeposit
 	;; push identifier user_data_addr
 	DUP
@@ -2443,24 +3223,25 @@ PUSHCONT {
 	PUSHINT 109
 	STZEROES
 	STSLICECONST 0
-	STSLICECONST 1
-	NEWC
-	STSLICECONST x3bcc875f
+	STSLICECONST 0
+	STSLICECONST x12080b7d
 	;; nonce
 	;; push identifier _deposit_nonce
-	PUSH S4
+	PUSH S3
 	STUR 64
 	;; _amount
 	;; get member amount
 	;; push identifier deposit
-	PUSH S3
+	PUSH S2
 	INDEX 1
 	STUR 256
 	;; _accTonPerShare
 	;; push identifier accTonPerShare
-	GETGLOB 11
-	STUR 256
-	STBREFR
+	GETGLOB 17
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	ENDC
 	PUSHINT 128
 	SENDRAWMSG
@@ -2487,51 +3268,59 @@ NEWC
 GETGLOB 12
 GETGLOB 13
 GETGLOB 14
-GETGLOB 25
-GETGLOB 26
-REVERSE 6, 0
+GETGLOB 17
+UNTUPLE 2
+GETGLOB 18
+UNTUPLE 2
+GETGLOB 19
+UNTUPLE 2
+GETGLOB 20
+UNTUPLE 2
+REVERSE 12, 0
 STU 256
-STU 256
-STU 256
+STSLICE
+STSLICE
+STU 32
 STDICT
-STREF
+STU 32
+STDICT
+STU 32
+STDICT
+STU 32
+STDICT
 NEWC
 GETGLOB 15
-GETGLOB 16
-GETGLOB 17
-REVERSE 4, 0
-STSLICE
-STSLICE
-STU 256
-NEWC
-GETGLOB 18
-GETGLOB 19
-GETGLOB 20
-REVERSE 4, 0
-STSLICE
-STSLICE
-STU 256
-NEWC
 GETGLOB 21
-GETGLOB 22
+UNTUPLE 2
 GETGLOB 23
-REVERSE 4, 0
+GETGLOB 22
+UNTUPLE 2
+GETGLOB 25
+REVERSE 8, 0
 STU 256
-STU 256
+STU 32
+STDICT
 STSLICE
+STU 32
+STDICT
+STDICT
 GETGLOB 10
 GETGLOB 11
 GETGLOB 24
 GETGLOB 27
-REVERSE 9, 0
-STBREF
-STBREF
+GETGLOB 16
+UNTUPLE 2
+GETGLOB 26
+REVERSE 10, 0
 STBREF
 STBREF
 STU 256
 STU 256
 STU 64
 STU 64
+STU 32
+STDICT
+STREF
 ENDC
 POP C4
 
@@ -2543,39 +3332,58 @@ LDU 64      ; pubkey timestamp c4
 LDU 1       ; pubkey [timestamp] constructor_flag memory
 LDREFRTOS
 LDU 256
-LDU 256
-LDU 256
+LDMSGADDR
+LDMSGADDR
+LDU 32
 LDDICT
-PLDREF
-SETGLOB 26
-SETGLOB 25
+ROTREV
+PAIR
+SETGLOB 17
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SETGLOB 18
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SETGLOB 19
+LDU 32
+PLDDICT
+PAIR
+SETGLOB 20
 SETGLOB 14
 SETGLOB 13
 SETGLOB 12
 LDREFRTOS
-LDMSGADDR
-LDMSGADDR
-PLDU 256
-SETGLOB 17
-SETGLOB 16
-SETGLOB 15
-LDREFRTOS
-LDMSGADDR
-LDMSGADDR
-PLDU 256
-SETGLOB 20
-SETGLOB 19
-SETGLOB 18
-LDREFRTOS
 LDU 256
-LDU 256
-SETGLOB 23
-SETGLOB 22
+LDU 32
+LDDICT
+ROTREV
+PAIR
 SETGLOB 21
+LDMSGADDR
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SETGLOB 22
+PLDDICT
+SETGLOB 25
+SETGLOB 23
+SETGLOB 15
 LDU 256
 LDU 256
 LDU 64
-PLDU 64
+LDU 64
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SETGLOB 16
+PLDREF
+SETGLOB 26
 SETGLOB 27
 SETGLOB 24
 SETGLOB 11
@@ -2598,39 +3406,58 @@ PUSHCONT {
 	LDU 1       ; pubkey [timestamp] constructor_flag memory
 	LDREFRTOS
 	LDU 256
-	LDU 256
-	LDU 256
+	LDMSGADDR
+	LDMSGADDR
+	LDU 32
 	LDDICT
-	PLDREF
-	SETGLOB 26
-	SETGLOB 25
+	ROTREV
+	PAIR
+	SETGLOB 17
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SETGLOB 18
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SETGLOB 19
+	LDU 32
+	PLDDICT
+	PAIR
+	SETGLOB 20
 	SETGLOB 14
 	SETGLOB 13
 	SETGLOB 12
 	LDREFRTOS
-	LDMSGADDR
-	LDMSGADDR
-	PLDU 256
-	SETGLOB 17
-	SETGLOB 16
-	SETGLOB 15
-	LDREFRTOS
-	LDMSGADDR
-	LDMSGADDR
-	PLDU 256
-	SETGLOB 20
-	SETGLOB 19
-	SETGLOB 18
-	LDREFRTOS
 	LDU 256
-	LDU 256
-	SETGLOB 23
-	SETGLOB 22
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
 	SETGLOB 21
+	LDMSGADDR
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SETGLOB 22
+	PLDDICT
+	SETGLOB 25
+	SETGLOB 23
+	SETGLOB 15
 	LDU 256
 	LDU 256
 	LDU 64
-	PLDU 64
+	LDU 64
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SETGLOB 16
+	PLDREF
+	SETGLOB 26
 	SETGLOB 27
 	SETGLOB 24
 	SETGLOB 11
@@ -2643,44 +3470,58 @@ PUSHCONT {
 }
 PUSHCONT {
 	PLDDICT   ; D
-	; init rewardPerSecond
-	PUSHINT 0
-	SETGLOB 10
-	; init accTonPerShare
-	PUSHINT 0
-	SETGLOB 11
 	; init lastRewardTime
 	PUSHINT 0
-	SETGLOB 12
+	SETGLOB 10
 	; init farmStartTime
 	PUSHINT 0
-	SETGLOB 13
+	SETGLOB 11
 	; init farmEndTime
 	PUSHINT 0
-	SETGLOB 14
+	SETGLOB 12
 	; init tokenRoot
 	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
-	SETGLOB 15
+	SETGLOB 13
 	; init tokenWallet
 	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
-	SETGLOB 16
+	SETGLOB 14
 	; init tokenBalance
 	PUSHINT 0
+	SETGLOB 15
+	; init rewardPerSecond
+	PUSHINT 0
+	NEWDICT
+	PAIR
+	SETGLOB 16
+	; init accTonPerShare
+	PUSHINT 0
+	NEWDICT
+	PAIR
 	SETGLOB 17
 	; init rewardTokenRoot
-	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+	PUSHINT 0
+	NEWDICT
+	PAIR
 	SETGLOB 18
 	; init rewardTokenWallet
-	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+	PUSHINT 0
+	NEWDICT
+	PAIR
 	SETGLOB 19
 	; init rewardTokenBalance
 	PUSHINT 0
+	NEWDICT
+	PAIR
 	SETGLOB 20
 	; init rewardTokenBalanceCumulative
 	PUSHINT 0
+	NEWDICT
+	PAIR
 	SETGLOB 21
 	; init unclaimedReward
 	PUSHINT 0
+	NEWDICT
+	PAIR
 	SETGLOB 22
 	; init owner
 	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
@@ -2812,62 +3653,6 @@ GETGLOB 7
 ISNULL
 THROWIF 60
 
-.macro rewardPerSecond
-DROP
-ENDS
-CALLREF {
-	CALL $c4_to_c7$
-}
-;; emitting 1 value
-DUP
-EQINT -1
-PUSHCONT {
-	GETGLOB 10
-	NEWC
-	PUSHSLICE xc0000000000000000000000002_
-	STSLICER
-	STSLICECONST 0
-	STSLICECONST 0
-	STSLICECONST xd136daab
-	PUSH S1
-	STUR 256
-	ENDC
-	PUSHINT 0
-	SENDRAWMSG
-}
-IF
-DROP
-TRUE
-SETGLOB 7
-
-.macro accTonPerShare
-DROP
-ENDS
-CALLREF {
-	CALL $c4_to_c7$
-}
-;; emitting 1 value
-DUP
-EQINT -1
-PUSHCONT {
-	GETGLOB 11
-	NEWC
-	PUSHSLICE xc0000000000000000000000002_
-	STSLICER
-	STSLICECONST 0
-	STSLICECONST 0
-	STSLICECONST xd853b39a
-	PUSH S1
-	STUR 256
-	ENDC
-	PUSHINT 0
-	SENDRAWMSG
-}
-IF
-DROP
-TRUE
-SETGLOB 7
-
 .macro lastRewardTime
 DROP
 ENDS
@@ -2878,7 +3663,7 @@ CALLREF {
 DUP
 EQINT -1
 PUSHCONT {
-	GETGLOB 12
+	GETGLOB 10
 	NEWC
 	PUSHSLICE xc0000000000000000000000002_
 	STSLICER
@@ -2906,7 +3691,7 @@ CALLREF {
 DUP
 EQINT -1
 PUSHCONT {
-	GETGLOB 13
+	GETGLOB 11
 	NEWC
 	PUSHSLICE xc0000000000000000000000002_
 	STSLICER
@@ -2934,7 +3719,7 @@ CALLREF {
 DUP
 EQINT -1
 PUSHCONT {
-	GETGLOB 14
+	GETGLOB 12
 	NEWC
 	PUSHSLICE xc0000000000000000000000002_
 	STSLICER
@@ -2962,7 +3747,7 @@ CALLREF {
 DUP
 EQINT -1
 PUSHCONT {
-	GETGLOB 15
+	GETGLOB 13
 	NEWC
 	PUSHSLICE xc0000000000000000000000002_
 	STSLICER
@@ -2990,7 +3775,7 @@ CALLREF {
 DUP
 EQINT -1
 PUSHCONT {
-	GETGLOB 16
+	GETGLOB 14
 	NEWC
 	PUSHSLICE xc0000000000000000000000002_
 	STSLICER
@@ -3018,7 +3803,7 @@ CALLREF {
 DUP
 EQINT -1
 PUSHCONT {
-	GETGLOB 17
+	GETGLOB 15
 	NEWC
 	PUSHSLICE xc0000000000000000000000002_
 	STSLICER
@@ -3027,6 +3812,68 @@ PUSHCONT {
 	STSLICECONST xfed694f2
 	PUSH S1
 	STUR 256
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+DROP
+TRUE
+SETGLOB 7
+
+.macro rewardPerSecond
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+;; emitting 1 value
+DUP
+EQINT -1
+PUSHCONT {
+	GETGLOB 16
+	NEWC
+	PUSHSLICE xc0000000000000000000000002_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST xffdfdb9d
+	PUSH S1
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+DROP
+TRUE
+SETGLOB 7
+
+.macro accTonPerShare
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+;; emitting 1 value
+DUP
+EQINT -1
+PUSHCONT {
+	GETGLOB 17
+	NEWC
+	PUSHSLICE xc0000000000000000000000002_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST xfd3e218d
+	PUSH S1
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -3052,9 +3899,12 @@ PUSHCONT {
 	STSLICER
 	STSLICECONST 0
 	STSLICECONST 0
-	STSLICECONST x98288598
+	STSLICECONST x86a73d56
 	PUSH S1
-	STSLICER
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -3080,9 +3930,12 @@ PUSHCONT {
 	STSLICER
 	STSLICECONST 0
 	STSLICECONST 0
-	STSLICECONST xcb556453
+	STSLICECONST xe4befc5f
 	PUSH S1
-	STSLICER
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -3108,9 +3961,12 @@ PUSHCONT {
 	STSLICER
 	STSLICECONST 0
 	STSLICECONST 0
-	STSLICECONST xc4fe9ddf
+	STSLICECONST xb6720796
 	PUSH S1
-	STUR 256
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -3136,9 +3992,12 @@ PUSHCONT {
 	STSLICER
 	STSLICECONST 0
 	STSLICECONST 0
-	STSLICECONST xf6054343
+	STSLICECONST xd5755d9c
 	PUSH S1
-	STUR 256
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -3164,9 +4023,12 @@ PUSHCONT {
 	STSLICER
 	STSLICECONST 0
 	STSLICECONST 0
-	STSLICECONST xa2a8cd9e
+	STSLICECONST xdcc3c2df
 	PUSH S1
-	STUR 256
+	UNPAIR
+	XCHG s2
+	STU 32
+	STDICT
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -3290,47 +4152,29 @@ SETGLOB 7
 
 .macro public_function_selector
 DUP
-PUSHINT 405308824
+PUSHINT 1211472804
 LEQ
 PUSHCONT {
 	DUP
-	PUSHINT 138077169
+	PUSHINT 287034084
 	LEQ
 	PUSHCONT {
 		DUP
-		PUSHINT 36483524
+		PUSHINT 111623510
 		EQUAL
 		IFJMPREF {
-			CALL $finishDeposit$
+			CALL $rewardTokenRoot$
 		}
-		DUP
-		PUSHINT 138077169
-		EQUAL
-		IFJMPREF {
-			CALL $constructor$
-		}
-	}
-	IFJMP
-	DUP
-	PUSHINT 300957934
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 287034084
 		EQUAL
 		IFJMPREF {
 			CALL $lastRewardTime$
 		}
-		DUP
-		PUSHINT 300957934
-		EQUAL
-		IFJMPREF {
-			CALL $finishWithdraw$
-		}
 	}
 	IFJMP
 	DUP
-	PUSHINT 377281269
+	PUSHINT 342932036
 	LEQ
 	PUSHCONT {
 		DUP
@@ -3340,52 +4184,28 @@ PUSHCONT {
 			CALL $withdrawAll$
 		}
 		DUP
-		PUSHINT 377281269
+		PUSHINT 342932036
 		EQUAL
 		IFJMPREF {
-			CALL $finishWithdrawAll$
+			CALL $finishDeposit$
 		}
 	}
 	IFJMP
 	DUP
-	PUSHINT 405308824
+	PUSHINT 400749881
 	LEQ
 	PUSHCONT {
+		DUP
+		PUSHINT 394278687
+		EQUAL
+		IFJMPREF {
+			CALL $pendingReward$
+		}
 		DUP
 		PUSHINT 400749881
 		EQUAL
 		IFJMPREF {
 			CALL $withdrawUnclaimed$
-		}
-		DUP
-		PUSHINT 405308824
-		EQUAL
-		IFJMPREF {
-			CALL $rewardTokenRoot$
-		}
-	}
-	IFJMP
-}
-IFJMP
-DUP
-PUSHINT 1362549419
-LEQ
-PUSHCONT {
-	DUP
-	PUSHINT 950929501
-	LEQ
-	PUSHCONT {
-		DUP
-		PUSHINT 581488030
-		EQUAL
-		IFJMPREF {
-			CALL $unclaimedReward$
-		}
-		DUP
-		PUSHINT 950929501
-		EQUAL
-		IFJMPREF {
-			CALL $pendingReward$
 		}
 	}
 	IFJMP
@@ -3394,7 +4214,7 @@ PUSHCONT {
 	LEQ
 	PUSHCONT {
 		DUP
-		PUSHINT 1157537247
+		PUSHINT 913442710
 		EQUAL
 		IFJMPREF {
 			CALL $rewardTokenBalance$
@@ -3407,63 +4227,45 @@ PUSHCONT {
 		}
 	}
 	IFJMP
+}
+IFJMP
+DUP
+PUSHINT 1594609630
+LEQ
+PUSHCONT {
 	DUP
-	PUSHINT 1317447873
+	PUSHINT 1354746527
 	LEQ
 	PUSHCONT {
-		DUP
-		PUSHINT 1263887443
-		EQUAL
-		IFJMPREF {
-			CALL $rewardTokenWallet$
-		}
 		DUP
 		PUSHINT 1317447873
 		EQUAL
 		IFJMPREF {
 			CALL $farmStartTime$
 		}
-	}
-	IFJMP
-	DUP
-	PUSHINT 1362549419
-	LEQ
-	PUSHCONT {
 		DUP
 		PUSHINT 1354746527
 		EQUAL
 		IFJMPREF {
 			CALL $receiveTokenWalletAddress$
 		}
-		DUP
-		PUSHINT 1362549419
-		EQUAL
-		IFJMPREF {
-			CALL $rewardPerSecond$
-		}
 	}
 	IFJMP
-}
-IFJMP
-DUP
-PUSHINT 1737663397
-LEQ
-PUSHCONT {
 	DUP
-	PUSHINT 1481880474
+	PUSHINT 1436663460
 	LEQ
 	PUSHCONT {
+		DUP
+		PUSHINT 1433755036
+		EQUAL
+		IFJMPREF {
+			CALL $rewardTokenBalanceCumulative$
+		}
 		DUP
 		PUSHINT 1436663460
 		EQUAL
 		IFJMPREF {
 			CALL $withdraw$
-		}
-		DUP
-		PUSHINT 1481880474
-		EQUAL
-		IFJMPREF {
-			CALL $accTonPerShare$
 		}
 	}
 	IFJMP
@@ -3486,20 +4288,44 @@ PUSHCONT {
 	}
 	IFJMP
 	DUP
-	PUSHINT 1608577153
+	PUSHINT 1594609630
 	LEQ
 	PUSHCONT {
+		DUP
+		PUSHINT 1556333279
+		EQUAL
+		IFJMPREF {
+			CALL $unclaimedReward$
+		}
 		DUP
 		PUSHINT 1594609630
 		EQUAL
 		IFJMPREF {
 			CALL $owner$
 		}
+	}
+	IFJMP
+}
+IFJMP
+DUP
+PUSHINT 2059220780
+LEQ
+PUSHCONT {
+	DUP
+	PUSHINT 1689290577
+	LEQ
+	PUSHCONT {
 		DUP
 		PUSHINT 1608577153
 		EQUAL
 		IFJMPREF {
 			CALL $farmEndTime$
+		}
+		DUP
+		PUSHINT 1689290577
+		EQUAL
+		IFJMPREF {
+			CALL $deposit_nonce$
 		}
 	}
 	IFJMP
@@ -3508,10 +4334,10 @@ PUSHCONT {
 	LEQ
 	PUSHCONT {
 		DUP
-		PUSHINT 1689290577
+		PUSHINT 1690238047
 		EQUAL
 		IFJMPREF {
-			CALL $deposit_nonce$
+			CALL $rewardTokenWallet$
 		}
 		DUP
 		PUSHINT 1737663397
@@ -3521,12 +4347,6 @@ PUSHCONT {
 		}
 	}
 	IFJMP
-}
-IFJMP
-DUP
-PUSHINT 2127992050
-LEQ
-PUSHCONT {
 	DUP
 	PUSHINT 1896024939
 	LEQ
@@ -3546,23 +4366,29 @@ PUSHCONT {
 	}
 	IFJMP
 	DUP
-	PUSHINT 2011107298
+	PUSHINT 2059220780
 	LEQ
 	PUSHCONT {
-		DUP
-		PUSHINT 1980056387
-		EQUAL
-		IFJMPREF {
-			CALL $rewardTokenBalanceCumulative$
-		}
 		DUP
 		PUSHINT 2011107298
 		EQUAL
 		IFJMPREF {
 			CALL $getMultiplier$
 		}
+		DUP
+		PUSHINT 2059220780
+		EQUAL
+		IFJMPREF {
+			CALL $finishWithdraw$
+		}
 	}
 	IFJMP
+}
+IFJMP
+DUP
+PUSHINT 2145377181
+LEQ
+PUSHCONT {
 	DUP
 	PUSHINT 2068909698
 	LEQ
@@ -3582,14 +4408,32 @@ PUSHCONT {
 	}
 	IFJMP
 	DUP
-	PUSHINT 2127992050
+	PUSHINT 2092935922
 	LEQ
 	PUSHCONT {
+		DUP
+		PUSHINT 2087304985
+		EQUAL
+		IFJMPREF {
+			CALL $constructor$
+		}
 		DUP
 		PUSHINT 2092935922
 		EQUAL
 		IFJMPREF {
 			CALL $tokenRoot$
+		}
+	}
+	IFJMP
+	DUP
+	PUSHINT 2127992050
+	LEQ
+	PUSHCONT {
+		DUP
+		PUSHINT 2101223821
+		EQUAL
+		IFJMPREF {
+			CALL $accTonPerShare$
 		}
 		DUP
 		PUSHINT 2127992050
@@ -3599,5 +4443,11 @@ PUSHCONT {
 		}
 	}
 	IFJMP
+	DUP
+	PUSHINT 2145377181
+	EQUAL
+	IFJMPREF {
+		CALL $rewardPerSecond$
+	}
 }
 IFJMP

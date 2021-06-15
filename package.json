@@ -24,20 +24,20 @@
     "broxus-ton-tokens-contracts": "github:broxus/ton-eth-bridge-token-contracts#74905260499d79cf7cb0d89a6eb572176fc1fcd5",
     "chai-as-promised": "^7.1.1",
     "ethereum-freeton-bridge-contracts": "github:broxus/ton-eth-bridge-contracts#f36507d5488f19221c50aaa78ba4c53ebec2da17",
-    "locklift": "^1.1.0",
+    "locklift": "^1.2.9",
     "mocha-logger": "^1.0.7",
     "wton": "github:broxus/ton-wton"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
-    "@nomiclabs/hardhat-etherscan": "^2.1.1",
+    "@nomiclabs/hardhat-etherscan": "^2.1.3",
     "@nomiclabs/hardhat-web3": "^2.0.0",
-    "@openzeppelin/hardhat-upgrades": "^1.6.0",
+    "@openzeppelin/hardhat-upgrades": "^1.8.2",
     "chai": "^4.3.4",
     "chai-bignumber": "^3.0.0",
     "commander": "^6.2.1",
-    "ethers": "^5.1.2",
-    "hardhat": "^2.2.0",
-    "hardhat-abi-exporter": "^2.2.0"
+    "ethers": "^5.3.1",
+    "hardhat": "^2.3.3",
+    "hardhat-abi-exporter": "^2.2.1"
   }
 }
