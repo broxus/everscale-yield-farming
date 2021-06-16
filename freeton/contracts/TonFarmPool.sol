@@ -229,15 +229,16 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
             address userDataAddr = getUserDataAddress(sender_address);
             UserData(userDataAddr).processDeposit{value: 0, flag: 128}(deposit_nonce, amount, accTonPerShare);
         } else {
-            for (uint i = 0; i < rewardTokenRoot.length; i++) {
-                if (msg.sender == rewardTokenRoot[i]) {
+            for (uint i = 0; i < rewardTokenWallet.length; i++) {
+                if (msg.sender == rewardTokenWallet[i]) {
                     rewardTokenBalance[i] += amount;
                     rewardTokenBalanceCumulative[i] += amount;
 
-                    emit RewardDeposit(msg.sender, amount);
-                    original_gas_to.transfer(0, false, 128);
+                    emit RewardDeposit(rewardTokenRoot[i], amount);
                 }
             }
+            original_gas_to.transfer(0, false, 128);
+            return;
         }
     }
 

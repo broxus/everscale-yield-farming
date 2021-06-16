@@ -31,27 +31,41 @@ describe('Test Ton Farm Pool', async function() {
 
     let fabric;
     let root;
-    let farming_root;
+    let farming_root_1;
+    let farming_root_2;
+
     let userTokenWallet1;
     let userTokenWallet2;
-    let userFarmTokenWallet1;
-    let userFarmTokenWallet2;
-    let adminFarmTokenWallet;
+
+    let userFarmTokenWallet1_1;
+    let userFarmTokenWallet1_2;
+
+    let userFarmTokenWallet2_1;
+    let userFarmTokenWallet2_2;
+
+    let adminFarmTokenWallet_1;
+    let adminFarmTokenWallet_2;
+
     let farmStart;
     let farmEnd;
-    let rewardPerSec;
+    let rewardPerSec_1;
+    let rewardPerSec_2;
+
     if (locklift.network === 'dev') {
-        rewardPerSec = 100000000; // 0.1
+        rewardPerSec_1 = 100000000; // 0.1
+        rewardPerSec_2 = 200000000; // 0.1
     } else {
-        rewardPerSec = 1000000000; // 1
+        rewardPerSec_1 = 1000000000; // 1
+        rewardPerSec_2 = 2000000000; // 1
     }
     const minDeposit = 100;
     const userInitialTokenBal = 10000;
-    const adminInitialTokenBal = 10**9 * 1000000;
+    const adminInitialTokenBal = new BigNumber(1e18);
 
     let farm_pool;
     let farm_pool_wallet;
-    let farm_pool_reward_wallet;
+    let farm_pool_reward_wallet_1;
+    let farm_pool_reward_wallet_2;
 
     const depositTokens = async function(user, userTokenWallet, farm_pool, deposit_amount) {
         return await user.runTarget({
@@ -103,12 +117,13 @@ describe('Test Ton Farm Pool', async function() {
         });
     }
 
-    const checkReward = async function(userWallet, prevBalance, prevRewardTime, newRewardTime) {
-        const user1_bal_after = await userWallet.call({method: 'balance'});
-        const reward = user1_bal_after - prevBalance;
+    const checkReward = async function(userWallet, prevBalance, prevRewardTime, newRewardTime, _rewardPerSec) {
+        const user_bal_after = await userWallet.call({method: 'balance'});
+        const reward = user_bal_after - prevBalance;
+        // console.log(user_bal_after, prevBalance)
 
         const time_passed = newRewardTime - prevRewardTime;
-        const expected_reward = rewardPerSec * time_passed;
+        const expected_reward = _rewardPerSec * time_passed;
 
         expect(reward).to.be.equal(expected_reward, 'Bad reward');
     }
@@ -231,7 +246,8 @@ describe('Test Ton Farm Pool', async function() {
         describe('Tokens', async function() {
             it('Deploy roots', async function() {
                 root = await deployTokenRoot('Farm token', 'FT');
-                farming_root = await deployTokenRoot('Reward token', 'RT');
+                farming_root_1 = await deployTokenRoot('Reward token', 'RT');
+                farming_root_2 = await deployTokenRoot('Reward token 2', 'RT 2');
             });
         });
 
@@ -272,7 +288,8 @@ describe('Test Ton Farm Pool', async function() {
 
             it('Deploy users token wallets', async function() {
                 [ userTokenWallet1, userTokenWallet2 ] = await deployTokenWallets([user1, user2], root);
-                [ userFarmTokenWallet2, adminFarmTokenWallet ] = await deployTokenWallets([user2, admin_user], farming_root);
+                [ userFarmTokenWallet2_1, adminFarmTokenWallet_1 ] = await deployTokenWallets([user2, admin_user], farming_root_1);
+                [ userFarmTokenWallet2_2, adminFarmTokenWallet_2 ] = await deployTokenWallets([user2, admin_user], farming_root_2);
                 // [ userFarmTokenWallet1, userFarmTokenWallet2, adminFarmTokenWallet ] = await deployTokenWallets([user1, user2, admin_user], farming_root);
             });
 
@@ -286,22 +303,32 @@ describe('Test Ton Farm Pool', async function() {
                         }
                     });
                 }
-                await farming_root.run({
+                await farming_root_1.run({
                     method: 'mint',
                     params: {
-                        tokens: adminInitialTokenBal,
-                        to: adminFarmTokenWallet.address
+                        tokens: adminInitialTokenBal.toString(),
+                        to: adminFarmTokenWallet_1.address
+                    }
+                });
+
+                await farming_root_2.run({
+                    method: 'mint',
+                    params: {
+                        tokens: adminInitialTokenBal.toString(),
+                        to: adminFarmTokenWallet_2.address
                     }
                 });
 
                 const balance1 = await userTokenWallet1.call({method: 'balance'});
                 const balance2 = await userTokenWallet2.call({method: 'balance'});
-                const balance3 = await adminFarmTokenWallet.call({method: 'balance'});
+
+                const balance3 = await adminFarmTokenWallet_1.call({method: 'balance'});
+                const balance4 = await adminFarmTokenWallet_2.call({method: 'balance'});
 
                 expect(balance1.toNumber()).to.be.equal(userInitialTokenBal, 'User ton token wallet empty');
                 expect(balance2.toNumber()).to.be.equal(userInitialTokenBal, 'User ton token wallet empty');
-                expect(balance3.toNumber()).to.be.equal(adminInitialTokenBal, 'User ton token wallet empty');
-
+                expect(balance3.toString()).to.be.equal(adminInitialTokenBal.toString(), 'User ton token wallet empty');
+                expect(balance4.toString()).to.be.equal(adminInitialTokenBal.toString(), 'User ton token wallet empty');
             });
         });
 
@@ -355,13 +382,13 @@ describe('Test Ton Farm Pool', async function() {
                     method: 'deployFarmPool',
                     params: {
                         pool_owner: admin_user.address,
-                        rewardPerSecond: rewardPerSec,
+                        rewardPerSecond: [rewardPerSec_1, rewardPerSec_2],
                         farmStartTime: farmStart,
                         farmEndTime: farmEnd,
                         tokenRoot: root.address,
-                        rewardTokenRoot: farming_root.address
+                        rewardTokenRoot: [farming_root_1.address, farming_root_2.address]
                     },
-                    value: convertCrystal(7, 'nano')
+                    value: convertCrystal(10, 'nano')
                 });
 
                 const {
@@ -396,6 +423,8 @@ describe('Test Ton Farm Pool', async function() {
                 _farm_pool.setAddress(_pool);
                 farm_pool = _farm_pool;
 
+                const farm_pool_version = await farm_pool.call({method: 'getVersion'});
+
                 const expectedWalletAddr = await root.call({
                     method: 'getWalletAddress',
                     params: {
@@ -414,23 +443,6 @@ describe('Test Ton Farm Pool', async function() {
                     result: 'id'
                 });
 
-                // we wait until last msg in deploy chain is indexed
-                // last msg is setReceiveCallback from farm pool to token wallet
-                await locklift.ton.client.net.wait_for_collection({
-                    collection: 'messages',
-                    filter: {
-                        dst: { eq: expectedWalletAddr },
-                        src: { eq: farm_pool.address },
-                        // this is the body of setReceiveCallback call
-                        // body: { eq: `te6ccgEBAQEAKAAAS3Hu6HWABHVBJcgv7aQ+zPFad/KtOJMATapHjRzEbZYcCnx3Xrmo` }
-                        // try catch by value
-                        value: { eq: "0x2ebae40" },
-                        status: { eq: 5 }
-                    },
-                    result: 'id',
-                    timeout: 120000
-                });
-
                 const farm_pool_wallet_addr = await farm_pool.call({method: 'tokenWallet'});
                 logger.log(`Farm Pool token wallet: ${farm_pool_wallet_addr}`);
 
@@ -440,14 +452,20 @@ describe('Test Ton Farm Pool', async function() {
                 );
                 farm_pool_wallet.setAddress(farm_pool_wallet_addr);
 
-                const farm_pool_reward_wallet_addr = await farm_pool.call({method: 'rewardTokenWallet'});
-                logger.log(`Farm Pool reward token wallet: ${farm_pool_reward_wallet_addr}`);
+                const farm_pool_reward_wallet_addrs = await farm_pool.call({method: 'rewardTokenWallet'});
+                logger.log(`Farm Pool reward token wallets: ${farm_pool_reward_wallet_addrs}`);
 
-                farm_pool_reward_wallet = await locklift.factory.getContract(
+                farm_pool_reward_wallet_1 = await locklift.factory.getContract(
                     'TONTokenWallet',
                     './node_modules/broxus-ton-tokens-contracts/free-ton/build'
                 );
-                farm_pool_reward_wallet.setAddress(farm_pool_reward_wallet_addr);
+                farm_pool_reward_wallet_1.setAddress(farm_pool_reward_wallet_addrs[0]);
+
+                farm_pool_reward_wallet_2 = await locklift.factory.getContract(
+                    'TONTokenWallet',
+                    './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+                );
+                farm_pool_reward_wallet_2.setAddress(farm_pool_reward_wallet_addrs[1]);
                 await afterRun();
                 // call in order to check if wallet is deployed
                 const details = await farm_pool_wallet.call({method: 'getDetails'});
@@ -456,35 +474,52 @@ describe('Test Ton Farm Pool', async function() {
                 expect(details.root_address).to.be.equal(root.address, 'Wrong farm pool token wallet root');
 
                 // call in order to check if wallet is deployed
-                const details2 = await farm_pool_reward_wallet.call({method: 'getDetails'});
+                const details2 = await farm_pool_reward_wallet_1.call({method: 'getDetails'});
                 expect(details2.owner_address).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet owner');
                 expect(details2.receive_callback).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet receive callback');
-                expect(details2.root_address).to.be.equal(farming_root.address, 'Wrong farm pool reward token wallet root');
+                expect(details2.root_address).to.be.equal(farming_root_1.address, 'Wrong farm pool reward token wallet root');
+
+                // call in order to check if wallet is deployed
+                const details3 = await farm_pool_reward_wallet_2.call({method: 'getDetails'});
+                expect(details3.owner_address).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet owner');
+                expect(details3.receive_callback).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet receive callback');
+                expect(details3.root_address).to.be.equal(farming_root_2.address, 'Wrong farm pool reward token wallet root');
             });
 
             it('Sending reward tokens to pool', async function() {
-                const amount = (farmEnd - farmStart) * rewardPerSec;
+                const amount_1 = (farmEnd - farmStart) * rewardPerSec_1;
+                const amount_2 = (farmEnd - farmStart) * rewardPerSec_2;
 
-                await depositTokens(admin_user, adminFarmTokenWallet, farm_pool, amount);
+                await depositTokens(admin_user, adminFarmTokenWallet_1, farm_pool, amount_1);
+                await depositTokens(admin_user, adminFarmTokenWallet_2, farm_pool, amount_2);
 
                 await afterRun();
 
-                const { value: { amount: _amount } } = (await farm_pool.getEvents('RewardDeposit')).pop();
-                expect(parseInt(_amount, 16)).to.be.equal(amount, 'Bad event');
+                const [event_1, event_2] = await farm_pool.getEvents('RewardDeposit');
 
+                const { value: { amount: _amount_1} } = event_1;
+                expect(parseInt(_amount_1, 16)).to.be.equal(amount_1, 'Bad event');
 
-                const farm_pool_balance = await farm_pool_reward_wallet.call({method: 'balance'});
-                const farm_pool_balance_2 = await farm_pool.call({method: 'rewardTokenBalance'});
+                const { value: { amount: _amount_2} } = event_2;
+                expect(parseInt(_amount_2, 16)).to.be.equal(amount_2, 'Bad event');
 
-                expect(farm_pool_balance.toString()).to.be.equal(amount.toString(), 'Farm pool balance empty');
-                expect(farm_pool_balance_2.toString()).to.be.equal(amount.toString(), 'Farm pool balance not recognized');
+                const farm_pool_balance_1 = await farm_pool_reward_wallet_1.call({method: 'balance'});
+                const farm_pool_balances = await farm_pool.call({method: 'rewardTokenBalance'});
+
+                expect(farm_pool_balance_1.toString()).to.be.equal(amount_1.toString(), 'Farm pool balance empty');
+                expect(farm_pool_balances[0].toString()).to.be.equal(amount_1.toString(), 'Farm pool balance not recognized');
+
+                const farm_pool_balance_2 = await farm_pool_reward_wallet_2.call({method: 'balance'});
+
+                expect(farm_pool_balance_2.toString()).to.be.equal(amount_2.toString(), 'Farm pool balance empty');
+                expect(farm_pool_balances[1].toString()).to.be.equal(amount_2.toString(), 'Farm pool balance not recognized');
             });
         });
     });
 
     describe('Staking pipeline testing', async function() {
         describe('1 user farming', async function () {
-            let unclaimed = 0;
+            let unclaimed = [0, 0];
 
             it('Deposit tokens', async function() {
                 const tx = await depositTokens(user1, userTokenWallet1, farm_pool, minDeposit);
@@ -493,7 +528,8 @@ describe('Test Ton Farm Pool', async function() {
                     minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 );
 
-                userFarmTokenWallet1 = await getUserTokenWallet(farming_root, user1);
+                userFarmTokenWallet1_1 = await getUserTokenWallet(farming_root_1, user1);
+                userFarmTokenWallet1_2 = await getUserTokenWallet(farming_root_2, user1);
 
                 const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
@@ -504,9 +540,11 @@ describe('Test Ton Farm Pool', async function() {
                 const prev_reward_time = await farm_pool.call({method: 'lastRewardTime'});
                 const farmStart = await farm_pool.call({method: 'farmStartTime'});
 
-                unclaimed += (prev_reward_time - farmStart) * rewardPerSec;
+                unclaimed[0] += (prev_reward_time - farmStart) * rewardPerSec_1;
+                unclaimed[1] += (prev_reward_time - farmStart) * rewardPerSec_2;
 
-                const user1_bal_before = await userFarmTokenWallet1.call({method: 'balance'});
+                const user1_1_bal_before = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user1_2_bal_before = await userFarmTokenWallet1_2.call({method: 'balance'});
                 await sleep(2000);
 
                 const tx = await depositTokens(user1, userTokenWallet1, farm_pool, minDeposit);
@@ -517,26 +555,38 @@ describe('Test Ton Farm Pool', async function() {
                 );
 
                 const new_reward_time = await farm_pool.call({method: 'lastRewardTime'})
-                await checkReward(userFarmTokenWallet1, user1_bal_before, prev_reward_time, new_reward_time);
+                await checkReward(userFarmTokenWallet1_1, user1_1_bal_before, prev_reward_time, new_reward_time, rewardPerSec_1);
+                await checkReward(userFarmTokenWallet1_2, user1_2_bal_before, prev_reward_time, new_reward_time, rewardPerSec_2);
 
                 const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(parseInt(_amount, 16)).to.be.equal(minDeposit, 'Bad event');
 
-                const unclaimed_remote = await farm_pool.call({method: 'unclaimedReward'});
-                expect(unclaimed.toString()).to.be.equal(unclaimed_remote.toString(), "Bad unclaimed reward");
+                const unclaimed_reward = await farm_pool.call({method: 'unclaimedReward'});
+                expect(unclaimed[0].toString()).to.be.equal(unclaimed_reward[0].toString(), "Bad unclaimed reward 1");
+                expect(unclaimed[1].toString()).to.be.equal(unclaimed_reward[1].toString(), "Bad unclaimed reward 2");
 
-                const admin_balance_before = await adminFarmTokenWallet.call({method: 'balance'});
+                const admin_balance_before_1 = await adminFarmTokenWallet_1.call({method: 'balance'});
+                const admin_balance_before_2 = await adminFarmTokenWallet_2.call({method: 'balance'});
                 await withdrawUnclaimed(admin_user, farm_pool);
-                const admin_balance_after = await adminFarmTokenWallet.call({method: 'balance'});
-                const balance_delta = admin_balance_after - admin_balance_before;
-                expect(balance_delta.toString()).to.be.equal(unclaimed_remote.toString());
-                unclaimed = 0;
+
+                const admin_balance_after_1 = await adminFarmTokenWallet_1.call({method: 'balance'});
+                const admin_balance_after_2 = await adminFarmTokenWallet_2.call({method: 'balance'});
+
+                const balance_delta_1 = admin_balance_after_1 - admin_balance_before_1;
+                const balance_delta_2 = admin_balance_after_2 - admin_balance_before_2;
+
+                expect(balance_delta_1.toString()).to.be.equal(unclaimed_reward[0].toString());
+                expect(balance_delta_2.toString()).to.be.equal(unclaimed_reward[1].toString());
+
+                unclaimed = [0, 0];
             });
 
             it('User withdraw half of staked amount', async function() {
                 const prev_reward_time = await farm_pool.call({method: 'lastRewardTime'});
-                const user1_bal_before = await userFarmTokenWallet1.call({method: 'balance'});
+                const user1_bal_before_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user1_bal_before_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+
                 await sleep(2000);
 
                 const tx = await withdrawTokens(user1, farm_pool, minDeposit);
@@ -546,7 +596,8 @@ describe('Test Ton Farm Pool', async function() {
                 );
 
                 const new_reward_time = await farm_pool.call({method: 'lastRewardTime'})
-                await checkReward(userFarmTokenWallet1, user1_bal_before, prev_reward_time, new_reward_time);
+                await checkReward(userFarmTokenWallet1_1, user1_bal_before_1, prev_reward_time, new_reward_time, rewardPerSec_1);
+                await checkReward(userFarmTokenWallet1_2, user1_bal_before_2, prev_reward_time, new_reward_time, rewardPerSec_2);
 
                 const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Withdraw')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
@@ -555,13 +606,16 @@ describe('Test Ton Farm Pool', async function() {
 
             it('User withdraw other half', async function() {
                 const prev_reward_time = await farm_pool.call({method: 'lastRewardTime'});
-                const user1_bal_before = await userFarmTokenWallet1.call({method: 'balance'});
+                const user1_bal_before_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user1_bal_before_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+
                 await sleep(2000);
 
                 const tx = await withdrawTokens(user1, farm_pool, minDeposit);
 
                 const new_reward_time = await farm_pool.call({method: 'lastRewardTime'})
-                await checkReward(userFarmTokenWallet1, user1_bal_before, prev_reward_time.toNumber(), new_reward_time);
+                await checkReward(userFarmTokenWallet1_1, user1_bal_before_1, prev_reward_time.toNumber(), new_reward_time, rewardPerSec_1);
+                await checkReward(userFarmTokenWallet1_2, user1_bal_before_2, prev_reward_time.toNumber(), new_reward_time, rewardPerSec_2);
 
                 await checkTokenBalances(
                     farm_pool, farm_pool_wallet, userTokenWallet1,
@@ -584,28 +638,42 @@ describe('Test Ton Farm Pool', async function() {
                 );
 
                 await sleep(1000);
-                unclaimed += (reward_time_2 - reward_time_1) * rewardPerSec;
+                unclaimed[0] += (reward_time_2 - reward_time_1) * rewardPerSec_1;
+                unclaimed[1] += (reward_time_2 - reward_time_1) * rewardPerSec_2;
 
-                const user1_bal_before = await userFarmTokenWallet1.call({method: 'balance'});
+                const user1_bal_before_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user1_bal_before_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+
                 await withdrawTokens(user1, farm_pool, minDeposit);
                 const reward_time_3 = await farm_pool.call({method: 'lastRewardTime'});
 
-                const cumulative = await farm_pool.call({method: 'rewardTokenBalanceCumulative'});
-                const cumulative_expected = (farmEnd - farmStart) * rewardPerSec;
-                expect(cumulative.toString()).to.be.equal(cumulative_expected.toString(), 'Bad cumulative');
+                const [cumulative_1, cumulative_2] = await farm_pool.call({method: 'rewardTokenBalanceCumulative'});
+                const cumulative_expected_1 = (farmEnd - farmStart) * rewardPerSec_1;
+                const cumulative_expected_2 = (farmEnd - farmStart) * rewardPerSec_2;
 
-                const unclaimed_remote = await farm_pool.call({method: 'unclaimedReward'});
-                expect(unclaimed.toString()).to.be.equal(unclaimed_remote.toString(), "Bad unclaimed reward");
+                expect(cumulative_1.toString()).to.be.equal(cumulative_expected_1.toString(), 'Bad cumulative');
+                expect(cumulative_2.toString()).to.be.equal(cumulative_expected_2.toString(), 'Bad cumulative');
 
-                const admin_balance_before = await adminFarmTokenWallet.call({method: 'balance'});
+                const [unclaimed_reward_1, unclaimed_reward_2] = await farm_pool.call({method: 'unclaimedReward'});
+                expect(unclaimed[0].toString()).to.be.equal(unclaimed_reward_1.toString(), "Bad unclaimed reward");
+                expect(unclaimed[1].toString()).to.be.equal(unclaimed_reward_2.toString(), "Bad unclaimed reward");
+
+                const admin_balance_before_1 = await adminFarmTokenWallet_1.call({method: 'balance'});
+                const admin_balance_before_2 = await adminFarmTokenWallet_2.call({method: 'balance'});
+
                 await withdrawUnclaimed(admin_user, farm_pool);
-                const admin_balance_after = await adminFarmTokenWallet.call({method: 'balance'});
-                const balance_delta = admin_balance_after - admin_balance_before;
-                expect(balance_delta.toString()).to.be.equal(unclaimed_remote.toString());
+                const admin_balance_after_1 = await adminFarmTokenWallet_1.call({method: 'balance'});
+                const admin_balance_after_2 = await adminFarmTokenWallet_2.call({method: 'balance'});
 
-                await checkReward(userFarmTokenWallet1, user1_bal_before, reward_time_2, reward_time_3);
+                const balance_delta_1 = admin_balance_after_1 - admin_balance_before_1;
+                const balance_delta_2 = admin_balance_after_2 - admin_balance_before_2;
+
+                expect(balance_delta_1.toString()).to.be.equal(unclaimed_reward_1.toString());
+                expect(balance_delta_2.toString()).to.be.equal(unclaimed_reward_2.toString());
+
+                await checkReward(userFarmTokenWallet1_1, user1_bal_before_1, reward_time_2, reward_time_3, rewardPerSec_1);
+                await checkReward(userFarmTokenWallet1_2, user1_bal_before_2, reward_time_2, reward_time_3, rewardPerSec_2);
             });
-
         });
 
         describe('Multiple users farming', async function() {
@@ -636,24 +704,33 @@ describe('Test Ton Farm Pool', async function() {
             it('Users withdraw tokens', async function() {
                 await sleep(5000);
 
-                const user1_bal_before = await userFarmTokenWallet1.call({method: 'balance'});
+                const user1_bal_before_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user1_bal_before_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+
                 const tx1 = await withdrawTokens(user1, farm_pool, minDeposit);
                 await afterRun(tx1);
 
                 user1_withdraw_time = await farm_pool.call({method: 'lastRewardTime'});
 
-                const user1_bal_after = await userFarmTokenWallet1.call({method: 'balance'});
-                const reward1 = user1_bal_after - user1_bal_before;
+                const user1_bal_after_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user1_bal_after_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+
+                const reward1_1 = user1_bal_after_1 - user1_bal_before_1;
+                const reward1_2 = user1_bal_after_2 - user1_bal_before_2;
 
                 const time_passed_1 = user2_deposit_time - user1_deposit_time;
-                const expected_reward_1 = rewardPerSec * time_passed_1;
+                const expected_reward_1_1 = rewardPerSec_1 * time_passed_1;
+                const expected_reward_1_2 = rewardPerSec_2 * time_passed_1;
 
                 const time_passed_2 = user1_withdraw_time - user2_deposit_time;
-                const expected_reward_2 = rewardPerSec * 0.5 * time_passed_2;
+                const expected_reward_2_1 = rewardPerSec_1 * 0.5 * time_passed_2;
+                const expected_reward_2_2 = rewardPerSec_2 * 0.5 * time_passed_2;
 
-                const expected_reward_final = (expected_reward_1 + expected_reward_2) * 0.9
+                const expected_reward_final_1 = (expected_reward_1_1 + expected_reward_2_1);
+                const expected_reward_final_2 = (expected_reward_1_2 + expected_reward_2_2);
 
-                expect(reward1).to.be.above(expected_reward_final, 'Bad reward 1 user (low)');
+                expect(reward1_1).to.be.eq(expected_reward_final_1, 'Bad reward 1_1 user (low)');
+                expect(reward1_2).to.be.eq(expected_reward_final_2, 'Bad reward 1_2 user (low)');
 
                 await checkTokenBalances(
                     farm_pool, farm_pool_wallet, userTokenWallet1,
@@ -662,21 +739,34 @@ describe('Test Ton Farm Pool', async function() {
 
                 await sleep(2000);
 
-                const user2_bal_before = await userFarmTokenWallet2.call({method: 'balance'});
+                const user2_bal_before_1 = await userFarmTokenWallet2_1.call({method: 'balance'});
+                const user2_bal_before_2 = await userFarmTokenWallet2_2.call({method: 'balance'});
+
                 const tx2 = await withdrawTokens(user2, farm_pool, minDeposit);
                 await afterRun(tx2);
-                const user2_bal_after = await userFarmTokenWallet2.call({method: 'balance'});
+
+                const user2_bal_after_1 = await userFarmTokenWallet2_1.call({method: 'balance'});
+                const user2_bal_after_2 = await userFarmTokenWallet2_2.call({method: 'balance'});
+
                 user2_withdraw_time = await farm_pool.call({method: 'lastRewardTime'});
-                const reward2 = user2_bal_after - user2_bal_before;
+                const reward2_1 = user2_bal_after_1 - user2_bal_before_1;
+                const reward2_2 = user2_bal_after_2 - user2_bal_before_2;
 
                 const time_passed_21 = user1_withdraw_time - user2_deposit_time;
-                const expected_reward_21 = rewardPerSec * 0.5 * time_passed_21;
+
+                const expected_reward_21_1 = rewardPerSec_1 * 0.5 * time_passed_21;
+                const expected_reward_21_2 = rewardPerSec_2 * 0.5 * time_passed_21;
 
                 const time_passed_22 = user2_withdraw_time - user1_withdraw_time;
-                const expected_reward_22 = rewardPerSec * time_passed_22;
-                const expected_reward_final_2 = (expected_reward_22 + expected_reward_21)
 
-                expect(reward2).to.be.equal(expected_reward_final_2, 'Bad reward 2 user (low)');
+                const expected_reward_22_1 = rewardPerSec_1 * time_passed_22;
+                const expected_reward_22_2 = rewardPerSec_2 * time_passed_22;
+
+                const expected_reward_final2_1 = (expected_reward_22_1 + expected_reward_21_1);
+                const expected_reward_final2_2 = (expected_reward_22_2 + expected_reward_21_2);
+
+                expect(reward2_1).to.be.equal(expected_reward_final2_1, 'Bad reward 2_1 user (low)');
+                expect(reward2_2).to.be.equal(expected_reward_final2_2, 'Bad reward 2_2 user (low)');
 
                 await checkTokenBalances(
                     farm_pool, farm_pool_wallet, userTokenWallet1,
@@ -704,19 +794,29 @@ describe('Test Ton Farm Pool', async function() {
 
             it('User withdraw all', async function() {
                 await sleep(2000);
-                const user_bal_before = await userFarmTokenWallet1.call({method: 'balance'});
+                const user_bal_before_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user_bal_before_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+
                 const tx1 = await withdrawAllTokens(user1, farm_pool);
                 const new_reward_time = await farm_pool.call({method: 'lastRewardTime'});
                 await afterRun(tx1);
-                const user_bal_after = await userFarmTokenWallet1.call({method: 'balance'});
-                const reward = user_bal_after - user_bal_before;
+
+                const user_bal_after_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user_bal_after_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+
+                const reward_1 = user_bal_after_1 - user_bal_before_1;
+                const reward_2 = user_bal_after_2 - user_bal_before_2;
 
                 const time_passed = new_reward_time - user_deposit_time;
-                const expected_reward = rewardPerSec * time_passed;
 
-                const expected_reward_final = expected_reward * 0.9;
+                const expected_reward_1 = rewardPerSec_1 * time_passed;
+                const expected_reward_2 = rewardPerSec_2 * time_passed;
 
-                expect(reward).to.be.above(expected_reward_final, 'Bad reward 1 user');
+                const expected_reward_final_1 = expected_reward_1;
+                const expected_reward_final_2 = expected_reward_2;
+
+                expect(reward_1).to.be.eq(expected_reward_final_1, 'Bad reward 1_1 user');
+                expect(reward_2).to.be.eq(expected_reward_final_2, 'Bad reward 1_2 user');
 
                 await checkTokenBalances(
                     farm_pool, farm_pool_wallet, userTokenWallet1,
@@ -739,7 +839,8 @@ describe('Test Ton Farm Pool', async function() {
             });
 
             it('Safe withdraw', async function() {
-                const user1_bal_before = await userFarmTokenWallet1.call({method: 'balance'});
+                const user1_bal_before_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user1_bal_before_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
                 await sleep(2000);
 
                 const tx = await user1.runTarget({
@@ -750,8 +851,11 @@ describe('Test Ton Farm Pool', async function() {
                     },
                     value: convertCrystal(1.5, 'nano')
                 });
-                const user1_bal_after = await userFarmTokenWallet1.call({method: 'balance'});
-                expect(user1_bal_after.toNumber()).to.be.equal(user1_bal_before.toNumber(), 'Balance increased on safe withdraw');
+                const user1_bal_after_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user1_bal_after_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+
+                expect(user1_bal_after_1.toNumber()).to.be.equal(user1_bal_before_1.toNumber(), 'Balance increased on safe withdraw');
+                expect(user1_bal_after_2.toNumber()).to.be.equal(user1_bal_before_2.toNumber(), 'Balance increased on safe withdraw');
 
                 await checkTokenBalances(
                     farm_pool, farm_pool_wallet, userTokenWallet1,

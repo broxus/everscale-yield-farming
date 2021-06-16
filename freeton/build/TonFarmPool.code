@@ -1068,8 +1068,8 @@ PUSHCONT {
 			DUP
 			;; <
 			;; get member length
-			;; push identifier rewardTokenRoot
-			GETGLOB 18
+			;; push identifier rewardTokenWallet
+			GETGLOB 19
 			INDEX 0
 			LESS
 		}
@@ -1080,8 +1080,8 @@ PUSHCONT {
 			;; index
 			;; push identifier i
 			PUSH S1
-			;; push identifier rewardTokenRoot
-			GETGLOB 18
+			;; push identifier rewardTokenWallet
+			GETGLOB 19
 			INDEX 1
 			PUSHINT 32
 			DICTUGET
@@ -1154,8 +1154,15 @@ PUSHCONT {
 				STSLICECONST 0
 				STSLICECONST x2fd6292c
 				;; token_root
-				;; get member sender
-				GETGLOB 9
+				;; index
+				;; push identifier i
+				PUSH S1
+				;; push identifier rewardTokenRoot
+				GETGLOB 18
+				INDEX 1
+				PUSHINT 32
+				DICTUGET
+				THROWIFNOT 50
 				STSLICER
 				;; amount
 				;; push identifier amount
@@ -1163,19 +1170,6 @@ PUSHCONT {
 				STUR 256
 				ENDC
 				PUSHINT 0
-				SENDRAWMSG
-				;; transfer()
-				;; push identifier original_gas_to
-				PUSH S4
-				NEWC
-				STSLICECONST x42_
-				STSLICE
-				PUSHINT 109
-				STZEROES
-				STSLICECONST 0
-				STSLICECONST 0
-				ENDC
-				PUSHINT 128
 				SENDRAWMSG
 			}
 			IF
@@ -1190,6 +1184,23 @@ PUSHCONT {
 		WHILE
 		DROP
 		; end for
+		;; transfer()
+		;; push identifier original_gas_to
+		PUSH S3
+		NEWC
+		STSLICECONST x42_
+		STSLICE
+		PUSHINT 109
+		STZEROES
+		STSLICECONST 0
+		STSLICECONST 0
+		ENDC
+		PUSHINT 128
+		SENDRAWMSG
+		;; return
+		DROP
+		PUSHINT 4
+		RET
 	}
 	IFELSE
 	EQINT 4
