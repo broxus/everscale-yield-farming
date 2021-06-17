@@ -1,9 +1,9 @@
 {
   "fabric": "0:587e4c728a21652d814cb470b6d32c0cdc2596aa4f61d186c2b0e2827e336823",
   "pool_owner": "0:a59b53c5a3584371e92dbb5ca9742f7eb5bd28e445603b28057603a8ae0c01e4",
-  "rewardPerSecond": "1000",
+  "rewardPerSecond": ["1000", "2000"],
   "farmStartTime": "1000",
   "farmEndTime": "2000",
   "tokenRoot": "0:c1fc7d041a5c521b633eaa3dd1d5e04ace9dc6a4273119d46a28ee3bdcfaa30d",
-  "rewardTokenRoot": "0:b215ffbe0c999a750d8e8996c8dea9ac879408b9f62947b51bdf393366b159cf"
+  "rewardTokenRoot": ["0:b215ffbe0c999a750d8e8996c8dea9ac879408b9f62947b51bdf393366b159cf", "b215ffbe0c999a750d8e8996c8dea9ac879408b9f62947b51bdf393366b159cf"]
 }
