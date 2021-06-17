@@ -33,7 +33,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     uint128 public constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
     uint128 public constant TOKEN_WALLET_DEPLOY_GRAMS_VALUE = 0.1 ton;
     uint128 public constant GET_WALLET_ADDRESS_VALUE = 0.5 ton;
-    uint128 public constant MIN_DEPOSIT_MSG_VALUE = 2 ton;
+    uint128 public constant MIN_DEPOSIT_MSG_VALUE = 1 ton;
     uint128 public constant MIN_WITHDRAW_MSG_VALUE = 1 ton;
     uint128 public constant CONTRACT_MIN_BALANCE = 1 ton;
     uint128 public constant USER_DATA_DEPLOY_VALUE = 0.2 ton;
@@ -205,7 +205,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         tvm.rawReserve(_reserve(), 2);
 
         if (msg.sender == tokenWallet) {
-            if (sender_address.value == 0 || msg.value < MIN_DEPOSIT_MSG_VALUE) {
+            if (sender_address.value == 0 || msg.value < (MIN_DEPOSIT_MSG_VALUE + TOKEN_WALLET_DEPLOY_VALUE * rewardTokenRoot.length)) {
                 // external owner or too low deposit value or too lov msg.value
                 TvmCell tvmcell;
                 ITONTokenWallet(tokenWallet).transfer{value: 0, flag: 128}(

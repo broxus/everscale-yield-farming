@@ -914,7 +914,16 @@ PUSHCONT {
 				CALL $message_balance_macro$
 			}
 			;; <
-			PUSHINT 2000000000
+			PUSHINT 1000000000
+			;; +
+			PUSHINT 500000000
+			;; *
+			;; get member length
+			;; push identifier rewardTokenRoot
+			GETGLOB 18
+			INDEX 0
+			MUL
+			ADD
 			LESS
 		}
 		IFNOT
