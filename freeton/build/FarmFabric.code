@@ -165,10 +165,15 @@ DICTUSETREF
 GETGLOB 10
 NEWC
 STU 64
-PUSHINT 2
+PUSHINT 3
 ROT
 PUSHINT 64
 DICTUSETB
+MYADDR
+PUSHINT 2
+ROT
+PUSHINT 64
+DICTUSET
 NEWC
 STDICT
 ENDC
@@ -260,6 +265,157 @@ PUSHINT 1
 SENDRAWMSG
 NIP
 ;; decl: farm_pool
+DROP2
+; end function deployFarmPool
+BLKDROP 6
+
+.macro onPoolDeploy
+DROP
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+; Decode input parameters
+; Decode pool_deploy_nonce
+LDU 64
+; Decode pool_owner
+LDMSGADDR
+; Decode rewardPerSecond
+DUP
+SDEMPTY
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+; Decode farmStartTime
+LDUQ 256
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 256
+}
+IFNOT
+; Decode farmEndTime
+LDUQ 256
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 256
+}
+IFNOT
+; Decode tokenRoot
+LDMSGADDRQ
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDMSGADDR
+}
+IFNOT
+; Decode rewardTokenRoot
+DUP
+SDEMPTY
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+ENDS
+;; param: pool_deploy_nonce
+;; param: pool_owner
+;; param: rewardPerSecond
+;; param: farmStartTime
+;; param: farmEndTime
+;; param: tokenRoot
+;; param: rewardTokenRoot
+; function onPoolDeploy
+NEWDICT
+GETGLOB 2
+NEWC
+STU 256
+PUSHINT 0
+ROT
+PUSHINT 64
+DICTUSETB
+;; push identifier FarmPoolUserDataCode
+GETGLOB 12
+PUSHINT 1
+ROT
+PUSHINT 64
+DICTUSETREF
+;; push identifier pool_deploy_nonce
+PUSH S7
+NEWC
+STU 64
+PUSHINT 3
+ROT
+PUSHINT 64
+DICTUSETB
+MYADDR
+PUSHINT 2
+ROT
+PUSHINT 64
+DICTUSET
+NEWC
+STDICT
+ENDC
+;; push identifier FarmPoolCode
+GETGLOB 13
+NEWC
+STSLICECONST x2_
+STOPTREF
+STOPTREF
+STZERO
+ENDC
+;; decl: stateInit
+;; push identifier stateInit
+DUP
+HASHCU
+NEWC
+STSLICECONST x801_
+STU 256
+ENDC
+CTOS
+;; decl: pool_address
+;; get member sender
+GETGLOB 9
+;; push identifier pool_address
+PUSH S1
+SDEQ
+THROWIFNOT 103
+;; get member balance
+GETPARAM 7
+INDEX 0
+;; -
+;; get member value
+CALLREF {
+	CALL $message_balance_macro$
+}
+SUB
+UFITS 128
+PUSHINT 1000000000
+MAX
+PUSHINT 2
+RAWRESERVE
 ;; emit NewFarmPool
 NEWC
 PUSHSLICE xc0000000000000000000000002_
@@ -269,7 +425,7 @@ STSLICECONST 1
 NEWC
 STSLICECONST x7a4916e1
 ;; pool
-;; push identifier farm_pool
+;; push identifier pool_address
 PUSH S2
 STSLICER
 ;; pool_owner
@@ -309,8 +465,13 @@ ENDC
 PUSHINT 0
 SENDRAWMSG
 DROP2
-; end function deployFarmPool
-BLKDROP 6
+; end function onPoolDeploy
+BLKDROP 7
+CALLREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
 
 .macro upgrade
 DROP
@@ -772,7 +933,7 @@ SETGLOB 7
 
 .macro public_function_selector
 DUP
-PUSHINT 477628765
+PUSHINT 854938475
 LEQ
 PUSHCONT {
 	DUP
@@ -787,17 +948,23 @@ PUSHCONT {
 	IFJMPREF {
 		CALL $FarmPoolCode$
 	}
-}
-IFJMP
-DUP
-PUSHINT 1187817425
-LEQ
-PUSHCONT {
 	DUP
 	PUSHINT 854938475
 	EQUAL
 	IFJMPREF {
 		CALL $FarmPoolUserDataCode$
+	}
+}
+IFJMP
+DUP
+PUSHINT 1196840156
+LEQ
+PUSHCONT {
+	DUP
+	PUSHINT 955859945
+	EQUAL
+	IFJMPREF {
+		CALL $onPoolDeploy$
 	}
 	DUP
 	PUSHINT 1187817425
@@ -805,23 +972,11 @@ PUSHCONT {
 	IFJMPREF {
 		CALL $nonce$
 	}
-}
-IFJMP
-DUP
-PUSHINT 1454300485
-LEQ
-PUSHCONT {
 	DUP
 	PUSHINT 1196840156
 	EQUAL
 	IFJMPREF {
 		CALL $constructor$
-	}
-	DUP
-	PUSHINT 1454300485
-	EQUAL
-	IFJMPREF {
-		CALL $pools_count$
 	}
 }
 IFJMP
@@ -829,6 +984,12 @@ DUP
 PUSHINT 2052196749
 LEQ
 PUSHCONT {
+	DUP
+	PUSHINT 1454300485
+	EQUAL
+	IFJMPREF {
+		CALL $pools_count$
+	}
 	DUP
 	PUSHINT 1594609630
 	EQUAL

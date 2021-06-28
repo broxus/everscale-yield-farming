@@ -6,6 +6,7 @@ import "./interfaces/ITONTokenWallet.sol";
 import "./interfaces/ITokensReceivedCallback.sol";
 import "./interfaces/IUserData.sol";
 import "./interfaces/ITonFarmPool.sol";
+import "./interfaces/IFabric.sol";
 import "./UserData.sol";
 
 
@@ -27,7 +28,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     uint8 public constant FARMING_NOT_ENDED = 109;
     uint8 public constant WRONG_INTERVAL = 110;
     uint8 public constant BAD_REWARD_TOKENS_INPUT = 111;
-
+    uint8 public constant NOT_FABRIC = 112;
 
     // constants
     uint128 public constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
@@ -38,6 +39,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     uint128 public constant CONTRACT_MIN_BALANCE = 1 ton;
     uint128 public constant USER_DATA_DEPLOY_VALUE = 0.2 ton;
     uint128 public constant TOKEN_TRANSFER_VALUE = 0.5 ton;
+    uint128 public constant FABRIC_DEPLOY_CALLBACK_VALUE = 0.1 ton;
 
     // State vars
     uint256 public lastRewardTime;
@@ -79,12 +81,15 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     mapping (uint64 => PendingDeposit) deposits;
 
     TvmCell public static userDataCode;
+
+    address public static fabric;
     
     uint64 public static deploy_nonce;
 
     constructor(address _owner, uint256[] _rewardPerSecond, uint256 _farmStartTime, uint256 _farmEndTime, address _tokenRoot, address[] _rewardTokenRoot) public {
         require (_farmStartTime < _farmEndTime, WRONG_INTERVAL);
         require (_rewardPerSecond.length == _rewardTokenRoot.length, BAD_REWARD_TOKENS_INPUT);
+        require (msg.sender == fabric, NOT_FABRIC);
         tvm.accept();
 
         rewardPerSecond = _rewardPerSecond;
@@ -96,6 +101,9 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
         _initialize_reward_arrays();
         setUpTokenWallets();
+        IFabric(fabric).onPoolDeploy{value: FABRIC_DEPLOY_CALLBACK_VALUE}(
+            deploy_nonce, _owner, _rewardPerSecond, _farmStartTime, _farmEndTime, _tokenRoot, _rewardTokenRoot
+        );
     }
 
     function _initialize_reward_arrays() internal {

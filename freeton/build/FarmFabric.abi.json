@@ -24,6 +24,20 @@
 			]
 		},
 		{
+			"name": "onPoolDeploy",
+			"inputs": [
+				{"name":"pool_deploy_nonce","type":"uint64"},
+				{"name":"pool_owner","type":"address"},
+				{"name":"rewardPerSecond","type":"uint256[]"},
+				{"name":"farmStartTime","type":"uint256"},
+				{"name":"farmEndTime","type":"uint256"},
+				{"name":"tokenRoot","type":"address"},
+				{"name":"rewardTokenRoot","type":"address[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "upgrade",
 			"inputs": [
 				{"name":"new_code","type":"cell"}

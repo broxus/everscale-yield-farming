@@ -273,6 +273,14 @@
 			]
 		},
 		{
+			"name": "fabric",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"fabric","type":"address"}
+			]
+		},
+		{
 			"name": "deploy_nonce",
 			"inputs": [
 			],
@@ -283,7 +291,8 @@
 	],
 	"data": [
 		{"key":1,"name":"userDataCode","type":"cell"},
-		{"key":2,"name":"deploy_nonce","type":"uint64"}
+		{"key":2,"name":"fabric","type":"address"},
+		{"key":3,"name":"deploy_nonce","type":"uint64"}
 	],
 	"events": [
 		{

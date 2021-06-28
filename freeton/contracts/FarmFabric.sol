@@ -2,9 +2,10 @@ pragma ton-solidity ^0.39.0;
 pragma AbiHeader expire;
 
 import './TonFarmPool.sol';
+import "./interfaces/IFabric.sol";
 import './UserData.sol';
 
-contract FarmFabric {
+contract FarmFabric is IFabric {
     event NewFarmPool(
         address pool,
         address pool_owner,
@@ -26,6 +27,7 @@ contract FarmFabric {
 
     uint8 public constant WRONG_PUBKEY = 101;
     uint8 public constant NOT_OWNER = 102;
+    uint8 public constant NOT_POOL = 103;
     uint128 public constant FARM_POOL_DEPLOY_VALUE = 5 ton;
     uint128 constant CONTRACT_MIN_BALANCE = 1 ton;
 
@@ -48,7 +50,7 @@ contract FarmFabric {
 
         TvmCell stateInit = tvm.buildStateInit({
             contr: TonFarmPool,
-            varInit: { userDataCode: FarmPoolUserDataCode, deploy_nonce: pools_count },
+            varInit: { userDataCode: FarmPoolUserDataCode, deploy_nonce: pools_count, fabric: address(this) },
             pubkey: tvm.pubkey(),
             code: FarmPoolCode
         });
@@ -60,8 +62,29 @@ contract FarmFabric {
             wid: address(this).wid,
             flag: 1
         }(pool_owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
+    }
 
-        emit NewFarmPool(farm_pool, pool_owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
+    function onPoolDeploy(
+        uint64 pool_deploy_nonce,
+        address pool_owner,
+        uint256[] rewardPerSecond,
+        uint256 farmStartTime,
+        uint256 farmEndTime,
+        address tokenRoot,
+        address[] rewardTokenRoot
+    ) external override {
+        TvmCell stateInit = tvm.buildStateInit({
+            contr: TonFarmPool,
+            varInit: { userDataCode: FarmPoolUserDataCode, deploy_nonce: pool_deploy_nonce, fabric: address(this) },
+            pubkey: tvm.pubkey(),
+            code: FarmPoolCode
+        });
+        address pool_address = address(tvm.hash(stateInit));
+        require (msg.sender == pool_address, NOT_POOL);
+
+        tvm.rawReserve(math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE), 2);
+
+        emit NewFarmPool(pool_address, pool_owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
     }
 
 
