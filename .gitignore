@@ -4,3 +4,4 @@ node_modules
 ethereum/artifacts
 ethereum/cache
 ethereum/.openzeppelin
+build

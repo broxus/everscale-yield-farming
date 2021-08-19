@@ -256,7 +256,7 @@ describe('Test Ton Farm Pool', async function() {
                 let users = [];
                 for (const i of [1, 1, 1]) {
                     const [keyPair] = await locklift.keys.getKeyPairs();
-                    const Account = await locklift.factory.getAccount();
+                    const Account = await locklift.factory.getAccount('Wallet');
                     const _user = await locklift.giver.deployContract({
                         contract: Account,
                         constructorParams: {},

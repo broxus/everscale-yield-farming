@@ -37,9 +37,9 @@ module.exports = {
             },
             // This giver is default local-node giver
             giver: {
-                address: '0:02594208fdfcb7e91e21f392dbcec75168f70808331a7acb4d716a953fe0626e',
-                abi: { "ABI version": 2, "header": ["time", "expire"], "functions": [ { "name": "constructor", "inputs": [ ], "outputs": [ ] }, { "name": "sendGrams", "inputs": [ {"name":"dest","type":"address"}, {"name":"amount","type":"uint64"} ], "outputs": [ ] } ], "data": [ ], "events": [ ] },
-                key: '',
+                address: '0:28cbba1c9052a6552e600e53d57d17fa3a1f1a9a05ce1d1f5c8a825d5811811e',
+                abi: { "ABI version": 2, "header": ["pubkey", "time", "expire"], "functions": [ { "name": "constructor", "inputs": [ ], "outputs": [ ] }, { "name": "sendGrams", "inputs": [ {"name":"dest","type":"address"}, {"name":"amount","type":"uint64"} ], "outputs": [ ] }, { "name": "owner", "inputs": [ ], "outputs": [ {"name":"owner","type":"uint256"} ] } ], "data": [ {"key":1,"name":"owner","type":"uint256"} ], "events": [ ] },
+                key: 'c47699354b0150cc2c04cd6f44c2594136202b1dd21e51ab7036e449ba41f5ce',
             },
             // Use tonos-cli to generate your phrase
             // !!! Never commit it in your repos !!!
