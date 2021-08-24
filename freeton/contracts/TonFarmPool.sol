@@ -17,58 +17,58 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     event RewardDeposit(address token_root, uint256 amount);
 
     // ERRORS
-    uint8 public constant NOT_OWNER = 101;
-    uint8 public constant NOT_ROOT = 102;
-    uint8 public constant NOT_TOKEN_WALLET = 103;
-    uint8 public constant LOW_DEPOSIT_MSG_VALUE = 104;
-    uint8 public constant NOT_USER_DATA = 105;
-    uint8 public constant EXTERNAL_CALL = 106;
-    uint8 public constant ZERO_AMOUNT_INPUT = 107;
-    uint8 public constant LOW_WITHDRAW_MSG_VALUE = 108;
-    uint8 public constant FARMING_NOT_ENDED = 109;
-    uint8 public constant WRONG_INTERVAL = 110;
-    uint8 public constant BAD_REWARD_TOKENS_INPUT = 111;
-    uint8 public constant NOT_FABRIC = 112;
+    uint8 constant NOT_OWNER = 101;
+    uint8 constant NOT_ROOT = 102;
+    uint8 constant NOT_TOKEN_WALLET = 103;
+    uint8 constant LOW_DEPOSIT_MSG_VALUE = 104;
+    uint8 constant NOT_USER_DATA = 105;
+    uint8 constant EXTERNAL_CALL = 106;
+    uint8 constant ZERO_AMOUNT_INPUT = 107;
+    uint8 constant LOW_WITHDRAW_MSG_VALUE = 108;
+    uint8 constant FARMING_NOT_ENDED = 109;
+    uint8 constant WRONG_INTERVAL = 110;
+    uint8 constant BAD_REWARD_TOKENS_INPUT = 111;
+    uint8 constant NOT_FABRIC = 112;
 
     // constants
-    uint128 public constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
-    uint128 public constant TOKEN_WALLET_DEPLOY_GRAMS_VALUE = 0.1 ton;
-    uint128 public constant GET_WALLET_ADDRESS_VALUE = 0.5 ton;
-    uint128 public constant MIN_DEPOSIT_MSG_VALUE = 1 ton;
-    uint128 public constant MIN_WITHDRAW_MSG_VALUE = 1 ton;
-    uint128 public constant CONTRACT_MIN_BALANCE = 1 ton;
-    uint128 public constant USER_DATA_DEPLOY_VALUE = 0.2 ton;
-    uint128 public constant TOKEN_TRANSFER_VALUE = 0.5 ton;
-    uint128 public constant FABRIC_DEPLOY_CALLBACK_VALUE = 0.1 ton;
+    uint128 constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
+    uint128 constant TOKEN_WALLET_DEPLOY_GRAMS_VALUE = 0.1 ton;
+    uint128 constant GET_WALLET_ADDRESS_VALUE = 0.5 ton;
+    uint128 constant MIN_DEPOSIT_MSG_VALUE = 1 ton;
+    uint128 constant MIN_WITHDRAW_MSG_VALUE = 1 ton;
+    uint128 constant CONTRACT_MIN_BALANCE = 1 ton;
+    uint128 constant USER_DATA_DEPLOY_VALUE = 0.2 ton;
+    uint128 constant TOKEN_TRANSFER_VALUE = 0.5 ton;
+    uint128 constant FABRIC_DEPLOY_CALLBACK_VALUE = 0.1 ton;
 
     // State vars
-    uint256 public lastRewardTime;
+    uint256 lastRewardTime;
 
-    uint256 public farmStartTime;
+    uint256 farmStartTime;
 
-    uint256 public farmEndTime;
+    uint256 farmEndTime;
 
-    address public tokenRoot;
+    address tokenRoot;
 
-    address public tokenWallet;
+    address tokenWallet;
 
-    uint256 public tokenBalance;
+    uint256 tokenBalance;
 
-    uint256[] public rewardPerSecond;
+    uint256[] rewardPerSecond;
 
-    uint256[] public accTonPerShare;
+    uint256[] accTonPerShare;
 
-    address[] public rewardTokenRoot;
+    address[] rewardTokenRoot;
 
-    address[] public rewardTokenWallet;
+    address[] rewardTokenWallet;
 
-    uint256[] public rewardTokenBalance;
+    uint256[] rewardTokenBalance;
 
-    uint256[] public rewardTokenBalanceCumulative;
+    uint256[] rewardTokenBalanceCumulative;
 
-    uint256[] public unclaimedReward;
+    uint256[] unclaimedReward;
 
-    address public owner;
+    address owner;
 
     struct PendingDeposit {
         address user;
@@ -76,15 +76,15 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         address send_gas_to;
     }
 
-    uint64 public deposit_nonce = 0;
+    uint64 deposit_nonce = 0;
     // this is used to prevent data loss on bounced messages during deposit
     mapping (uint64 => PendingDeposit) deposits;
 
-    TvmCell public static userDataCode;
+    TvmCell static userDataCode;
 
-    address public static fabric;
+    address static fabric;
     
-    uint64 public static deploy_nonce;
+    uint64 static deploy_nonce;
 
     constructor(address _owner, uint256[] _rewardPerSecond, uint256 _farmStartTime, uint256 _farmEndTime, address _tokenRoot, address[] _rewardTokenRoot) public {
         require (_farmStartTime < _farmEndTime, WRONG_INTERVAL);
@@ -121,7 +121,16 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
     }
 
     function getVersion() external pure returns (uint8, uint8, uint8) {
-        return (1, 1, 0);
+        return (2, 0, 0);
+    }
+
+    function getDetails() external view responsible returns (Details) {
+        return Details(
+            lastRewardTime, farmStartTime, farmEndTime, tokenRoot,
+            tokenWallet, tokenBalance, rewardPerSecond, accTonPerShare,
+            rewardTokenRoot, rewardTokenWallet, rewardTokenBalance,
+            rewardTokenBalanceCumulative, unclaimedReward, owner, fabric
+        );
     }
 
     /*

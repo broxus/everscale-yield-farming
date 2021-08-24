@@ -26,6 +26,15 @@
 			]
 		},
 		{
+			"name": "getDetails",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"lastRewardTime","type":"uint256"},{"name":"farmStartTime","type":"uint256"},{"name":"farmEndTime","type":"uint256"},{"name":"tokenRoot","type":"address"},{"name":"tokenWallet","type":"address"},{"name":"tokenBalance","type":"uint256"},{"name":"rewardPerSecond","type":"uint256[]"},{"name":"accTonPerShare","type":"uint256[]"},{"name":"rewardTokenRoot","type":"address[]"},{"name":"rewardTokenWallet","type":"address[]"},{"name":"rewardTokenBalance","type":"uint256[]"},{"name":"rewardTokenBalanceCumulative","type":"uint256[]"},{"name":"unclaimedReward","type":"uint256[]"},{"name":"owner","type":"address"},{"name":"fabric","type":"address"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
 			"name": "receiveTokenWalletAddress",
 			"inputs": [
 				{"name":"wallet","type":"address"}
@@ -142,150 +151,6 @@
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "lastRewardTime",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"lastRewardTime","type":"uint256"}
-			]
-		},
-		{
-			"name": "farmStartTime",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"farmStartTime","type":"uint256"}
-			]
-		},
-		{
-			"name": "farmEndTime",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"farmEndTime","type":"uint256"}
-			]
-		},
-		{
-			"name": "tokenRoot",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"tokenRoot","type":"address"}
-			]
-		},
-		{
-			"name": "tokenWallet",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"tokenWallet","type":"address"}
-			]
-		},
-		{
-			"name": "tokenBalance",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"tokenBalance","type":"uint256"}
-			]
-		},
-		{
-			"name": "rewardPerSecond",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"rewardPerSecond","type":"uint256[]"}
-			]
-		},
-		{
-			"name": "accTonPerShare",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"accTonPerShare","type":"uint256[]"}
-			]
-		},
-		{
-			"name": "rewardTokenRoot",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"rewardTokenRoot","type":"address[]"}
-			]
-		},
-		{
-			"name": "rewardTokenWallet",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"rewardTokenWallet","type":"address[]"}
-			]
-		},
-		{
-			"name": "rewardTokenBalance",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"rewardTokenBalance","type":"uint256[]"}
-			]
-		},
-		{
-			"name": "rewardTokenBalanceCumulative",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"rewardTokenBalanceCumulative","type":"uint256[]"}
-			]
-		},
-		{
-			"name": "unclaimedReward",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"unclaimedReward","type":"uint256[]"}
-			]
-		},
-		{
-			"name": "owner",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"owner","type":"address"}
-			]
-		},
-		{
-			"name": "deposit_nonce",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"deposit_nonce","type":"uint64"}
-			]
-		},
-		{
-			"name": "userDataCode",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"userDataCode","type":"cell"}
-			]
-		},
-		{
-			"name": "fabric",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"fabric","type":"address"}
-			]
-		},
-		{
-			"name": "deploy_nonce",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"deploy_nonce","type":"uint64"}
 			]
 		}
 	],
