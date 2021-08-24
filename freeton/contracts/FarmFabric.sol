@@ -9,9 +9,9 @@ contract FarmFabric is IFabric {
     event NewFarmPool(
         address pool,
         address pool_owner,
-        uint256[] rewardPerSecond,
-        uint256 farmStartTime,
-        uint256 farmEndTime,
+        uint128[] rewardPerSecond,
+        uint32 farmStartTime,
+        uint32 farmEndTime,
         address tokenRoot,
         address[] rewardTokenRoot
     );
@@ -40,9 +40,9 @@ contract FarmFabric is IFabric {
 
     function deployFarmPool(
         address pool_owner,
-        uint256[] rewardPerSecond,
-        uint256 farmStartTime,
-        uint256 farmEndTime,
+        uint128[] rewardPerSecond,
+        uint32 farmStartTime,
+        uint32 farmEndTime,
         address tokenRoot,
         address[] rewardTokenRoot
     ) public {
@@ -67,9 +67,9 @@ contract FarmFabric is IFabric {
     function onPoolDeploy(
         uint64 pool_deploy_nonce,
         address pool_owner,
-        uint256[] rewardPerSecond,
-        uint256 farmStartTime,
-        uint256 farmEndTime,
+        uint128[] rewardPerSecond,
+        uint32 farmStartTime,
+        uint32 farmEndTime,
         address tokenRoot,
         address[] rewardTokenRoot
     ) external override {

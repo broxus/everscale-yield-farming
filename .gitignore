@@ -1,5 +1,6 @@
 .idea
 
+freeton/build
 node_modules
 ethereum/artifacts
 ethereum/cache
