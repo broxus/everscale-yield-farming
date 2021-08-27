@@ -7,98 +7,21 @@ import "./interfaces/ITokensReceivedCallback.sol";
 import "./interfaces/IUserData.sol";
 import "./interfaces/ITonFarmPool.sol";
 import "./interfaces/IFabric.sol";
+import "./TonFarmPoolBase.sol";
 import "./UserData.sol";
 import "../../node_modules/@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 
-contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
-    // Events
-    event Deposit(address user, uint128 amount);
-    event Withdraw(address user, uint128 amount);
-    event Reward(address user, uint128[] amount);
-    event RewardDeposit(address token_root, uint128 amount);
-
-    // ERRORS
-    uint8 constant NOT_OWNER = 101;
-    uint8 constant NOT_ROOT = 102;
-    uint8 constant NOT_TOKEN_WALLET = 103;
-    uint8 constant LOW_DEPOSIT_MSG_VALUE = 104;
-    uint8 constant NOT_USER_DATA = 105;
-    uint8 constant EXTERNAL_CALL = 106;
-    uint8 constant ZERO_AMOUNT_INPUT = 107;
-    uint8 constant LOW_WITHDRAW_MSG_VALUE = 108;
-    uint8 constant FARMING_NOT_ENDED = 109;
-    uint8 constant WRONG_INTERVAL = 110;
-    uint8 constant BAD_REWARD_TOKENS_INPUT = 111;
-    uint8 constant NOT_FABRIC = 112;
-    uint8 constant LOW_CLAIM_REWARD_MSG_VALUE = 113;
-
-// constants
-    uint128 constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
-    uint128 constant TOKEN_WALLET_DEPLOY_GRAMS_VALUE = 0.1 ton;
-    uint128 constant GET_WALLET_ADDRESS_VALUE = 0.5 ton;
-    uint128 constant MIN_DEPOSIT_MSG_VALUE = 1 ton;
-    uint128 constant MIN_WITHDRAW_MSG_VALUE = 1 ton;
-    uint128 constant MIN_CLAIM_REWARD_MSG_VALUE = 1 ton;
-    uint128 constant CONTRACT_MIN_BALANCE = 1 ton;
-    uint128 constant USER_DATA_DEPLOY_VALUE = 0.2 ton;
-    uint128 constant TOKEN_TRANSFER_VALUE = 0.5 ton;
-    uint128 constant FABRIC_DEPLOY_CALLBACK_VALUE = 0.1 ton;
-
-    // State vars
-    uint32 lastRewardTime;
-
-    uint32 farmStartTime;
-
-    uint32 farmEndTime;
-
-    address tokenRoot;
-
-    address tokenWallet;
-
-    uint128 tokenBalance;
-
-    uint128[] rewardPerSecond;
-
-    uint256[] accTonPerShare;
-
-    address[] rewardTokenRoot;
-
-    address[] rewardTokenWallet;
-
-    uint128[] rewardTokenBalance;
-
-    uint128[] rewardTokenBalanceCumulative;
-
-    uint128[] unclaimedReward;
-
-    address owner;
-
-    struct PendingDeposit {
-        address user;
-        uint128 amount;
-        address send_gas_to;
-    }
-
-    uint64 deposit_nonce = 0;
-    // this is used to prevent data loss on bounced messages during deposit
-    mapping (uint64 => PendingDeposit) deposits;
-
-    TvmCell static userDataCode;
-
-    address static fabric;
-    
-    uint64 static deploy_nonce;
-
-    constructor(address _owner, uint128[] _rewardPerSecond, uint32 _farmStartTime, uint32 _farmEndTime, address _tokenRoot, address[] _rewardTokenRoot) public {
-        require (_farmStartTime < _farmEndTime, WRONG_INTERVAL);
-        require (_rewardPerSecond.length == _rewardTokenRoot.length, BAD_REWARD_TOKENS_INPUT);
+contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
+    constructor(address _owner, RewardRound[] _rewardRounds, address _tokenRoot, address[] _rewardTokenRoot) public {
+        require (_rewardRounds.length > 0, BAD_REWARD_ROUNDS_INPUT);
+        for (uint i = 0; i < _rewardRounds.length; i++) {
+            require(_rewardRounds[i].rewardPerSecond.length == _rewardTokenRoot.length, BAD_REWARD_TOKENS_INPUT);
+        }
         require (msg.sender == fabric, NOT_FABRIC);
         tvm.accept();
 
-        rewardPerSecond = _rewardPerSecond;
-        farmStartTime = _farmStartTime;
-        farmEndTime = _farmEndTime;
+        rewardRounds = _rewardRounds;
         tokenRoot = _tokenRoot;
         rewardTokenRoot = _rewardTokenRoot;
         owner = _owner;
@@ -106,7 +29,7 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         _initialize_reward_arrays();
         setUpTokenWallets();
         IFabric(fabric).onPoolDeploy{value: FABRIC_DEPLOY_CALLBACK_VALUE}(
-            deploy_nonce, _owner, _rewardPerSecond, _farmStartTime, _farmEndTime, _tokenRoot, _rewardTokenRoot
+            deploy_nonce, _owner, _rewardRounds, _tokenRoot, _rewardTokenRoot
         );
     }
 
@@ -130,9 +53,8 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
 
     function getDetails() external view responsible returns (Details) {
         return Details(
-            lastRewardTime, farmStartTime, farmEndTime, tokenRoot,
-            tokenWallet, tokenBalance, rewardPerSecond, accTonPerShare,
-            rewardTokenRoot, rewardTokenWallet, rewardTokenBalance,
+            lastRewardTime, farmEndTime, tokenRoot, tokenWallet, tokenBalance,
+            rewardRounds, accTonPerShare, rewardTokenRoot, rewardTokenWallet, rewardTokenBalance,
             rewardTokenBalanceCumulative, unclaimedReward, owner, fabric
         );
     }
@@ -361,40 +283,34 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         }
     }
 
+    function addRewardRound(RewardRound reward_round) external onlyOwner {
+        require (msg.value >= ADD_REWARD_ROUND_VALUE);
+        require (reward_round.startTime >= now, BAD_REWARD_ROUNDS_INPUT);
+        require (reward_round.rewardPerSecond.length == rewardTokenRoot.length, BAD_REWARD_ROUNDS_INPUT);
+
+        tvm.rawReserve(_reserve(), 2);
+        rewardRounds.push(reward_round);
+    }
+
+    function setEndTime(uint32 farm_end_time) external onlyOwner {
+        require (msg.value >= SET_END_TIME_VALUE);
+        require (farm_end_time >= now, BAD_FARM_END_TIME);
+        require (farm_end_time >= rewardRounds[rewardRounds.length - 1].startTime, BAD_FARM_END_TIME);
+        require (farmEndTime == 0, BAD_FARM_END_TIME);
+
+        tvm.rawReserve(_reserve(), 2);
+        farmEndTime = farm_end_time;
+    }
+
     // user_amount and user_reward_debt should be fetched from UserData at first
     function pendingReward(uint128 user_amount, uint128[] user_reward_debt) external view returns (uint128[]) {
-        uint256[] _accTonPerShare = accTonPerShare;
-        if (now > lastRewardTime && tokenBalance != 0) {
-            uint32 multiplier = getMultiplier(lastRewardTime, now);
-            uint128[] _reward;
-            for (uint i = 0; i < rewardPerSecond.length; i++) {
-                _reward.push(multiplier * rewardPerSecond[i]);
-                _accTonPerShare[i] += math.muldiv(_reward[i], 1e18, tokenBalance);
-            }
-        }
-        uint128[] _final_reward = new uint128[](rewardPerSecond.length);
-        for (uint i = 0; i < rewardPerSecond.length; i++) {
+        (uint32 _, uint256[] _accTonPerShare, uint128[] __) = _calculateRewardData();
+
+        uint128[] _final_reward = new uint128[](rewardTokenRoot.length);
+        for (uint i = 0; i < rewardTokenRoot.length; i++) {
             _final_reward[i] = uint128(math.muldiv(user_amount, _accTonPerShare[i], 1e18) - user_reward_debt[i]);
         }
         return _final_reward;
-    }
-
-    function getMultiplier(uint32 from, uint32 to) public view returns(uint32) {
-        require (from <= to, WRONG_INTERVAL);
-
-        if ((from > farmEndTime) || (to < farmStartTime)) {
-            return 0;
-        }
-
-        if (to > farmEndTime) {
-            to = farmEndTime;
-        }
-
-        if (from < farmStartTime) {
-            from = farmStartTime;
-        }
-
-        return to - from;
     }
 
     // withdraw all staked tokens without reward in case of some critical logic error / insufficient tons on FarmPool balance
@@ -422,30 +338,92 @@ contract TonFarmPool is ITokensReceivedCallback, ITonFarmPool {
         );
     }
 
-    function updatePoolInfo() internal {
-        if (now <= lastRewardTime) {
-            return;
+    function _getMultiplier(uint32 _farmStartTime, uint32 _farmEndTime, uint32 from, uint32 to) internal view returns(uint32) {
+        require (from <= to, WRONG_INTERVAL);
+
+        if ((from > _farmEndTime) || (to < _farmStartTime)) {
+            return 0;
         }
 
-        uint32 multiplier = getMultiplier(lastRewardTime, now);
-        uint128[] new_reward;
-        for (uint i = 0; i < rewardPerSecond.length; i++) {
-            new_reward.push(rewardPerSecond[i] * multiplier);
+        if (to > _farmEndTime) {
+            to = _farmEndTime;
         }
 
-        if (tokenBalance == 0) {
-            for (uint i = 0; i < rewardPerSecond.length; i++) {
-                unclaimedReward[i] += new_reward[i];
+        if (from < _farmStartTime) {
+            from = _farmStartTime;
+        }
+
+        return to - from;
+    }
+
+    function _getRoundEndTime(uint256 round_idx) internal view returns (uint32) {
+        bool last_round = round_idx == rewardRounds.length - 1;
+        uint32 _farmEndTime;
+        if (last_round) {
+            // if this round is last, check if end is setup and return it, otherwise return max uint value
+            _farmEndTime = farmEndTime > 0 ? farmEndTime : MAX_UINT32;
+        } else {
+            // next round exists, its start time is this round's end time
+            _farmEndTime = rewardRounds[round_idx + 1].startTime;
+        }
+        return _farmEndTime;
+    }
+
+    function _calculateRewardData() internal view returns (uint32, uint256[], uint128[]) {
+        uint256[] _accTonPerShare = accTonPerShare;
+        uint128[] _unclaimedReward = unclaimedReward;
+        uint32 _lastRewardTime = lastRewardTime;
+
+        if (now > _lastRewardTime) {
+            // special case - last update occurred before start of 1st round
+            uint32 first_round_start = rewardRounds[0].startTime;
+            if (_lastRewardTime < first_round_start) {
+                _lastRewardTime = math.min(first_round_start, now);
             }
-            lastRewardTime = now;
-            return;
-        }
 
-        for (uint i = 0; i < rewardPerSecond.length; i++) {
-            accTonPerShare[i] += math.muldiv(new_reward[i], 1e18, tokenBalance);
-        }
+            for (uint i = rewardRounds.length - 1; i >= 0; i--) {
+                // find reward round when last update occurred
+                if (_lastRewardTime >= rewardRounds[i].startTime) {
+                    // we found reward round when last update occurred, start updating reward from this point
+                    for (uint j = i; j < rewardRounds.length; j++) {
+                        // we didnt reach this round
+                        if (now <= rewardRounds[j].startTime) {
+                            break;
+                        }
+                        uint32 _roundEndTime = _getRoundEndTime(j);
+                        // get multiplier bounded by this reward round
+                        uint32 multiplier = _getMultiplier(rewardRounds[j].startTime, _roundEndTime, _lastRewardTime, now);
+                        uint128[] new_reward;
+                        for (uint k = 0; k < rewardRounds[j].rewardPerSecond.length; k++) {
+                            new_reward.push(rewardRounds[j].rewardPerSecond[k] * multiplier);
+                        }
+                        uint32 new_reward_time = math.min(_roundEndTime, now);
 
-        lastRewardTime = now;
+                        if (tokenBalance == 0) {
+                            for (uint k = 0; k < rewardRounds[j].rewardPerSecond.length; k++) {
+                                _unclaimedReward[k] += new_reward[k];
+                            }
+                            _lastRewardTime = new_reward_time;
+                            continue;
+                        }
+
+                        for (uint k = 0; k < rewardRounds[j].rewardPerSecond.length; k++) {
+                            _accTonPerShare[k] += math.muldiv(new_reward[k], 1e18, tokenBalance);
+                        }
+                        _lastRewardTime = new_reward_time;
+                    }
+                    break;
+                }
+            }
+        }
+        return (_lastRewardTime, _accTonPerShare, _unclaimedReward);
+    }
+
+    function updatePoolInfo() internal {
+        (uint32 _lastRewardTime, uint256[] _accTonPerShare, uint128[] _unclaimedReward) = _calculateRewardData();
+        lastRewardTime = _lastRewardTime;
+        accTonPerShare = _accTonPerShare;
+        unclaimedReward = _unclaimedReward;
     }
 
     function deployIUserData(address _user) internal returns (address) {

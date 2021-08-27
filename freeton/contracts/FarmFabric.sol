@@ -9,9 +9,7 @@ contract FarmFabric is IFabric {
     event NewFarmPool(
         address pool,
         address pool_owner,
-        uint128[] rewardPerSecond,
-        uint32 farmStartTime,
-        uint32 farmEndTime,
+        TonFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
         address[] rewardTokenRoot
     );
@@ -40,9 +38,7 @@ contract FarmFabric is IFabric {
 
     function deployFarmPool(
         address pool_owner,
-        uint128[] rewardPerSecond,
-        uint32 farmStartTime,
-        uint32 farmEndTime,
+        TonFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
         address[] rewardTokenRoot
     ) public {
@@ -61,15 +57,13 @@ contract FarmFabric is IFabric {
             value: FARM_POOL_DEPLOY_VALUE,
             wid: address(this).wid,
             flag: 1
-        }(pool_owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
+        }(pool_owner, reward_rounds, tokenRoot, rewardTokenRoot);
     }
 
     function onPoolDeploy(
         uint64 pool_deploy_nonce,
         address pool_owner,
-        uint128[] rewardPerSecond,
-        uint32 farmStartTime,
-        uint32 farmEndTime,
+        TonFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
         address[] rewardTokenRoot
     ) external override {
@@ -84,7 +78,7 @@ contract FarmFabric is IFabric {
 
         tvm.rawReserve(math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE), 2);
 
-        emit NewFarmPool(pool_address, pool_owner, rewardPerSecond, farmStartTime, farmEndTime, tokenRoot, rewardTokenRoot);
+        emit NewFarmPool(pool_address, pool_owner, reward_rounds, tokenRoot, rewardTokenRoot);
     }
 
 

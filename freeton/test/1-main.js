@@ -20,6 +20,7 @@ const afterRun = async (tx) => {
     if (locklift.network === 'dev') {
         await sleep(80000);
     }
+    await sleep(500);
 };
 
 describe('Test Ton Farm Pool', async function() {
@@ -125,6 +126,24 @@ describe('Test Ton Farm Pool', async function() {
             contract: farm_pool,
             method: 'withdrawAll',
             params: {},
+            value: convertCrystal(1.5, 'nano')
+        });
+    }
+
+    const addRewardRound = async function(start_time, reward_per_sec) {
+        return await admin_user.runTarget({
+            contract: farm_pool,
+            method: 'addRewardRound',
+            params: {reward_round: {startTime: start_time, rewardPerSecond: reward_per_sec}},
+            value: convertCrystal(1.5, 'nano')
+        });
+    }
+
+    const setFarmEndTime = async function(farm_end_time) {
+        return await admin_user.runTarget({
+            contract: farm_pool,
+            method: 'setEndTime',
+            params: {farm_end_time: farm_end_time},
             value: convertCrystal(1.5, 'nano')
         });
     }
@@ -409,9 +428,7 @@ describe('Test Ton Farm Pool', async function() {
                     method: 'deployFarmPool',
                     params: {
                         pool_owner: admin_user.address,
-                        rewardPerSecond: [rewardPerSec_1, rewardPerSec_2],
-                        farmStartTime: farmStart,
-                        farmEndTime: farmEnd,
+                        reward_rounds: [{startTime: farmStart, rewardPerSecond: [rewardPerSec_1, rewardPerSec_2]}],
                         tokenRoot: root.address,
                         rewardTokenRoot: [farming_root_1.address, farming_root_2.address]
                     },
@@ -422,9 +439,7 @@ describe('Test Ton Farm Pool', async function() {
                     value: {
                         pool: _pool,
                         pool_owner: _owner,
-                        rewardPerSecond: _rewardPerSecond,
-                        farmStartTime: _farmStartTime,
-                        farmEndTime: _farmEndTime,
+                        reward_rounds: _rewardRounds,
                         tokenRoot: _tokenRoot,
                         rewardTokenRoot: _rewardTokenRoot
                     }
@@ -566,7 +581,7 @@ describe('Test Ton Farm Pool', async function() {
             it('Deposit 2nd time', async function() {
                 const staking_details = await getDetails();
                 const prev_reward_time = staking_details.lastRewardTime;
-                const farmStart = staking_details.farmStartTime;
+                const farmStart = staking_details.rewardRounds[0].startTime;
 
                 unclaimed[0] += (prev_reward_time - farmStart) * rewardPerSec_1;
                 unclaimed[1] += (prev_reward_time - farmStart) * rewardPerSec_2;
@@ -591,6 +606,7 @@ describe('Test Ton Farm Pool', async function() {
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
 
                 const unclaimed_reward = staking_details_1.unclaimedReward;
+                // console.log(staking_details_1);
                 expect(unclaimed[0].toFixed(0)).to.be.equal(unclaimed_reward[0].toFixed(0), "Bad unclaimed reward 1");
                 expect(unclaimed[1].toFixed(0)).to.be.equal(unclaimed_reward[1].toFixed(0), "Bad unclaimed reward 2");
 
@@ -611,8 +627,7 @@ describe('Test Ton Farm Pool', async function() {
             });
 
             it('User withdraw half of staked amount', async function() {
-                const staking_details = await getDetails();
-                const prev_reward_time = staking_details.lastRewardTime;
+                const prev_reward_time = await getLastRewardTime();
 
                 const user1_bal_before_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
                 const user1_bal_before_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
@@ -624,8 +639,7 @@ describe('Test Ton Farm Pool', async function() {
                     userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 );
 
-                const staking_details_1 = await getDetails();
-                const new_reward_time = staking_details_1.lastRewardTime;
+                const new_reward_time = await getLastRewardTime();
 
                 await checkReward(userFarmTokenWallet1_1, user1_bal_before_1, prev_reward_time, new_reward_time, rewardPerSec_1);
                 await checkReward(userFarmTokenWallet1_2, user1_bal_before_2, prev_reward_time, new_reward_time, rewardPerSec_2);
@@ -718,6 +732,7 @@ describe('Test Ton Farm Pool', async function() {
                 const admin_balance_after_1 = await adminFarmTokenWallet_1.call({method: 'balance'});
                 const admin_balance_after_2 = await adminFarmTokenWallet_2.call({method: 'balance'});
 
+                // console.log(admin_balance_after_1.toFixed(0), admin_balance_before_1.toFixed(0));
                 const balance_delta_1 = admin_balance_after_1 - admin_balance_before_1;
                 const balance_delta_2 = admin_balance_after_2 - admin_balance_before_2;
 
@@ -824,11 +839,77 @@ describe('Test Ton Farm Pool', async function() {
             });
         });
 
+        describe("Test dynamic apy", async function() {
+            let rew_per_sec_11 = rewardPerSec_1 * 2;
+            let rew_per_sec_12 = rewardPerSec_2 * 2;
+
+            let rew_per_sec_21 = rewardPerSec_1 * 3;
+            let rew_per_sec_22 = rewardPerSec_2 * 3;
+
+            it("User deposit tokens", async function() {
+                const tx = await depositTokens(user1, userTokenWallet1, minDeposit);
+                await checkTokenBalances(
+                    userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
+                );
+
+                userFarmTokenWallet1_1 = await getUserTokenWallet(farming_root_1, user1);
+                userFarmTokenWallet1_2 = await getUserTokenWallet(farming_root_2, user1);
+                await afterRun(tx);
+
+                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
+                expect(_user).to.be.equal(user1.address, 'Bad event');
+                expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
+            });
+
+            it("New reward rounds added", async function() {
+                const last_r_time = await getLastRewardTime();
+                const tx = await addRewardRound(last_r_time.plus(3).toFixed(0), [rew_per_sec_11, rew_per_sec_12]);
+                const tx2 = await addRewardRound(last_r_time.plus(4).toFixed(0), [rew_per_sec_21, rew_per_sec_22]);
+                const tx3 = await setFarmEndTime(last_r_time.plus(5).toFixed(0));
+            });
+
+            it("User withdraw tokens", async function() {
+                // const prev_reward_time = await getLastRewardTime();
+
+                const user1_bal_before_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user1_bal_before_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+
+                await sleep(5500);
+
+                const tx = await withdrawTokens(user1, minDeposit);
+                await checkTokenBalances(
+                    userTokenWallet1, 0, 0, userInitialTokenBal
+                );
+
+                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Withdraw')).pop();
+                expect(_user).to.be.equal(user1.address, 'Bad event');
+                expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
+
+                // const new_reward_time = await getLastRewardTime();
+                // ok, so, we know that user should get reward with initial rate for:
+                // round1_start - deposit_time (initial round) * rewardPerSec1
+                // round2_start - round1_start * rewardPerSec2
+                // endTime - round2_start * rewardPerSec3
+                const reward_1 = 3 * rewardPerSec_1 + rew_per_sec_11 + rew_per_sec_21;
+                const reward_2 = 3 * rewardPerSec_2 + rew_per_sec_12 + rew_per_sec_22;
+
+                const user1_bal_after_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
+                const user1_bal_after_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+
+                const delta_1 = user1_bal_after_1 - user1_bal_before_1;
+                const delta_2 = user1_bal_after_2 - user1_bal_before_2;
+
+                expect(delta_1.toFixed(0)).to.be.eq(reward_1.toFixed(0), "Bad reward");
+                expect(delta_2.toFixed(0)).to.be.eq(reward_2.toFixed(0), "Bad reward");
+            });
+        });
+
         describe('Withdraw all test', async function() {
             let user_deposit_time;
 
             it('User deposit tokens', async function() {
                 const tx = await depositTokens(user1, userTokenWallet1, minDeposit);
+                // console.log(tx.transaction.out_msgs);
                 await checkTokenBalances(
                     userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 );
