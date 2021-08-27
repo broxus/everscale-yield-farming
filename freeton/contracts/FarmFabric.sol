@@ -11,7 +11,9 @@ contract FarmFabric is IFabric {
         address pool_owner,
         TonFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
-        address[] rewardTokenRoot
+        address[] rewardTokenRoot,
+        uint32 vestingPeriod,
+        uint32 vestingRatio
     );
 
     uint64 public pools_count = 0;
@@ -40,7 +42,9 @@ contract FarmFabric is IFabric {
         address pool_owner,
         TonFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
-        address[] rewardTokenRoot
+        address[] rewardTokenRoot,
+        uint32 vestingPeriod,
+        uint32 vestingRatio
     ) public {
         tvm.rawReserve(math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE), 2);
 
@@ -57,7 +61,7 @@ contract FarmFabric is IFabric {
             value: FARM_POOL_DEPLOY_VALUE,
             wid: address(this).wid,
             flag: 1
-        }(pool_owner, reward_rounds, tokenRoot, rewardTokenRoot);
+        }(pool_owner, reward_rounds, tokenRoot, rewardTokenRoot, vestingPeriod, vestingRatio);
     }
 
     function onPoolDeploy(
@@ -65,7 +69,9 @@ contract FarmFabric is IFabric {
         address pool_owner,
         TonFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
-        address[] rewardTokenRoot
+        address[] rewardTokenRoot,
+        uint32 vestingPeriod,
+        uint32 vestingRatio
     ) external override {
         TvmCell stateInit = tvm.buildStateInit({
             contr: TonFarmPool,
@@ -78,7 +84,7 @@ contract FarmFabric is IFabric {
 
         tvm.rawReserve(math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE), 2);
 
-        emit NewFarmPool(pool_address, pool_owner, reward_rounds, tokenRoot, rewardTokenRoot);
+        emit NewFarmPool(pool_address, pool_owner, reward_rounds, tokenRoot, rewardTokenRoot, vestingPeriod, vestingRatio);
     }
 
 

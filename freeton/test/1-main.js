@@ -430,7 +430,9 @@ describe('Test Ton Farm Pool', async function() {
                         pool_owner: admin_user.address,
                         reward_rounds: [{startTime: farmStart, rewardPerSecond: [rewardPerSec_1, rewardPerSec_2]}],
                         tokenRoot: root.address,
-                        rewardTokenRoot: [farming_root_1.address, farming_root_2.address]
+                        rewardTokenRoot: [farming_root_1.address, farming_root_2.address],
+                        vestingPeriod: 0,
+                        vestingRatio: 0
                     },
                     value: convertCrystal(10, 'nano')
                 });

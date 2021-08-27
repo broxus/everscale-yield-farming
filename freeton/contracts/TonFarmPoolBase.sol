@@ -29,6 +29,7 @@ abstract contract TonFarmPoolBase is ITonFarmPool {
     uint8 constant LOW_CLAIM_REWARD_MSG_VALUE = 113;
     uint8 constant BAD_REWARD_ROUNDS_INPUT = 114;
     uint8 constant BAD_FARM_END_TIME = 115;
+    uint8 constant BAD_VESTING_SETUP = 116;
 
     //     constants
     uint128 constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
@@ -51,6 +52,10 @@ abstract contract TonFarmPoolBase is ITonFarmPool {
 
     // should be set dynamically
     uint32 farmEndTime;
+
+    uint32 vestingPeriod;
+
+    uint32 vestingRatio;
 
     address tokenRoot;
 

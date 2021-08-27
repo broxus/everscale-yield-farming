@@ -11,6 +11,8 @@ interface IFabric {
         address pool_owner,
         ITonFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
-        address[] rewardTokenRoot
+        address[] rewardTokenRoot,
+        uint32 vestingPeriod,
+        uint32 vestingRatio
     ) external;
 }
