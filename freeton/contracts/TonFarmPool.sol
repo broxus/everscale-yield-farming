@@ -300,17 +300,6 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         farmEndTime = farm_end_time;
     }
 
-    // user_amount and user_reward_debt should be fetched from UserData at first
-    function pendingReward(uint128 user_amount, uint128[] user_reward_debt) external view returns (uint128[]) {
-        (uint32 _, uint256[] _accTonPerShare, uint128[] __) = _calculateRewardData();
-
-        uint128[] _final_reward = new uint128[](rewardTokenRoot.length);
-        for (uint i = 0; i < rewardTokenRoot.length; i++) {
-            _final_reward[i] = uint128(math.muldiv(user_amount, _accTonPerShare[i], 1e18) - user_reward_debt[i]);
-        }
-        return _final_reward;
-    }
-
     // withdraw all staked tokens without reward in case of some critical logic error / insufficient tons on FarmPool balance
     function safeWithdraw(address send_gas_to) external view {
         require (msg.sender.value != 0, EXTERNAL_CALL);
@@ -367,7 +356,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         return _farmEndTime;
     }
 
-    function _calculateRewardData() internal view returns (uint32, uint256[], uint128[]) {
+    function calculateRewardData() public view returns (uint32, uint256[], uint128[]) {
         uint256[] _accTonPerShare = accTonPerShare;
         uint128[] _unclaimedReward = unclaimedReward;
         uint32 _lastRewardTime = lastRewardTime;
@@ -418,7 +407,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     }
 
     function updatePoolInfo() internal {
-        (uint32 _lastRewardTime, uint256[] _accTonPerShare, uint128[] _unclaimedReward) = _calculateRewardData();
+        (uint32 _lastRewardTime, uint256[] _accTonPerShare, uint128[] _unclaimedReward) = calculateRewardData();
         lastRewardTime = _lastRewardTime;
         accTonPerShare = _accTonPerShare;
         unclaimedReward = _unclaimedReward;

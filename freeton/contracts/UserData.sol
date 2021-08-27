@@ -21,7 +21,6 @@ contract UserData is IUserData {
     uint128 constant CONTRACT_MIN_BALANCE = 0.1 ton;
     uint32 constant MAX_VESTING_RATIO = 1000;
 
-
     constructor(uint8 reward_tokens_count, uint32 _vestingPeriod, uint32 _vestingRatio) public {
         require (farmPool == msg.sender, NOT_FARM_POOL);
         tvm.accept();
@@ -39,6 +38,17 @@ contract UserData is IUserData {
 
     function getDetails() external responsible view override returns (UserDataDetails) {
         return { value: 0, bounce: false, flag: MsgFlag.REMAINING_GAS }UserDataDetails(entitled, vestingTime, amount, rewardDebt, farmPool, user);
+    }
+
+    // user_amount and user_reward_debt should be fetched from UserData at first
+    function pendingReward(uint256[] _accTonPerShare, uint32 poolLastRewardTime) external view returns (uint128[]) {
+        (
+        uint128[] _entitled,
+        uint128[] _vested,
+        uint32 _lastRewardTime
+        ) = _computeVesting(amount, rewardDebt, _accTonPerShare, poolLastRewardTime);
+
+        return _vested;
     }
 
     function _computeVesting(
