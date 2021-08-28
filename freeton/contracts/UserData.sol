@@ -12,11 +12,11 @@ contract UserData is IUserData {
     uint32 vestingRatio;
     uint32 vestingTime;
 
-    uint128 public amount;
-    uint128[] public rewardDebt;
-    uint128[] public entitled;
-    address public static farmPool;
-    address public static user; // setup from initData
+    uint128 amount;
+    uint128[] rewardDebt;
+    uint128[] entitled;
+    address static farmPool;
+    address static user; // setup from initData
     uint8 constant NOT_FARM_POOL = 101;
     uint128 constant CONTRACT_MIN_BALANCE = 0.1 ton;
     uint32 constant MAX_VESTING_RATIO = 1000;
@@ -43,9 +43,9 @@ contract UserData is IUserData {
     // user_amount and user_reward_debt should be fetched from UserData at first
     function pendingReward(uint256[] _accTonPerShare, uint32 poolLastRewardTime) external view returns (uint128[]) {
         (
-        uint128[] _entitled,
+        uint128[] _,
         uint128[] _vested,
-        uint32 _lastRewardTime
+        uint32 __
         ) = _computeVesting(amount, rewardDebt, _accTonPerShare, poolLastRewardTime);
 
         return _vested;
@@ -71,7 +71,7 @@ contract UserData is IUserData {
                     // calc which part should be payed immediately and with vesting from new reward
                     uint128 vesting_part = (new_entitled[i] * vestingRatio) / MAX_VESTING_RATIO;
                     uint128 clear_part = new_entitled[i] - vesting_part;
-                    newly_vested[i] = clear_part + uint128(math.muldiv(new_entitled[i], age, age + vestingPeriod));
+                    newly_vested[i] = uint128(math.muldiv(vesting_part, age, age + vestingPeriod));
 
                     // now calculate newly vested part of old entitled reward
                     uint32 age2 = _poolLastRewardTime >= vestingTime ? vestingPeriod : _poolLastRewardTime - lastRewardTime;
@@ -79,11 +79,9 @@ contract UserData is IUserData {
                         ? entitled[i]
                         : uint128(math.muldiv(entitled[i], age2, vestingTime - lastRewardTime));
 
-                    uint128 newlyVested = to_vest + newly_vested[i];
-
                     // amount of reward vested from now
                     uint128 remainingEntitled = entitled[i] == 0 ? 0 : entitled[i] - to_vest;
-                    uint128 unreleasedNewly = new_entitled[i] - newly_vested[i];
+                    uint128 unreleasedNewly = vesting_part - newly_vested[i];
                     uint128 pending = remainingEntitled + unreleasedNewly;
 
                     // Compute the vesting time (i.e. when the entitled reward to be all vested)
@@ -97,9 +95,9 @@ contract UserData is IUserData {
                         period = uint32(((remainingEntitled * age3) + (unreleasedNewly * vestingPeriod)) / pending);
                     }
 
-                    new_vesting_time = vestingTime + math.min(period, vestingPeriod);
-                    updated_entitled[i] = entitled[i] + new_entitled[i] - newlyVested;
-                    newly_vested[i] = newlyVested;
+                    new_vesting_time = _poolLastRewardTime + math.min(period, vestingPeriod);
+                    updated_entitled[i] = entitled[i] + vesting_part - to_vest - newly_vested[i];
+                    newly_vested[i] += to_vest + clear_part;
                 } else {
                     newly_vested[i] = new_entitled[i];
                 }
@@ -124,10 +122,11 @@ contract UserData is IUserData {
         (
             uint128[] _entitled,
             uint128[] _vested,
-            uint32 _lastRewardTime
+            uint32 _vestingTime
         ) = _computeVesting(prevAmount, prevRewardDebt, _accTonPerShare, poolLastRewardTime);
         entitled = _entitled;
-        lastRewardTime = _lastRewardTime;
+        vestingTime = _vestingTime;
+        lastRewardTime = poolLastRewardTime;
 
         ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(nonce, _vested);
     }
@@ -148,12 +147,13 @@ contract UserData is IUserData {
         }
 
         (
-        uint128[] _entitled,
-        uint128[] _vested,
-        uint32 _lastRewardTime
+            uint128[] _entitled,
+            uint128[] _vested,
+            uint32 _vestingTime
         ) = _computeVesting(prevAmount, prevRewardDebt, _accTonPerShare, poolLastRewardTime);
         entitled = _entitled;
-        lastRewardTime = _lastRewardTime;
+        vestingTime = _vestingTime;
+        lastRewardTime = poolLastRewardTime;
 
         ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(user, _amount, _vested, send_gas_to);
     }
