@@ -356,10 +356,10 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         return _farmEndTime;
     }
 
-    function calculateRewardData() public view returns (uint32, uint256[], uint128[]) {
-        uint256[] _accTonPerShare = accTonPerShare;
-        uint128[] _unclaimedReward = unclaimedReward;
-        uint32 _lastRewardTime = lastRewardTime;
+    function calculateRewardData() public view returns (uint32 _lastRewardTime, uint256[] _accTonPerShare, uint128[] _unclaimedReward) {
+        _lastRewardTime = lastRewardTime;
+        _accTonPerShare = accTonPerShare;
+        _unclaimedReward = unclaimedReward;
 
         if (now > _lastRewardTime) {
             // special case - last update occurred before start of 1st round

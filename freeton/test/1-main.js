@@ -197,9 +197,6 @@ describe('Test Ton Farm Pool', async function() {
         const vestingTime = prevDetails.vestingTime;
         const real_reward = user_bal_after - prevBalance;
 
-        // console.log(prevDetails, vestingTime, user_bal_after, prevBalance);
-        // console.log(user_bal_after, prevBalance)
-
         const time_passed = newRewardTime - prevRewardTime;
         const expected_reward = _rewardPerSec * time_passed;
 
@@ -207,19 +204,6 @@ describe('Test Ton Farm Pool', async function() {
         const clear_part = expected_reward - vesting_part;
 
         const newly_vested = Math.floor((vesting_part * time_passed) / (time_passed + vestingPeriod));
-
-        const q = time_passed + vestingPeriod;
-        // console.log(
-        //     q.toFixed(0),
-        //     vestingPeriod.toFixed(0),
-        //     time_passed.toFixed(0),
-        //     expected_reward.toFixed(0),
-        //     clear_part.toFixed(0),
-        //     vesting_part.toFixed(0),
-        //     newly_vested.toFixed(0),
-        //     vestingTime.toFixed(0),
-        //     prevRewardTime.toFixed(0)
-        // );
 
         const age = newRewardTime >= vestingTime ? vestingPeriod : (newRewardTime - prevRewardTime);
         let to_vest = age >= vestingPeriod ? entitled : Math.floor(entitled * age / (vestingTime - prevRewardTime));
@@ -695,6 +679,17 @@ describe('Test Ton Farm Pool', async function() {
 
                 const user_details = await getUserDataDetails(userData1);
 
+                const reward_data = await farm_pool.call({method: 'calculateRewardData'});
+                // console.log(reward_data);
+                const _accTonPerShare = reward_data._accTonPerShare.map(i => i.toFixed(0));
+                const _lastRewardTime = reward_data._lastRewardTime.toFixed(0);
+
+                const pending_vested = await userData1.call({
+                    method: 'pendingReward',
+                    params: {_accTonPerShare: _accTonPerShare, poolLastRewardTime: _lastRewardTime}}
+                )
+                // console.log(pending_vested.map(i => i.toFixed(0)));
+
                 const tx = await depositTokens(user1, userTokenWallet1, minDeposit);
                 await afterRun(tx);
                 await checkTokenBalances(
@@ -703,8 +698,10 @@ describe('Test Ton Farm Pool', async function() {
 
                 const new_reward_time = await getLastRewardTime();
 
-                await checkRewardVesting(userFarmTokenWallet1_1, userData1, user_details, user1_1_bal_before, prev_reward_time, new_reward_time, rewardPerSec_1, 0);
-                await checkRewardVesting(userFarmTokenWallet1_2, userData1, user_details, user1_2_bal_before, prev_reward_time, new_reward_time, rewardPerSec_2, 1);
+                const x = await checkRewardVesting(userFarmTokenWallet1_1, userData1, user_details, user1_1_bal_before, prev_reward_time, new_reward_time, rewardPerSec_1, 0);
+                const x1 = await checkRewardVesting(userFarmTokenWallet1_2, userData1, user_details, user1_2_bal_before, prev_reward_time, new_reward_time, rewardPerSec_2, 1);
+
+                console.log(x, x1);
 
                 const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
