@@ -109,7 +109,7 @@ describe('Test Ton Farm Pool', async function() {
                 notify_receiver: true,
                 payload: ''
             },
-            value: convertCrystal(2.5, 'nano')
+            value: convertCrystal(5, 'nano')
         });
     };
 
@@ -130,9 +130,10 @@ describe('Test Ton Farm Pool', async function() {
             contract: farm_pool,
             method: 'withdrawUnclaimed',
             params: {
-                to: user.address
+                to: user.address,
+                callback_payload: ''
             },
-            value: convertCrystal(1.5, 'nano')
+            value: convertCrystal(5, 'nano')
         })
     }
 
@@ -142,9 +143,10 @@ describe('Test Ton Farm Pool', async function() {
             method: 'withdraw',
             params: {
                 amount: withdraw_amount,
-                send_gas_to: user.address
+                send_gas_to: user.address,
+                callback_payload: ''
             },
-            value: convertCrystal(1.5, 'nano')
+            value: convertCrystal(5, 'nano')
         });
     };
 
@@ -153,9 +155,10 @@ describe('Test Ton Farm Pool', async function() {
             contract: farm_pool,
             method: 'claimReward',
             params: {
-                send_gas_to: user.address
+                send_gas_to: user.address,
+                callback_payload: ''
             },
-            value: convertCrystal(1.5, 'nano')
+            value: convertCrystal(5, 'nano')
         });
     };
 
@@ -164,7 +167,7 @@ describe('Test Ton Farm Pool', async function() {
             contract: farm_pool,
             method: 'withdrawAll',
             params: {},
-            value: convertCrystal(1.5, 'nano')
+            value: convertCrystal(5, 'nano')
         });
     }
 

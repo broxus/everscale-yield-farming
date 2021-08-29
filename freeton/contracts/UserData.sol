@@ -131,7 +131,7 @@ contract UserData is IUserData {
         ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(nonce, _vested);
     }
 
-    function _withdraw(uint128 _amount, uint256[] _accTonPerShare, uint32 poolLastRewardTime, address send_gas_to) internal {
+    function _withdraw(uint128 _amount, uint256[] _accTonPerShare, uint32 poolLastRewardTime, address send_gas_to, TvmCell callback_payload) internal {
         // bad input. User does not have enough staked balance. At least we can return some gas
         if (_amount > amount) {
             send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
@@ -155,33 +155,34 @@ contract UserData is IUserData {
         vestingTime = _vestingTime;
         lastRewardTime = poolLastRewardTime;
 
-        ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(user, _amount, _vested, send_gas_to);
+        ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(user, _amount, _vested, send_gas_to, callback_payload);
     }
 
     function processWithdraw(
         uint128 _amount,
         uint256[] _accTonPerShare,
         uint32 poolLastRewardTime,
-        address send_gas_to
+        address send_gas_to,
+        TvmCell callback_payload
     ) public override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(_reserve(), 2);
 
-        _withdraw(_amount, _accTonPerShare, poolLastRewardTime, send_gas_to);
+        _withdraw(_amount, _accTonPerShare, poolLastRewardTime, send_gas_to, callback_payload);
     }
 
-    function processWithdrawAll(uint256[] _accTonPerShare, uint32 poolLastRewardTime, address send_gas_to) external override {
+    function processWithdrawAll(uint256[] _accTonPerShare, uint32 poolLastRewardTime, address send_gas_to, TvmCell callback_payload) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(_reserve(), 2);
 
-        _withdraw(amount, _accTonPerShare, poolLastRewardTime, send_gas_to);
+        _withdraw(amount, _accTonPerShare, poolLastRewardTime, send_gas_to, callback_payload);
     }
 
-    function processClaimReward(uint256[] _accTonPerShare, uint32 poolLastRewardTime, address send_gas_to) external override {
+    function processClaimReward(uint256[] _accTonPerShare, uint32 poolLastRewardTime, address send_gas_to, TvmCell callback_payload) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(_reserve(), 2);
 
-        _withdraw(0, _accTonPerShare, poolLastRewardTime, send_gas_to);
+        _withdraw(0, _accTonPerShare, poolLastRewardTime, send_gas_to, callback_payload);
     }
 
     function processSafeWithdraw(address send_gas_to) external override {

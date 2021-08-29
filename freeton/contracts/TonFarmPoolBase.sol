@@ -31,7 +31,7 @@ abstract contract TonFarmPoolBase is ITonFarmPool {
     uint8 constant BAD_FARM_END_TIME = 115;
     uint8 constant BAD_VESTING_SETUP = 116;
 
-    //     constants
+    // constants
     uint128 constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
     uint128 constant TOKEN_WALLET_DEPLOY_GRAMS_VALUE = 0.1 ton;
     uint128 constant GET_WALLET_ADDRESS_VALUE = 0.5 ton;
@@ -40,7 +40,7 @@ abstract contract TonFarmPoolBase is ITonFarmPool {
     uint128 constant MIN_CLAIM_REWARD_MSG_VALUE = 1 ton;
     uint128 constant CONTRACT_MIN_BALANCE = 1 ton;
     uint128 constant USER_DATA_DEPLOY_VALUE = 0.2 ton;
-    uint128 constant TOKEN_TRANSFER_VALUE = 0.5 ton;
+    uint128 constant TOKEN_TRANSFER_VALUE = 1 ton;
     uint128 constant FABRIC_DEPLOY_CALLBACK_VALUE = 0.1 ton;
     uint128 constant ADD_REWARD_ROUND_VALUE = 0.5 ton;
     uint128 constant SET_END_TIME_VALUE = 0.5 ton;
@@ -80,9 +80,10 @@ abstract contract TonFarmPoolBase is ITonFarmPool {
     address owner;
 
     struct PendingDeposit {
-    address user;
-    uint128 amount;
-    address send_gas_to;
+        address user;
+        uint128 amount;
+        address send_gas_to;
+        TvmCell callback_payload;
     }
 
     uint64 deposit_nonce = 0;
