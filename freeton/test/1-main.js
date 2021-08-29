@@ -166,7 +166,7 @@ describe('Test Ton Farm Pool', async function() {
         return await user.runTarget({
             contract: farm_pool,
             method: 'withdrawAll',
-            params: {},
+            params: {callback_payload: ''},
             value: convertCrystal(5, 'nano')
         });
     }
@@ -1388,7 +1388,7 @@ describe('Test Ton Farm Pool', async function() {
                     params: {
                         send_gas_to: user1.address
                     },
-                    value: convertCrystal(1.5, 'nano')
+                    value: convertCrystal(5, 'nano')
                 });
                 const user1_bal_after_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
                 const user1_bal_after_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
