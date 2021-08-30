@@ -1,9 +1,15 @@
 {
-  "fabric": "0:587e4c728a21652d814cb470b6d32c0cdc2596aa4f61d186c2b0e2827e336823",
+  "fabric": "0:89cd3b1bf7d5e7adbced7a4f2ec8f9fbc621da8089d3fba3408a65e30919f4c2",
   "pool_owner": "0:a59b53c5a3584371e92dbb5ca9742f7eb5bd28e445603b28057603a8ae0c01e4",
-  "rewardPerSecond": ["1000", "2000"],
-  "farmStartTime": "1000",
-  "farmEndTime": "2000",
-  "tokenRoot": "0:c1fc7d041a5c521b633eaa3dd1d5e04ace9dc6a4273119d46a28ee3bdcfaa30d",
-  "rewardTokenRoot": ["0:b215ffbe0c999a750d8e8996c8dea9ac879408b9f62947b51bdf393366b159cf", "b215ffbe0c999a750d8e8996c8dea9ac879408b9f62947b51bdf393366b159cf"]
+  "reward_rounds": [
+    {"startTime":  123123, "rewardPerSecond":  [1000, 2000]},
+    {"startTime":  223123, "rewardPerSecond":  [1500, 2500]}
+  ],
+  "tokenRoot": "0:0fcf70de2e17ce5790b2297743be258944c207f3e99f2227a6d7fbc479774eb3",
+  "rewardTokenRoot": [
+    "0:fe618426feb0c64a8ee118d972ee6832bbaa5d5fce776429d971ff9c849e0311",
+    "0:97b3585e0d742136cc836ebc6ff18415b5d6f321f56324e259e056e0a1a6fef9"
+  ],
+  "vestingPeriod": 86400,
+  "vestingRatio": 500
 }

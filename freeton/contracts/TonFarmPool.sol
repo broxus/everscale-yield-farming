@@ -24,7 +24,10 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         require (_rewardRounds.length > 0, BAD_REWARD_ROUNDS_INPUT);
         require ((_vestingPeriod == 0 && _vestingRatio == 0) || (_vestingPeriod > 0 && _vestingRatio > 0), BAD_VESTING_SETUP);
         for (uint i = 0; i < _rewardRounds.length; i++) {
-            require(_rewardRounds[i].rewardPerSecond.length == _rewardTokenRoot.length, BAD_REWARD_TOKENS_INPUT);
+            if (i > 0) {
+                require(_rewardRounds[i].startTime > _rewardRounds[i - 1].startTime, BAD_REWARD_ROUNDS_INPUT);
+            }
+            require(_rewardRounds[i].rewardPerSecond.length == _rewardTokenRoot.length, BAD_REWARD_ROUNDS_INPUT);
         }
         require (msg.sender == fabric, NOT_FABRIC);
         tvm.accept();

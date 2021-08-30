@@ -35,7 +35,7 @@ async function main() {
     fabric.setKeyPair(keyPair);
     delete deploy_params.fabric;
 
-    const Account = await locklift.factory.getAccount();
+    const Account = await locklift.factory.getAccount('Wallet');
     const admin_user = await locklift.giver.deployContract({
         contract: Account,
         constructorParams: {},
@@ -43,7 +43,7 @@ async function main() {
             _randomNonce: getRandomNonce()
         },
         keyPair,
-    }, convertCrystal(10, 'nano'));
+    }, convertCrystal(11, 'nano'));
     admin_user.setKeyPair(keyPair);
     admin_user.afterRun = afterRun;
 
@@ -53,18 +53,18 @@ async function main() {
         contract: fabric,
         method: 'deployFarmPool',
         params: deploy_params,
-        value: convertCrystal(6, 'nano')
+        value: convertCrystal(10, 'nano')
     });
 
     const {
         value: {
             pool: _pool,
             pool_owner: _owner,
-            rewardPerSecond: _rewardPerSecond,
-            farmStartTime: _farmStartTime,
-            farmEndTime: _farmEndTime,
+            reward_rounds: _reward_rounds,
             tokenRoot: _tokenRoot,
-            rewardTokenRoot: _rewardTokenRoot
+            rewardTokenRoot: _rewardTokenRoot,
+            vestingPeriod: _vestingPeriod,
+            vestingRatio: _vestingRatio
         }
     } = (await fabric.getEvents('NewFarmPool')).pop();
 
@@ -130,40 +130,59 @@ async function main() {
         timeout: 120000
     });
 
-
-    const farm_pool_wallet_addr = await farm_pool.call({method: 'tokenWallet'});
-    console.log(`Farm Pool token wallet: ${farm_pool_wallet_addr}`);
+    const farm_pool_details = await farm_pool.call({method: 'getDetails'});
+    const farm_pool_wallet_addr = farm_pool_details.tokenWallet;
+    console.log(`\nFarm Pool token wallet: ${farm_pool_wallet_addr}`);
 
     farm_pool_wallet = await locklift.factory.getContract(
         'TONTokenWallet',
         './node_modules/broxus-ton-tokens-contracts/free-ton/build'
     );
     farm_pool_wallet.setAddress(farm_pool_wallet_addr);
-
-    const farm_pool_reward_wallet_addr = await farm_pool.call({method: 'rewardTokenWallet'});
-    console.log(`Farm Pool reward token wallet: ${farm_pool_reward_wallet_addr}`);
-
-    farm_pool_reward_wallet = await locklift.factory.getContract(
-        'TONTokenWallet',
-        './node_modules/broxus-ton-tokens-contracts/free-ton/build'
-    );
-    farm_pool_reward_wallet.setAddress(farm_pool_reward_wallet_addr);
     await afterRun();
     // call in order to check if wallet is deployed
     const details = await farm_pool_wallet.call({method: 'getDetails'});
     console.log(`Farm pool token details:`)
     for (let [key, value] of Object.entries(details)) {
+        if (key === 'code') continue;
         if (BigNumber.isBigNumber(value)) {
             value = value.toNumber();
         }
         console.log(`${key}: ${value}`);
     }
 
-    // call in order to check if wallet is deployed
-    // call in order to check if wallet is deployed
-    const details2 = await farm_pool_wallet.call({method: 'getDetails'});
-    console.log(`\nFarm pool reward token details:`)
-    for (let [key, value] of Object.entries(details2)) {
+    const farm_pool_reward_wallet_addrs = farm_pool_details.rewardTokenWallet;
+    for (const i of farm_pool_reward_wallet_addrs) {
+        console.log(`\nFarm Pool reward token wallet: ${i}`);
+
+        farm_pool_reward_wallet = await locklift.factory.getContract(
+            'TONTokenWallet',
+            './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+        );
+        farm_pool_reward_wallet.setAddress(i);
+
+        // call in order to check if wallet is deployed
+        // call in order to check if wallet is deployed
+        const details2 = await farm_pool_reward_wallet.call({method: 'getDetails'});
+        console.log(`Farm pool reward token details:`)
+        for (let [key, value] of Object.entries(details2)) {
+            if (key === 'code') continue;
+            if (BigNumber.isBigNumber(value)) {
+                value = value.toNumber();
+            }
+            console.log(`${key}: ${value}`);
+        }
+    }
+
+    console.log('\nFarm pool final details:')
+    for (let [key, value] of Object.entries(farm_pool_details)) {
+        if (key === 'rewardRounds') {
+            value.map((val, idx, arr) => {
+                console.log(`Reward round ${idx+1} start time: ${val['startTime']}, rewards: ${val['rewardPerSecond']}`)
+
+            })
+            continue;
+        }
         if (BigNumber.isBigNumber(value)) {
             value = value.toNumber();
         }
