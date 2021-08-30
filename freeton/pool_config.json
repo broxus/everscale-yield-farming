@@ -1,14 +1,14 @@
 {
-  "fabric": "0:89cd3b1bf7d5e7adbced7a4f2ec8f9fbc621da8089d3fba3408a65e30919f4c2",
+  "fabric": "0:59248e4dd05397bd217009774fbe7d762f8fd372b4c99b6f29b6bbd61418881c",
   "pool_owner": "0:a59b53c5a3584371e92dbb5ca9742f7eb5bd28e445603b28057603a8ae0c01e4",
   "reward_rounds": [
     {"startTime":  123123, "rewardPerSecond":  [1000, 2000]},
     {"startTime":  223123, "rewardPerSecond":  [1500, 2500]}
   ],
-  "tokenRoot": "0:0fcf70de2e17ce5790b2297743be258944c207f3e99f2227a6d7fbc479774eb3",
+  "tokenRoot": "0:f8216f3935ac8ff41d28faa523784d85cb05f75333d97a56cfe2d436fb75244c",
   "rewardTokenRoot": [
-    "0:fe618426feb0c64a8ee118d972ee6832bbaa5d5fce776429d971ff9c849e0311",
-    "0:97b3585e0d742136cc836ebc6ff18415b5d6f321f56324e259e056e0a1a6fef9"
+    "0:a193af145f79c49a21f5cc74d9c0ceebab01658a2036035fc367932391e2890e",
+    "0:d871b7ee2812e083427c39bc404c056b21d6269ac2e44c6c8a78d7eb6c5a9b53"
   ],
   "vestingPeriod": 86400,
   "vestingRatio": 500

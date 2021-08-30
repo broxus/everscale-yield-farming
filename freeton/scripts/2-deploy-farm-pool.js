@@ -12,7 +12,7 @@ async function sleep(ms) {
 
 const afterRun = async (tx) => {
     if (locklift.network === 'dev' || locklift.network === 'main') {
-        await sleep(80000);
+        await sleep(100000);
     }
 };
 
@@ -48,6 +48,16 @@ async function main() {
     admin_user.afterRun = afterRun;
 
     console.log(`Deployed account: ${admin_user.address}`);
+    // Wait until account is indexed
+    await locklift.ton.client.net.wait_for_collection({
+        collection: 'accounts',
+        filter: {
+            id: { eq: admin_user.address },
+            balance: { gt: `0x0` }
+        },
+        result: 'id',
+        timeout: 120000
+    });
 
     await admin_user.runTarget({
         contract: fabric,
