@@ -289,6 +289,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     function addRewardRound(RewardRound reward_round) external onlyOwner {
         require (msg.value >= ADD_REWARD_ROUND_VALUE);
         require (reward_round.startTime >= now, BAD_REWARD_ROUNDS_INPUT);
+        require (reward_round.startTime >= rewardRounds[rewardRounds.length - 1].startTime, BAD_REWARD_ROUNDS_INPUT);
         require (reward_round.rewardPerSecond.length == rewardTokenRoot.length, BAD_REWARD_ROUNDS_INPUT);
 
         tvm.rawReserve(_reserve(), 2);
