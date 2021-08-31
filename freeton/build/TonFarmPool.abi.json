@@ -1,0 +1,230 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_owner","type":"address"},
+				{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"_rewardRounds","type":"tuple[]"},
+				{"name":"_tokenRoot","type":"address"},
+				{"name":"_rewardTokenRoot","type":"address[]"},
+				{"name":"_vestingPeriod","type":"uint32"},
+				{"name":"_vestingRatio","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getVersion",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint8"},
+				{"name":"value1","type":"uint8"},
+				{"name":"value2","type":"uint8"}
+			]
+		},
+		{
+			"name": "getDetails",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"lastRewardTime","type":"uint32"},{"name":"farmEndTime","type":"uint32"},{"name":"vestingPeriod","type":"uint32"},{"name":"vestingRatio","type":"uint32"},{"name":"tokenRoot","type":"address"},{"name":"tokenWallet","type":"address"},{"name":"tokenBalance","type":"uint128"},{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"rewardRounds","type":"tuple[]"},{"name":"accTonPerShare","type":"uint256[]"},{"name":"rewardTokenRoot","type":"address[]"},{"name":"rewardTokenWallet","type":"address[]"},{"name":"rewardTokenBalance","type":"uint128[]"},{"name":"rewardTokenBalanceCumulative","type":"uint128[]"},{"name":"unclaimedReward","type":"uint128[]"},{"name":"owner","type":"address"},{"name":"fabric","type":"address"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "receiveTokenWalletAddress",
+			"inputs": [
+				{"name":"wallet","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "tokensReceivedCallback",
+			"inputs": [
+				{"name":"token_wallet","type":"address"},
+				{"name":"token_root","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"sender_public_key","type":"uint256"},
+				{"name":"sender_address","type":"address"},
+				{"name":"sender_wallet","type":"address"},
+				{"name":"original_gas_to","type":"address"},
+				{"name":"updated_balance","type":"uint128"},
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finishDeposit",
+			"inputs": [
+				{"name":"_deposit_nonce","type":"uint64"},
+				{"name":"_vested","type":"uint128[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdraw",
+			"inputs": [
+				{"name":"amount","type":"uint128"},
+				{"name":"send_gas_to","type":"address"},
+				{"name":"callback_payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdrawAll",
+			"inputs": [
+				{"name":"callback_payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "claimReward",
+			"inputs": [
+				{"name":"callback_payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finishWithdraw",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"_withdrawAmount","type":"uint128"},
+				{"name":"_vested","type":"uint128[]"},
+				{"name":"send_gas_to","type":"address"},
+				{"name":"callback_payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdrawUnclaimed",
+			"inputs": [
+				{"name":"to","type":"address"},
+				{"name":"callback_payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addRewardRound",
+			"inputs": [
+				{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"reward_round","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setEndTime",
+			"inputs": [
+				{"name":"farm_end_time","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "safeWithdraw",
+			"inputs": [
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finishSafeWithdraw",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "calculateRewardData",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_lastRewardTime","type":"uint32"},
+				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"_unclaimedReward","type":"uint128[]"}
+			]
+		},
+		{
+			"name": "getUserDataAddress",
+			"inputs": [
+				{"name":"_user","type":"address"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"userDataCode","type":"cell"},
+		{"key":2,"name":"fabric","type":"address"},
+		{"key":3,"name":"deploy_nonce","type":"uint64"}
+	],
+	"events": [
+		{
+			"name": "Deposit",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "Withdraw",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "Reward",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"amount","type":"uint128[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "RewardDeposit",
+			"inputs": [
+				{"name":"token_root","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "RewardRoundAdded",
+			"inputs": [
+				{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"reward_round","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "farmEndSet",
+			"inputs": [
+				{"name":"time","type":"uint32"}
+			],
+			"outputs": [
+			]
+		}
+	]
+}

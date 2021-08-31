@@ -1,8 +1,10 @@
 .idea
 
-freeton/build
+freeton/build/*.code
+freeton/build/*.base64
+freeton/build/*.tvc
+
 node_modules
 ethereum/artifacts
 ethereum/cache
 ethereum/.openzeppelin
-build

@@ -1,0 +1,94 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"reward_tokens_count","type":"uint8"},
+				{"name":"_vestingPeriod","type":"uint32"},
+				{"name":"_vestingRatio","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDetails",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"entitled","type":"uint128[]"},{"name":"vestingTime","type":"uint32"},{"name":"amount","type":"uint128"},{"name":"rewardDebt","type":"uint128[]"},{"name":"farmPool","type":"address"},{"name":"user","type":"address"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "pendingReward",
+			"inputs": [
+				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"poolLastRewardTime","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint128[]"}
+			]
+		},
+		{
+			"name": "processDeposit",
+			"inputs": [
+				{"name":"nonce","type":"uint64"},
+				{"name":"_amount","type":"uint128"},
+				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"poolLastRewardTime","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processWithdraw",
+			"inputs": [
+				{"name":"_amount","type":"uint128"},
+				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"poolLastRewardTime","type":"uint32"},
+				{"name":"send_gas_to","type":"address"},
+				{"name":"callback_payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processWithdrawAll",
+			"inputs": [
+				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"poolLastRewardTime","type":"uint32"},
+				{"name":"send_gas_to","type":"address"},
+				{"name":"callback_payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processClaimReward",
+			"inputs": [
+				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"poolLastRewardTime","type":"uint32"},
+				{"name":"send_gas_to","type":"address"},
+				{"name":"callback_payload","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processSafeWithdraw",
+			"inputs": [
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"farmPool","type":"address"},
+		{"key":2,"name":"user","type":"address"}
+	],
+	"events": [
+	]
+}

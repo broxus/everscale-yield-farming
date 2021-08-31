@@ -294,6 +294,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
         tvm.rawReserve(_reserve(), 2);
         rewardRounds.push(reward_round);
+        emit RewardRoundAdded(reward_round);
     }
 
     function setEndTime(uint32 farm_end_time) external onlyOwner {
@@ -304,6 +305,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
         tvm.rawReserve(_reserve(), 2);
         farmEndTime = farm_end_time;
+        emit farmEndSet(farm_end_time);
     }
 
     // withdraw all staked tokens without reward in case of some critical logic error / insufficient tons on FarmPool balance
