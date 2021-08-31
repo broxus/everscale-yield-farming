@@ -15,6 +15,7 @@ contract UserData is IUserData {
     uint128 amount;
     uint128[] rewardDebt;
     uint128[] entitled;
+    uint128[] pool_debt;
     address static farmPool;
     address static user; // setup from initData
     uint8 constant NOT_FARM_POOL = 101;
@@ -27,6 +28,7 @@ contract UserData is IUserData {
         for (uint i = 0; i < reward_tokens_count; i++) {
             rewardDebt.push(0);
             entitled.push(0);
+            pool_debt.push(0);
         }
         vestingPeriod = _vestingPeriod;
         vestingRatio = _vestingRatio;
@@ -37,18 +39,21 @@ contract UserData is IUserData {
     }
 
     function getDetails() external responsible view override returns (UserDataDetails) {
-        return { value: 0, bounce: false, flag: MsgFlag.REMAINING_GAS }UserDataDetails(entitled, vestingTime, amount, rewardDebt, farmPool, user);
+        return { value: 0, bounce: false, flag: MsgFlag.REMAINING_GAS }UserDataDetails(pool_debt, entitled, vestingTime, amount, rewardDebt, farmPool, user);
     }
 
     // user_amount and user_reward_debt should be fetched from UserData at first
-    function pendingReward(uint256[] _accTonPerShare, uint32 poolLastRewardTime) external view returns (uint128[]) {
+    function pendingReward(
+        uint256[] _accTonPerShare,
+        uint32 poolLastRewardTime
+    ) external view returns (uint128[] _entitled, uint128[] _vested, uint128[] _pool_debt, uint32 _vesting_time) {
         (
-        uint128[] _,
-        uint128[] _vested,
-        uint32 __
+            _entitled,
+            _vested,
+            _vesting_time
         ) = _computeVesting(amount, rewardDebt, _accTonPerShare, poolLastRewardTime);
 
-        return _vested;
+        return (_entitled, _vested, pool_debt, _vesting_time);
     }
 
     function _computeVesting(
@@ -107,6 +112,17 @@ contract UserData is IUserData {
         return (updated_entitled, newly_vested, new_vesting_time);
     }
 
+    function increasePoolDebt(uint128[] _pool_debt, address send_gas_to) external override {
+        require(msg.sender == farmPool, NOT_FARM_POOL);
+        tvm.rawReserve(_reserve(), 2);
+
+        for (uint i = 0; i < _pool_debt.length; i++) {
+            pool_debt[i] += _pool_debt[i];
+        }
+
+        send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
+    }
+
     function processDeposit(uint64 nonce, uint128 _amount, uint256[] _accTonPerShare, uint32 poolLastRewardTime) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(_reserve(), 2);
@@ -127,6 +143,11 @@ contract UserData is IUserData {
         entitled = _entitled;
         vestingTime = _vestingTime;
         lastRewardTime = poolLastRewardTime;
+
+        for (uint i = 0; i < _vested.length; i++) {
+            _vested[i] += pool_debt[i];
+            pool_debt[i] = 0;
+        }
 
         ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(nonce, _vested);
     }
@@ -154,6 +175,11 @@ contract UserData is IUserData {
         entitled = _entitled;
         vestingTime = _vestingTime;
         lastRewardTime = poolLastRewardTime;
+
+        for (uint i = 0; i < _vested.length; i++) {
+            _vested[i] += pool_debt[i];
+            pool_debt[i] = 0;
+        }
 
         ITonFarmPool(msg.sender).finishWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(user, _amount, _vested, send_gas_to, callback_payload);
     }

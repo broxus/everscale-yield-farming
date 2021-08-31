@@ -18,7 +18,7 @@
 				{"name":"_answer_id","type":"uint32"}
 			],
 			"outputs": [
-				{"components":[{"name":"entitled","type":"uint128[]"},{"name":"vestingTime","type":"uint32"},{"name":"amount","type":"uint128"},{"name":"rewardDebt","type":"uint128[]"},{"name":"farmPool","type":"address"},{"name":"user","type":"address"}],"name":"value0","type":"tuple"}
+				{"components":[{"name":"pool_debt","type":"uint128[]"},{"name":"entitled","type":"uint128[]"},{"name":"vestingTime","type":"uint32"},{"name":"amount","type":"uint128"},{"name":"rewardDebt","type":"uint128[]"},{"name":"farmPool","type":"address"},{"name":"user","type":"address"}],"name":"value0","type":"tuple"}
 			]
 		},
 		{
@@ -28,7 +28,19 @@
 				{"name":"poolLastRewardTime","type":"uint32"}
 			],
 			"outputs": [
-				{"name":"value0","type":"uint128[]"}
+				{"name":"_entitled","type":"uint128[]"},
+				{"name":"_vested","type":"uint128[]"},
+				{"name":"_pool_debt","type":"uint128[]"},
+				{"name":"_vesting_time","type":"uint32"}
+			]
+		},
+		{
+			"name": "increasePoolDebt",
+			"inputs": [
+				{"name":"_pool_debt","type":"uint128[]"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
 			]
 		},
 		{

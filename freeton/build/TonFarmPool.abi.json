@@ -80,6 +80,7 @@
 		{
 			"name": "withdrawAll",
 			"inputs": [
+				{"name":"send_gas_to","type":"address"},
 				{"name":"callback_payload","type":"cell"}
 			],
 			"outputs": [
@@ -88,6 +89,7 @@
 		{
 			"name": "claimReward",
 			"inputs": [
+				{"name":"send_gas_to","type":"address"},
 				{"name":"callback_payload","type":"cell"}
 			],
 			"outputs": [
@@ -109,6 +111,7 @@
 			"name": "withdrawUnclaimed",
 			"inputs": [
 				{"name":"to","type":"address"},
+				{"name":"send_gas_to","type":"address"},
 				{"name":"callback_payload","type":"cell"}
 			],
 			"outputs": [
@@ -194,6 +197,15 @@
 		},
 		{
 			"name": "Reward",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"amount","type":"uint128[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "RewardDebt",
 			"inputs": [
 				{"name":"user","type":"address"},
 				{"name":"amount","type":"uint128[]"}

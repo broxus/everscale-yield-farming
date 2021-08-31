@@ -125,7 +125,21 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         }
     }
 
-    function transferReward(address receiver_addr, uint128[] amount, TvmCell payload) internal {
+    function transferReward(address user_data_addr, address receiver_addr, uint128[] amount, address send_gas_to, TvmCell payload) internal {
+        // check if we have enough reward, emit debt otherwise
+        for (uint i = 0; i < amount.length; i++) {
+            if (rewardTokenBalance[i] < amount[i]) {
+                // check if its user or admin
+                // for user we emit debt, for admin just claim possible amounts
+                if (user_data_addr != address.makeAddrNone()) {
+                    IUserData(user_data_addr).increasePoolDebt{value: TOKEN_TRANSFER_VALUE, flag: 0}(amount, send_gas_to);
+                    emit RewardDebt(receiver_addr, amount);
+                    return;
+                }
+            }
+        }
+
+        emit Reward(receiver_addr, amount);
         for (uint i = 0; i < amount.length; i++) {
             uint128 _amount = math.min(rewardTokenBalance[i], amount[i]);
             if (_amount > 0) {
@@ -135,7 +149,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
                     _amount,
                     0,
                     0,
-                    receiver_addr,
+                    send_gas_to,
                     true,
                     payload
                 );
@@ -203,8 +217,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
         tvm.rawReserve(_reserve(), 2);
 
-        transferReward(deposit.user, _vested, deposit.callback_payload);
-        emit Reward(deposit.user, _vested);
+        transferReward(expectedAddr, deposit.user, _vested, deposit.send_gas_to, deposit.callback_payload);
 
         emit Deposit(deposit.user, deposit.amount);
         delete deposits[_deposit_nonce];
@@ -225,7 +238,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         IUserData(userDataAddr).processWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(amount, accTonPerShare, lastRewardTime, send_gas_to, callback_payload);
     }
 
-    function withdrawAll(TvmCell callback_payload) public {
+    function withdrawAll(address send_gas_to, TvmCell callback_payload) public {
         require (msg.sender.value != 0, EXTERNAL_CALL);
         require (msg.value >= MIN_WITHDRAW_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 2);
@@ -234,10 +247,10 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
         address userDataAddr = getUserDataAddress(msg.sender);
         // we cant check if user has any balance here, delegate it to UserData
-        IUserData(userDataAddr).processWithdrawAll{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, msg.sender, callback_payload);
+        IUserData(userDataAddr).processWithdrawAll{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, send_gas_to, callback_payload);
     }
 
-    function claimReward(TvmCell callback_payload) public {
+    function claimReward(address send_gas_to, TvmCell callback_payload) public {
         require (msg.sender.value != 0, EXTERNAL_CALL);
         require (msg.value >= MIN_CLAIM_REWARD_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 2);
@@ -246,7 +259,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
         address userDataAddr = getUserDataAddress(msg.sender);
         // we cant check if user has any balance here, delegate it to UserData
-        IUserData(userDataAddr).processClaimReward{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, msg.sender, callback_payload);
+        IUserData(userDataAddr).processClaimReward{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, send_gas_to, callback_payload);
     }
 
     function finishWithdraw(
@@ -260,8 +273,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         require (expectedAddr == msg.sender, NOT_USER_DATA);
         tvm.rawReserve(_reserve(), 2);
 
-        transferReward(user, _vested, callback_payload);
-        emit Reward(user, _vested);
+        transferReward(expectedAddr, user, _vested, send_gas_to, callback_payload);
 
         if (_withdrawAmount > 0) {
             tokenBalance -= _withdrawAmount;
@@ -275,15 +287,17 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         }
     }
 
-    function withdrawUnclaimed(address to, TvmCell callback_payload) external onlyOwner {
+    function withdrawUnclaimed(address to, address send_gas_to, TvmCell callback_payload) external onlyOwner {
         require (msg.value >= MIN_CLAIM_REWARD_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
         // minimum value that should remain on contract
         tvm.rawReserve(_reserve(), 2);
 
-        transferReward(to, unclaimedReward, callback_payload);
+        transferReward(address.makeAddrNone(), to, unclaimedReward, send_gas_to, callback_payload);
         for (uint i = 0; i < unclaimedReward.length; i++) {
             unclaimedReward[i] = 0;
         }
+
+        send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
     }
 
     function addRewardRound(RewardRound reward_round) external onlyOwner {
