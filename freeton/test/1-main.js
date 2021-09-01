@@ -20,7 +20,7 @@ const afterRun = async (tx) => {
     if (locklift.network === 'dev') {
         await sleep(80000);
     }
-    await sleep(500);
+    await sleep(700);
 };
 
 describe('Test Ton Farm Pool', async function() {
@@ -94,23 +94,41 @@ describe('Test Ton Farm Pool', async function() {
         });
     }
 
-    const depositTokens = async function(user, userTokenWallet, deposit_amount) {
-        // console.log(user, userTokenWallet, deposit_amount, farm_pool)
-        return await user.runTarget({
-            contract: userTokenWallet,
+    const getDepositPayload = async function(deposit_owner) {
+        return await farm_pool.call({
+            method: 'encodeDepositPayload',
+            params: {
+                deposit_owner: deposit_owner.address,
+                callback_payload: ''
+            }
+        });
+    }
+
+    const sendTokens = async function(from_user, from_user_tk_wallet, to_user, amount, payload='') {
+        return await from_user.runTarget({
+            contract: from_user_tk_wallet,
             method: 'transferToRecipient',
             params: {
                 recipient_public_key: 0,
-                recipient_address: farm_pool.address,
-                tokens: deposit_amount,
+                recipient_address: to_user.address,
+                tokens: amount,
                 deploy_grams: 0,
                 transfer_grams: 0,
-                send_gas_to: user.address,
+                send_gas_to: from_user.address,
                 notify_receiver: true,
-                payload: ''
+                payload: payload
             },
             value: convertCrystal(5, 'nano')
         });
+    }
+
+    const depositTokens = async function(user, userTokenWallet, deposit_amount, deposit_owner=null) {
+        if (deposit_owner === null) {
+            deposit_owner = user;
+        }
+        // console.log(user, userTokenWallet, deposit_amount, farm_pool)
+        const payload = await getDepositPayload(deposit_owner);
+        return await sendTokens(user, userTokenWallet, farm_pool, deposit_amount, payload);
     };
 
     const calcExpectedReward = function(prevRewardTime, newRewardTime, _rewardPerSec) {
@@ -1067,7 +1085,6 @@ describe('Test Ton Farm Pool', async function() {
         })
     });
 
-
     describe('Base staking pipeline testing', async function() {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
@@ -1256,7 +1273,11 @@ describe('Test Ton Farm Pool', async function() {
             let unclaimed = [0, 0];
 
             it('Deposit tokens', async function() {
-                const tx = await depositTokens(user1, userTokenWallet1, minDeposit);
+                // user1 send his tokens to user2 so that he will deposit them instead of him
+                await sendTokens(user1, userTokenWallet1, user2, minDeposit);
+                // now user2 deposit tokens of user1 with special payload
+                const tx = await depositTokens(user2, userTokenWallet2, minDeposit, user1);
+
                 await checkTokenBalances(
                     userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 );

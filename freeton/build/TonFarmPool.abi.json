@@ -43,6 +43,27 @@
 			]
 		},
 		{
+			"name": "encodeDepositPayload",
+			"inputs": [
+				{"name":"deposit_owner","type":"address"},
+				{"name":"callback_payload","type":"cell"}
+			],
+			"outputs": [
+				{"name":"deposit_payload","type":"cell"}
+			]
+		},
+		{
+			"name": "decodeDepositPayload",
+			"inputs": [
+				{"name":"payload","type":"cell"}
+			],
+			"outputs": [
+				{"name":"deposit_owner","type":"address"},
+				{"name":"callback_payload","type":"cell"},
+				{"name":"correct","type":"bool"}
+			]
+		},
+		{
 			"name": "tokensReceivedCallback",
 			"inputs": [
 				{"name":"token_wallet","type":"address"},

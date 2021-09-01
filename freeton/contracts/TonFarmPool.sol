@@ -158,6 +158,28 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         }
     }
 
+    function encodeDepositPayload(address deposit_owner, TvmCell callback_payload) external pure returns (TvmCell deposit_payload) {
+        TvmBuilder builder;
+        builder.store(deposit_owner);
+        builder.store(callback_payload);
+        return builder.toCell();
+    }
+
+    // try to decode deposit payload
+    function decodeDepositPayload(TvmCell payload) public view returns (address deposit_owner, TvmCell callback_payload, bool correct) {
+        // check if payload assembled correctly
+        TvmSlice slice = payload.toSlice();
+        // 1 address and 1 cell
+        if (!slice.hasNBitsAndRefs(267, 1)) {
+            return (address.makeAddrNone(), payload, false);
+        }
+
+        deposit_owner = slice.decode(address);
+        callback_payload = slice.loadRef();
+
+        return (deposit_owner, callback_payload, true);
+    }
+
     // deposit occurs here
     function tokensReceivedCallback(
         address token_wallet,
@@ -173,16 +195,20 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         tvm.rawReserve(_reserve(), 2);
 
         if (msg.sender == tokenWallet) {
-            if (sender_address.value == 0 || msg.value < (MIN_DEPOSIT_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length)) {
-                // external owner or too low deposit value or too low msg.value
-                TvmCell tvmcell;
+
+            // check if payload assembled correctly
+            (address deposit_owner, TvmCell callback_payload, bool correct) = decodeDepositPayload(payload);
+
+            if (sender_address.value == 0 || !correct || msg.value < (MIN_DEPOSIT_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length)) {
+                // external owner or too low deposit value or too low msg.value or incorrect deposit payload
+                // for incorrect deposit payload send tokens back to sender
                 ITONTokenWallet(tokenWallet).transfer{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
                     sender_wallet,
                     amount,
                     0,
                     original_gas_to,
-                    false,
-                    tvmcell
+                    true,
+                    callback_payload
                 );
                 return;
             }
@@ -192,9 +218,9 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
             deposit_nonce += 1;
             tokenBalance += amount;
 
-            deposits[deposit_nonce] = PendingDeposit(sender_address, amount, original_gas_to, payload);
+            deposits[deposit_nonce] = PendingDeposit(deposit_owner, amount, original_gas_to, callback_payload);
 
-            address userDataAddr = getUserDataAddress(sender_address);
+            address userDataAddr = getUserDataAddress(deposit_owner);
             IUserData(userDataAddr).processDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(deposit_nonce, amount, accTonPerShare, lastRewardTime);
         } else {
             for (uint i = 0; i < rewardTokenWallet.length; i++) {
