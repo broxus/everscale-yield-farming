@@ -409,9 +409,16 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         _accTonPerShare = accTonPerShare;
         _unclaimedReward = unclaimedReward;
 
+        uint32 first_round_start = rewardRounds[0].startTime;
+
+        // reward rounds still not started, nothing to calculate
+        if (now < first_round_start) {
+            _lastRewardTime = now;
+            return (_lastRewardTime, _accTonPerShare, _unclaimedReward);
+        }
+
         if (now > _lastRewardTime) {
             // special case - last update occurred before start of 1st round
-            uint32 first_round_start = rewardRounds[0].startTime;
             if (_lastRewardTime < first_round_start) {
                 _lastRewardTime = math.min(first_round_start, now);
             }
