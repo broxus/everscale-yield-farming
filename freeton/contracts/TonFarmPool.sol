@@ -456,6 +456,10 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
                     }
                     break;
                 }
+                if (i == 0) {
+                    // break to avoid integer overflow
+                    break;
+                }
             }
         }
         return (_lastRewardTime, _accTonPerShare, _unclaimedReward);
