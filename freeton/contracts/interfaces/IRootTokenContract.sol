@@ -1,4 +1,4 @@
-pragma ton-solidity ^0.39.0;
+pragma ton-solidity ^0.49.0;
 
 interface IRootTokenContract {
 

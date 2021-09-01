@@ -1,4 +1,4 @@
-pragma ton-solidity ^0.39.0;
+pragma ton-solidity ^0.49.0;
 pragma AbiHeader expire;
 
 
@@ -46,6 +46,7 @@ abstract contract TonFarmPoolBase is ITonFarmPool {
     uint128 constant SET_END_TIME_VALUE = 0.5 ton;
 
     uint32 constant MAX_UINT32 = 0xFFFFFFFF;
+    uint128 constant SCALING_FACTOR = 1e18;
 
     // State vars
     uint32 lastRewardTime;
