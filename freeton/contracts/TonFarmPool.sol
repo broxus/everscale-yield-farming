@@ -65,7 +65,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     }
 
     function getDetails() external view responsible returns (Details) {
-        return Details(
+        return { value: 0, bounce: false, flag: MsgFlag.REMAINING_GAS }Details(
             lastRewardTime, farmEndTime, vestingPeriod, vestingRatio, tokenRoot, tokenWallet, tokenBalance,
             rewardRounds, accTonPerShare, rewardTokenRoot, rewardTokenWallet, rewardTokenBalance,
             rewardTokenBalanceCumulative, unclaimedReward, owner, fabric
@@ -450,7 +450,8 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
                         }
 
                         for (uint k = 0; k < rewardRounds[j].rewardPerSecond.length; k++) {
-                            _accTonPerShare[k] += math.muldiv(new_reward[k], SCALING_FACTOR, tokenBalance);
+                            uint256 scaled_reward = uint256(new_reward[k]) * SCALING_FACTOR;
+                            _accTonPerShare[k] += scaled_reward / tokenBalance;
                         }
                         _lastRewardTime = new_reward_time;
                     }

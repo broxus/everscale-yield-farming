@@ -288,14 +288,14 @@ describe('Test Ton Farm Pool', async function() {
         });
         const userTokenWallet = await locklift.factory.getContract(
             'TONTokenWallet',
-            './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+            '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
         );
         userTokenWallet.setAddress(expectedWalletAddr);
         return userTokenWallet;
     }
 
     const getDetails = async function() {
-        return await farm_pool.call({method: 'getDetails'});
+        return farm_pool.call({method: 'getDetails'});
     }
 
     const getLastRewardTime = async function() {
@@ -321,12 +321,12 @@ describe('Test Ton Farm Pool', async function() {
     const deployTokenRoot = async function(token_name, token_symbol) {
         const RootToken = await locklift.factory.getContract(
             'RootTokenContract',
-            './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+            '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
         );
 
         const TokenWallet = await locklift.factory.getContract(
             'TONTokenWallet',
-            './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+            '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
         );
 
         const [keyPair] = await locklift.keys.getKeyPairs();
@@ -398,7 +398,7 @@ describe('Test Ton Farm Pool', async function() {
 
             let userTokenWallet = await locklift.factory.getContract(
                 'TONTokenWallet',
-                './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+                '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
             );
 
             userTokenWallet.setAddress(userTokenWalletAddress);
@@ -418,7 +418,7 @@ describe('Test Ton Farm Pool', async function() {
         describe('Users', async function() {
             it('Deploy users accounts', async function() {
                 let users = [];
-                for (const i of [25, 25, 25]) {
+                for (const i of [15, 15, 25]) {
                     const [keyPair] = await locklift.keys.getKeyPairs();
                     const Account = await locklift.factory.getAccount('Wallet');
                     const _user = await locklift.giver.deployContract({
@@ -612,7 +612,7 @@ describe('Test Ton Farm Pool', async function() {
 
                 farm_pool_wallet = await locklift.factory.getContract(
                     'TONTokenWallet',
-                    './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+                    '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
                 );
                 farm_pool_wallet.setAddress(staking_details.tokenWallet);
 
@@ -621,13 +621,13 @@ describe('Test Ton Farm Pool', async function() {
 
                 farm_pool_reward_wallet_1 = await locklift.factory.getContract(
                     'TONTokenWallet',
-                    './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+                    '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
                 );
                 farm_pool_reward_wallet_1.setAddress(farm_pool_reward_wallet_addrs[0]);
 
                 farm_pool_reward_wallet_2 = await locklift.factory.getContract(
                     'TONTokenWallet',
-                    './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+                    '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
                 );
                 farm_pool_reward_wallet_2.setAddress(farm_pool_reward_wallet_addrs[1]);
                 await afterRun();
@@ -920,12 +920,13 @@ describe('Test Ton Farm Pool', async function() {
                     result: 'id'
                 });
 
+
                 const staking_details = await getDetails();
                 logger.log(`Farm Pool token wallet: ${staking_details.tokenWallet}`);
 
                 farm_pool_wallet = await locklift.factory.getContract(
                     'TONTokenWallet',
-                    './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+                    '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
                 );
                 farm_pool_wallet.setAddress(staking_details.tokenWallet);
 
@@ -934,7 +935,7 @@ describe('Test Ton Farm Pool', async function() {
 
                 farm_pool_reward_wallet_1 = await locklift.factory.getContract(
                     'TONTokenWallet',
-                    './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+                    '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
                 );
                 farm_pool_reward_wallet_1.setAddress(farm_pool_reward_wallet_addrs[0]);
 
@@ -1208,7 +1209,7 @@ describe('Test Ton Farm Pool', async function() {
 
                 farm_pool_wallet = await locklift.factory.getContract(
                     'TONTokenWallet',
-                    './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+                    '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
                 );
                 farm_pool_wallet.setAddress(staking_details.tokenWallet);
 
@@ -1217,13 +1218,13 @@ describe('Test Ton Farm Pool', async function() {
 
                 farm_pool_reward_wallet_1 = await locklift.factory.getContract(
                     'TONTokenWallet',
-                    './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+                    '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
                 );
                 farm_pool_reward_wallet_1.setAddress(farm_pool_reward_wallet_addrs[0]);
 
                 farm_pool_reward_wallet_2 = await locklift.factory.getContract(
                     'TONTokenWallet',
-                    './node_modules/broxus-ton-tokens-contracts/free-ton/build'
+                    '../node_modules/broxus-ton-tokens-contracts/free-ton/build'
                 );
                 farm_pool_reward_wallet_2.setAddress(farm_pool_reward_wallet_addrs[1]);
                 await afterRun();

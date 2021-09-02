@@ -72,18 +72,22 @@ contract UserData is IUserData {
             uint32 age = _poolLastRewardTime - lastRewardTime;
 
             for (uint i = 0; i < _rewardDebt.length; i++) {
-                new_entitled[i] = uint128(math.muldiv(_amount, _accTonPerShare[i], SCALING_FACTOR) - _rewardDebt[i]);
+                uint256 _reward = uint256(amount) * _accTonPerShare[i];
+                new_entitled[i] = uint128(_reward / SCALING_FACTOR) - _rewardDebt[i];
                 if (vestingRatio > 0) {
                     // calc which part should be payed immediately and with vesting from new reward
                     uint128 vesting_part = (new_entitled[i] * vestingRatio) / MAX_VESTING_RATIO;
                     uint128 clear_part = new_entitled[i] - vesting_part;
-                    newly_vested[i] = uint128(math.muldiv(vesting_part, age, age + vestingPeriod));
+
+                    uint256 _vested = uint256(vesting_part) * age;
+                    newly_vested[i] = uint128(_vested / (age + vestingPeriod));
 
                     // now calculate newly vested part of old entitled reward
                     uint32 age2 = _poolLastRewardTime >= vestingTime ? vestingPeriod : _poolLastRewardTime - lastRewardTime;
+                    _vested = uint256(entitled[i]) * age2;
                     uint128 to_vest = age2 >= vestingPeriod
                         ? entitled[i]
-                        : uint128(math.muldiv(entitled[i], age2, vestingTime - lastRewardTime));
+                        : uint128(_vested / (vestingTime - lastRewardTime));
 
                     // amount of reward vested from now
                     uint128 remainingEntitled = entitled[i] == 0 ? 0 : entitled[i] - to_vest;
@@ -133,7 +137,8 @@ contract UserData is IUserData {
 
         amount += _amount;
         for (uint i = 0; i < rewardDebt.length; i++) {
-            rewardDebt[i] = uint128(math.muldiv(amount, _accTonPerShare[i], SCALING_FACTOR));
+            uint256 _reward = amount * _accTonPerShare[i];
+            rewardDebt[i] = uint128(_reward / SCALING_FACTOR);
         }
 
         (
@@ -165,7 +170,8 @@ contract UserData is IUserData {
 
         amount -= _amount;
         for (uint i = 0; i < _accTonPerShare.length; i++) {
-            rewardDebt[i] = uint128(math.muldiv(amount, _accTonPerShare[i], SCALING_FACTOR));
+            uint256 _reward = amount * _accTonPerShare[i];
+            rewardDebt[i] = uint128(_reward / SCALING_FACTOR);
         }
 
         (
