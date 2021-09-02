@@ -1,5 +1,6 @@
 {
 	"ABI version": 2,
+	"version": "2.1",
 	"header": ["time", "expire"],
 	"functions": [
 		{
@@ -106,5 +107,15 @@
 			"outputs": [
 			]
 		}
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"pools_count","type":"uint64"},
+		{"name":"owner","type":"address"},
+		{"name":"FarmPoolUserDataCode","type":"cell"},
+		{"name":"FarmPoolCode","type":"cell"},
+		{"name":"nonce","type":"uint128"}
 	]
 }

@@ -1,5 +1,6 @@
 {
 	"ABI version": 2,
+	"version": "2.1",
 	"header": ["time", "expire"],
 	"functions": [
 		{
@@ -28,7 +29,7 @@
 		{
 			"name": "getDetails",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
+				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
 				{"components":[{"name":"lastRewardTime","type":"uint32"},{"name":"farmEndTime","type":"uint32"},{"name":"vestingPeriod","type":"uint32"},{"name":"vestingRatio","type":"uint32"},{"name":"tokenRoot","type":"address"},{"name":"tokenWallet","type":"address"},{"name":"tokenBalance","type":"uint128"},{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"rewardRounds","type":"tuple[]"},{"name":"accTonPerShare","type":"uint256[]"},{"name":"rewardTokenRoot","type":"address[]"},{"name":"rewardTokenWallet","type":"address[]"},{"name":"rewardTokenBalance","type":"uint128[]"},{"name":"rewardTokenBalanceCumulative","type":"uint128[]"},{"name":"unclaimedReward","type":"uint128[]"},{"name":"owner","type":"address"},{"name":"fabric","type":"address"}],"name":"value0","type":"tuple"}
@@ -259,5 +260,30 @@
 			"outputs": [
 			]
 		}
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"lastRewardTime","type":"uint32"},
+		{"name":"farmEndTime","type":"uint32"},
+		{"name":"vestingPeriod","type":"uint32"},
+		{"name":"vestingRatio","type":"uint32"},
+		{"name":"tokenRoot","type":"address"},
+		{"name":"tokenWallet","type":"address"},
+		{"name":"tokenBalance","type":"uint128"},
+		{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"rewardRounds","type":"tuple[]"},
+		{"name":"accTonPerShare","type":"uint256[]"},
+		{"name":"rewardTokenRoot","type":"address[]"},
+		{"name":"rewardTokenWallet","type":"address[]"},
+		{"name":"rewardTokenBalance","type":"uint128[]"},
+		{"name":"rewardTokenBalanceCumulative","type":"uint128[]"},
+		{"name":"unclaimedReward","type":"uint128[]"},
+		{"name":"owner","type":"address"},
+		{"name":"deposit_nonce","type":"uint64"},
+		{"components":[{"name":"user","type":"address"},{"name":"amount","type":"uint128"},{"name":"send_gas_to","type":"address"},{"name":"callback_payload","type":"cell"}],"name":"deposits","type":"map(uint64,tuple)"},
+		{"name":"userDataCode","type":"cell"},
+		{"name":"fabric","type":"address"},
+		{"name":"deploy_nonce","type":"uint64"}
 	]
 }

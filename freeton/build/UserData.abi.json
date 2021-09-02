@@ -1,5 +1,6 @@
 {
 	"ABI version": 2,
+	"version": "2.1",
 	"header": ["time", "expire"],
 	"functions": [
 		{
@@ -15,7 +16,7 @@
 		{
 			"name": "getDetails",
 			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
+				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
 				{"components":[{"name":"pool_debt","type":"uint128[]"},{"name":"entitled","type":"uint128[]"},{"name":"vestingTime","type":"uint32"},{"name":"amount","type":"uint128"},{"name":"rewardDebt","type":"uint128[]"},{"name":"farmPool","type":"address"},{"name":"user","type":"address"}],"name":"value0","type":"tuple"}
@@ -102,5 +103,20 @@
 		{"key":2,"name":"user","type":"address"}
 	],
 	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"lastRewardTime","type":"uint32"},
+		{"name":"vestingPeriod","type":"uint32"},
+		{"name":"vestingRatio","type":"uint32"},
+		{"name":"vestingTime","type":"uint32"},
+		{"name":"amount","type":"uint128"},
+		{"name":"rewardDebt","type":"uint128[]"},
+		{"name":"entitled","type":"uint128[]"},
+		{"name":"pool_debt","type":"uint128[]"},
+		{"name":"farmPool","type":"address"},
+		{"name":"user","type":"address"}
 	]
 }

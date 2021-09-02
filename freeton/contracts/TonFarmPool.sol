@@ -450,7 +450,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
                         }
 
                         for (uint k = 0; k < rewardRounds[j].rewardPerSecond.length; k++) {
-                            _accTonPerShare[k] += math.muldiv(new_reward[k], 1e18, tokenBalance);
+                            _accTonPerShare[k] += math.muldiv(new_reward[k], SCALING_FACTOR, tokenBalance);
                         }
                         _lastRewardTime = new_reward_time;
                     }

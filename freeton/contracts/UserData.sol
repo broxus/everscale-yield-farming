@@ -21,6 +21,7 @@ contract UserData is IUserData {
     uint8 constant NOT_FARM_POOL = 101;
     uint128 constant CONTRACT_MIN_BALANCE = 0.1 ton;
     uint32 constant MAX_VESTING_RATIO = 1000;
+    uint128 constant SCALING_FACTOR = 1e18;
 
     constructor(uint8 reward_tokens_count, uint32 _vestingPeriod, uint32 _vestingRatio) public {
         require (farmPool == msg.sender, NOT_FARM_POOL);
@@ -71,7 +72,7 @@ contract UserData is IUserData {
             uint32 age = _poolLastRewardTime - lastRewardTime;
 
             for (uint i = 0; i < _rewardDebt.length; i++) {
-                new_entitled[i] = uint128(math.muldiv(_amount, _accTonPerShare[i], 1e18) - _rewardDebt[i]);
+                new_entitled[i] = uint128(math.muldiv(_amount, _accTonPerShare[i], SCALING_FACTOR) - _rewardDebt[i]);
                 if (vestingRatio > 0) {
                     // calc which part should be payed immediately and with vesting from new reward
                     uint128 vesting_part = (new_entitled[i] * vestingRatio) / MAX_VESTING_RATIO;
@@ -132,7 +133,7 @@ contract UserData is IUserData {
 
         amount += _amount;
         for (uint i = 0; i < rewardDebt.length; i++) {
-            rewardDebt[i] = uint128(math.muldiv(amount, _accTonPerShare[i], 1e18));
+            rewardDebt[i] = uint128(math.muldiv(amount, _accTonPerShare[i], SCALING_FACTOR));
         }
 
         (
@@ -164,7 +165,7 @@ contract UserData is IUserData {
 
         amount -= _amount;
         for (uint i = 0; i < _accTonPerShare.length; i++) {
-            rewardDebt[i] = uint128(math.muldiv(amount, _accTonPerShare[i], 1e18));
+            rewardDebt[i] = uint128(math.muldiv(amount, _accTonPerShare[i], SCALING_FACTOR));
         }
 
         (
