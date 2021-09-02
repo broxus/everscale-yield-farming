@@ -72,7 +72,7 @@ contract UserData is IUserData {
             uint32 age = _poolLastRewardTime - lastRewardTime;
 
             for (uint i = 0; i < _rewardDebt.length; i++) {
-                uint256 _reward = uint256(amount) * _accTonPerShare[i];
+                uint256 _reward = uint256(_amount) * _accTonPerShare[i];
                 new_entitled[i] = uint128(_reward / SCALING_FACTOR) - _rewardDebt[i];
                 if (vestingRatio > 0) {
                     // calc which part should be payed immediately and with vesting from new reward

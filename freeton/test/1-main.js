@@ -235,7 +235,7 @@ describe('Test Ton Farm Pool', async function() {
         const newly_vested = Math.floor((vesting_part * time_passed) / (time_passed + vestingPeriod));
 
         const age = newRewardTime >= vestingTime ? vestingPeriod : (newRewardTime - prevRewardTime);
-        let to_vest = age >= vestingPeriod ? entitled : Math.floor(entitled * age / (vestingTime - prevRewardTime));
+        let to_vest = age >= vestingPeriod ? entitled : Math.floor((entitled * age) / (vestingTime - prevRewardTime));
 
         const remaining_entitled = entitled === 0 ? 0 : entitled - to_vest;
         const unreleased_newly = vesting_part - newly_vested;
@@ -411,7 +411,7 @@ describe('Test Ton Farm Pool', async function() {
             it('Deploy roots', async function() {
                 root = await deployTokenRoot('Farm token', 'FT');
                 farming_root_1 = await deployTokenRoot('Reward token', 'RT');
-                // farming_root_2 = await deployTokenRoot('Reward token 2', 'RT 2');
+                farming_root_2 = await deployTokenRoot('Reward token 2', 'RT 2');
             });
         });
 
@@ -453,7 +453,7 @@ describe('Test Ton Farm Pool', async function() {
             it('Deploy users token wallets', async function() {
                 [ userTokenWallet1, userTokenWallet2 ] = await deployTokenWallets([user1, user2], root);
                 [ userFarmTokenWallet2_1, adminFarmTokenWallet_1 ] = await deployTokenWallets([user2, admin_user], farming_root_1);
-                // [ userFarmTokenWallet2_2, adminFarmTokenWallet_2 ] = await deployTokenWallets([user2, admin_user], farming_root_2);
+                [ userFarmTokenWallet2_2, adminFarmTokenWallet_2 ] = await deployTokenWallets([user2, admin_user], farming_root_2);
                 // [ userFarmTokenWallet1, userFarmTokenWallet2, adminFarmTokenWallet ] = await deployTokenWallets([user1, user2, admin_user], farming_root);
             });
 
@@ -475,29 +475,29 @@ describe('Test Ton Farm Pool', async function() {
                     }
                 });
 
-                // await farming_root_2.run({
-                //     method: 'mint',
-                //     params: {
-                //         tokens: adminInitialTokenBal.toFixed(0),
-                //         to: adminFarmTokenWallet_2.address
-                //     }
-                // });
+                await farming_root_2.run({
+                    method: 'mint',
+                    params: {
+                        tokens: adminInitialTokenBal.toFixed(0),
+                        to: adminFarmTokenWallet_2.address
+                    }
+                });
 
                 const balance1 = await userTokenWallet1.call({method: 'balance'});
                 const balance2 = await userTokenWallet2.call({method: 'balance'});
 
                 const balance3 = await adminFarmTokenWallet_1.call({method: 'balance'});
-                // const balance4 = await adminFarmTokenWallet_2.call({method: 'balance'});
+                const balance4 = await adminFarmTokenWallet_2.call({method: 'balance'});
 
                 expect(balance1.toNumber()).to.be.equal(userInitialTokenBal, 'User ton token wallet empty');
                 expect(balance2.toNumber()).to.be.equal(userInitialTokenBal, 'User ton token wallet empty');
                 expect(balance3.toFixed(0)).to.be.equal(adminInitialTokenBal.toFixed(0), 'User ton token wallet empty');
-                // expect(balance4.toFixed(0)).to.be.equal(adminInitialTokenBal.toFixed(0), 'User ton token wallet empty');
+                expect(balance4.toFixed(0)).to.be.equal(adminInitialTokenBal.toFixed(0), 'User ton token wallet empty');
             });
         });
     });
 
-    describe.skip('Vesting staking pipeline testing', async function() {
+    describe('Vesting staking pipeline testing', async function() {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
                 const PoolFabric = await locklift.factory.getContract(
@@ -1094,7 +1094,7 @@ describe('Test Ton Farm Pool', async function() {
         })
     });
 
-    describe.skip('Base staking pipeline testing', async function() {
+    describe('Base staking pipeline testing', async function() {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
                 const PoolFabric = await locklift.factory.getContract(
