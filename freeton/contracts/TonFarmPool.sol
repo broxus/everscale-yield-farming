@@ -125,7 +125,16 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         }
     }
 
-    function transferReward(address user_data_addr, address receiver_addr, uint128[] amount, address send_gas_to, TvmCell payload) internal {
+    function transferReward(
+        address user_data_addr,
+        address receiver_addr,
+        uint128[] amount,
+        address send_gas_to,
+        TvmCell payload
+    ) internal returns (uint128[] _reward, uint128[] _reward_debt){
+        _reward = new uint128[](amount.length);
+        _reward_debt = new uint128[](amount.length);
+
         // check if we have enough reward, emit debt otherwise
         for (uint i = 0; i < amount.length; i++) {
             if (rewardTokenBalance[i] < amount[i]) {
@@ -133,13 +142,12 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
                 // for user we emit debt, for admin just claim possible amounts
                 if (user_data_addr != address.makeAddrNone()) {
                     IUserData(user_data_addr).increasePoolDebt{value: TOKEN_TRANSFER_VALUE, flag: 0}(amount, send_gas_to);
-                    emit RewardDebt(receiver_addr, amount);
-                    return;
+                    _reward_debt = amount;
+                    return (_reward, _reward_debt);
                 }
             }
         }
 
-        emit Reward(receiver_addr, amount);
         for (uint i = 0; i < amount.length; i++) {
             uint128 _amount = math.min(rewardTokenBalance[i], amount[i]);
             if (_amount > 0) {
@@ -156,6 +164,8 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
                 rewardTokenBalance[i] -= _amount;
             }
         }
+        _reward = amount;
+        return (_reward, _reward_debt);
     }
 
     function encodeDepositPayload(address deposit_owner, TvmCell callback_payload) external pure returns (TvmCell deposit_payload) {
@@ -243,9 +253,12 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
         tvm.rawReserve(_reserve(), 2);
 
-        transferReward(expectedAddr, deposit.user, _vested, deposit.send_gas_to, deposit.callback_payload);
+        (
+            uint128[] _reward,
+            uint128[] _reward_debt
+        ) = transferReward(expectedAddr, deposit.user, _vested, deposit.send_gas_to, deposit.callback_payload);
 
-        emit Deposit(deposit.user, deposit.amount);
+        emit Deposit(deposit.user, deposit.amount, _reward, _reward_debt);
         delete deposits[_deposit_nonce];
 
         deposit.send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
@@ -299,16 +312,22 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         require (expectedAddr == msg.sender, NOT_USER_DATA);
         tvm.rawReserve(_reserve(), 2);
 
-        transferReward(expectedAddr, user, _vested, send_gas_to, callback_payload);
+        (
+        uint128[] _reward,
+        uint128[] _reward_debt
+        ) = transferReward(expectedAddr, user, _vested, send_gas_to, callback_payload);
 
+        // withdraw is called
         if (_withdrawAmount > 0) {
             tokenBalance -= _withdrawAmount;
 
-            emit Withdraw(user, _withdrawAmount);
+            emit Withdraw(user, _withdrawAmount, _reward, _reward_debt);
             ITONTokenWallet(tokenWallet).transferToRecipient{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
                 0, user, _withdrawAmount, 0, 0, send_gas_to, true, callback_payload
             );
+        // claim is called
         } else {
+            emit Claim(user, _reward, _reward_debt);
             send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
         }
     }
@@ -365,8 +384,11 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
         tokenBalance -= amount;
 
+        uint128[] _reward;
+        uint128[] _reward_debt;
+
         TvmCell tvmcell;
-        emit Withdraw(user, amount);
+        emit Withdraw(user, amount, _reward, _reward_debt);
 
         ITONTokenWallet(tokenWallet).transferToRecipient{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
             0, user, uint128(amount), 0, 0, send_gas_to, false, tvmcell

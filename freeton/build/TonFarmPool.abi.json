@@ -203,7 +203,9 @@
 			"name": "Deposit",
 			"inputs": [
 				{"name":"user","type":"address"},
-				{"name":"amount","type":"uint128"}
+				{"name":"amount","type":"uint128"},
+				{"name":"reward","type":"uint128[]"},
+				{"name":"reward_debt","type":"uint128[]"}
 			],
 			"outputs": [
 			]
@@ -212,25 +214,19 @@
 			"name": "Withdraw",
 			"inputs": [
 				{"name":"user","type":"address"},
-				{"name":"amount","type":"uint128"}
+				{"name":"amount","type":"uint128"},
+				{"name":"reward","type":"uint128[]"},
+				{"name":"reward_debt","type":"uint128[]"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "Reward",
+			"name": "Claim",
 			"inputs": [
 				{"name":"user","type":"address"},
-				{"name":"amount","type":"uint128[]"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "RewardDebt",
-			"inputs": [
-				{"name":"user","type":"address"},
-				{"name":"amount","type":"uint128[]"}
+				{"name":"reward","type":"uint128[]"},
+				{"name":"reward_debt","type":"uint128[]"}
 			],
 			"outputs": [
 			]

@@ -18,7 +18,7 @@ const getRandomNonce = () => Math.random() * 64000 | 0;
 
 const afterRun = async (tx) => {
     if (locklift.network === 'dev' || locklift.network === 'main') {
-        await sleep(80000);
+        await sleep(100000);
     }
     await sleep(700);
 };
@@ -266,6 +266,7 @@ describe('Test Ton Farm Pool', async function() {
         // console.log(prevRewardTime.toFixed(0), newRewardTime.toFixed(0));
 
         expect(real_reward.toFixed(0)).to.be.equal(final_vested.toFixed(0), 'Bad vested reward');
+        // console.log(entitled.toFixed(0), final_entitled.toFixed(0));
         expect(final_entitled.toFixed(0)).to.be.equal(details.entitled[token_idx].toFixed(0), 'Bad entitled reward');
         expect(new_vesting_time.toFixed(0)).to.be.equal(details.vestingTime.toFixed(0), 'Bad vesting time');
         return real_reward;
@@ -295,7 +296,7 @@ describe('Test Ton Farm Pool', async function() {
     }
 
     const getDetails = async function() {
-        return farm_pool.call({method: 'getDetails'});
+        return await farm_pool.call({method: 'getDetails'});
     }
 
     const getLastRewardTime = async function() {
@@ -418,7 +419,7 @@ describe('Test Ton Farm Pool', async function() {
         describe('Users', async function() {
             it('Deploy users accounts', async function() {
                 let users = [];
-                for (const i of [15, 15, 25]) {
+                for (const i of [50, 50, 50]) {
                     const [keyPair] = await locklift.keys.getKeyPairs();
                     const Account = await locklift.factory.getAccount('Wallet');
                     const _user = await locklift.giver.deployContract({
@@ -684,6 +685,8 @@ describe('Test Ton Farm Pool', async function() {
         describe('1 user farming', async function () {
             it('Deposit tokens', async function() {
                 const tx = await depositTokens(user1, userTokenWallet1, minDeposit);
+                await afterRun(tx);
+
                 await checkTokenBalances(
                     userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 );
@@ -694,9 +697,18 @@ describe('Test Ton Farm Pool', async function() {
                 userData1 = await getUserData(user1);
                 userData2 = await getUserData(user2);
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
+                const user_data_details = await getUserDataDetails(userData1);
+                expect(user_data_details.amount.toFixed(0)).to.be.equal(minDeposit.toFixed(0), 'Deposit failed');
+
+                const { value: { user: _user, amount: _amount, reward: _reward, reward_debt: _reward_debt } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
+
+                expect(_reward[0]).to.be.equal('0', 'Bad event');
+                expect(_reward[1]).to.be.equal('0', 'Bad event');
+
+                expect(_reward_debt[0]).to.be.equal('0', 'Bad event');
+                expect(_reward_debt[1]).to.be.equal('0', 'Bad event');
             });
 
             it('Deposit 2nd time', async function() {
@@ -733,9 +745,15 @@ describe('Test Ton Farm Pool', async function() {
 
                 // console.log(x, x1);
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
+                const { value: { user: _user, amount: _amount, reward: _reward, reward_debt: _reward_debt } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
+
+                expect(_reward[0]).to.be.eq(x.toFixed(0), 'Bad event');
+                expect(_reward[1]).to.be.eq(x1.toFixed(0), 'Bad event');
+
+                expect(_reward_debt[0]).to.be.eq('0', 'Bad event');
+                expect(_reward_debt[1]).to.be.eq('0', 'Bad event');
             });
 
             it('User withdraw half of staked amount', async function() {
@@ -754,12 +772,18 @@ describe('Test Ton Farm Pool', async function() {
 
                 const new_reward_time = await getLastRewardTime();
 
-                await checkRewardVesting(userFarmTokenWallet1_1, userData1, user_details, user1_bal_before_1, prev_reward_time, new_reward_time, rewardPerSec_1, 0);
-                await checkRewardVesting(userFarmTokenWallet1_2, userData1, user_details, user1_bal_before_2, prev_reward_time, new_reward_time, rewardPerSec_2, 1);
+                const x = await checkRewardVesting(userFarmTokenWallet1_1, userData1, user_details, user1_bal_before_1, prev_reward_time, new_reward_time, rewardPerSec_1, 0);
+                const x1 = await checkRewardVesting(userFarmTokenWallet1_2, userData1, user_details, user1_bal_before_2, prev_reward_time, new_reward_time, rewardPerSec_2, 1);
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Withdraw')).pop();
+                const { value: { user: _user, amount: _amount, reward: _reward, reward_debt: _reward_debt } } = (await farm_pool.getEvents('Withdraw')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
+
+                expect(_reward[0]).to.be.eq(x.toFixed(0), 'Bad event');
+                expect(_reward[1]).to.be.eq(x1.toFixed(0), 'Bad event');
+
+                expect(_reward_debt[0]).to.be.eq('0', 'Bad event');
+                expect(_reward_debt[1]).to.be.eq('0', 'Bad event');
             });
 
             it('User withdraw other half', async function() {
@@ -783,10 +807,12 @@ describe('Test Ton Farm Pool', async function() {
                     userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 );
 
-                const { value: { user: _user_0, amount: _amount_0 } } = (await farm_pool.getEvents('Reward')).pop();
+                const { value: {
+                    user: _user_0, reward: _reward, reward_debt: _reward_debt
+                } } = (await farm_pool.getEvents('Claim')).pop();
                 expect(_user_0).to.be.equal(user1.address, 'Bad event');
-                expect(_amount_0[0]).to.be.equal(reward1.toFixed(0), 'Bad event');
-                expect(_amount_0[1]).to.be.equal(reward2.toFixed(0), 'Bad event');
+                expect(_reward[0]).to.be.equal(reward1.toFixed(0), 'Bad event');
+                expect(_reward[1]).to.be.equal(reward2.toFixed(0), 'Bad event');
 
                 const user1_bal_before_11 = await userFarmTokenWallet1_1.call({method: 'balance'});
                 const user1_bal_before_22 = await userFarmTokenWallet1_2.call({method: 'balance'});
@@ -806,11 +832,42 @@ describe('Test Ton Farm Pool', async function() {
                 const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Withdraw')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
+
+                const user_details_2 = await getUserDataDetails(userData1);
+                const entitled = user_details_2.entitled;
+
+                await sleep(vestingPeriod * 1000);
+                await claimReward(user1);
+
+                const { value: {
+                    user: _user1, reward: _reward1, reward_debt: _reward_debt1
+                } } = (await farm_pool.getEvents('Claim')).pop();
+
+                expect(_reward1[0]).to.be.eq(entitled[0].toFixed(0), 'Bad reward');
+                expect(_reward1[1]).to.be.eq(entitled[1].toFixed(0), 'Bad reward');
+
+                const user_details_3 = await getUserDataDetails(userData1);
+
+                expect(user_details_3.entitled[0].toFixed(0)).to.be.eq('0', 'Bad reward');
+                expect(user_details_3.entitled[1].toFixed(0)).to.be.eq('0', 'Bad reward');
+                // const reward_data = await farm_pool.call({method: 'calculateRewardData'});
+                // // console.log(reward_data);
+                // const _accTonPerShare = reward_data._accTonPerShare.map(i => i.toFixed(0));
+                // const _lastRewardTime = reward_data._lastRewardTime.toFixed(0);
+                //
+                // const pending_vested = await userData1.call({
+                //     method: 'pendingReward',
+                //     params: {_accTonPerShare: _accTonPerShare, poolLastRewardTime: _lastRewardTime}}
+                // )
+                // console.log(pending_vested);
+                // console.log(pending_vested._entitled[0].toFixed(0));
+                // console.log(pending_vested._vested[0].toFixed(0));
+                // console.log(pending_vested._vesting_time.toFixed(0));
             });
         });
     });
 
-    describe('Debt staking pipeline testing', async function () {
+    describe.skip('Debt staking pipeline testing', async function () {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
                 const PoolFabric = await locklift.factory.getContract(
@@ -983,7 +1040,12 @@ describe('Test Ton Farm Pool', async function() {
                 userFarmTokenWallet1_1 = await getUserTokenWallet(farming_root_1, user1);
                 // userFarmTokenWallet1_2 = await getUserTokenWallet(farming_root_2, user1);
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
+                const { value: {
+                    user: _user,
+                    amount: _amount,
+                    reward: _reward,
+                    reward_debt: _reward_debt
+                } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
             });
@@ -1025,7 +1087,9 @@ describe('Test Ton Farm Pool', async function() {
                 // expect(expected_debt_2.toFixed(0)).to.be.equal(debt2.toFixed(0), 'Bad debt');
 
                 if (expected_debt_1 > 0) {
-                    const { value: { user: _user1, amount: _amount1 } } = (await farm_pool.getEvents('RewardDebt')).pop();
+                    const { value: {
+                        user: _user1, amount: _amount1, reward: _reward, reward_debt: _reward_debt
+                    } } = (await farm_pool.getEvents('Withdraw')).pop();
                     // console.log(_amount1);
                     expect(_user1).to.be.equal(user1.address, 'Bad event');
                     expect(_amount1[0]).to.be.equal(expected_debt_1.toFixed(0), 'Bad event');
@@ -1085,16 +1149,20 @@ describe('Test Ton Farm Pool', async function() {
                 expect(debt1.toFixed(0)).to.be.equal('0', 'Debt not cleared');
                 // expect(debt2.toFixed(0)).to.be.equal('0', 'Debt not cleared');
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Reward')).pop();
+                const { value: {
+                    user: _user, reward: _reward, reward_debt: _reward_debt
+                } } = (await farm_pool.getEvents('Claim')).pop();
+
                 expect(_user).to.be.equal(user1.address, 'Bad event');
-                expect(_amount[0]).to.be.equal(expected_debt_1.toFixed(0), 'Bad event');
+                expect(_reward_debt[0]).to.be.equal(expected_debt_1.toFixed(0), 'Bad event');
                 // expect(_amount[1]).to.be.equal(expected_debt_2.toFixed(0), 'Bad event');
+                expect(_reward[0]).to.be.equal('0', 'Bad event');
 
             });
         })
     });
 
-    describe('Base staking pipeline testing', async function() {
+    describe.skip('Base staking pipeline testing', async function() {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
                 const PoolFabric = await locklift.factory.getContract(
@@ -1294,7 +1362,7 @@ describe('Test Ton Farm Pool', async function() {
                 userFarmTokenWallet1_1 = await getUserTokenWallet(farming_root_1, user1);
                 userFarmTokenWallet1_2 = await getUserTokenWallet(farming_root_2, user1);
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
+                const { value: { user: _user, amount: _amount, reward: _reward, reward_debt: _reward_debt } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
             });
@@ -1322,7 +1390,7 @@ describe('Test Ton Farm Pool', async function() {
                 await checkReward(userFarmTokenWallet1_1, user1_1_bal_before, prev_reward_time, new_reward_time, rewardPerSec_1);
                 await checkReward(userFarmTokenWallet1_2, user1_2_bal_before, prev_reward_time, new_reward_time, rewardPerSec_2);
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
+                const { value: { user: _user, amount: _amount, reward: _reward, reward_debt: _reward_debt } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
 
@@ -1390,10 +1458,12 @@ describe('Test Ton Farm Pool', async function() {
                     userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 );
 
-                const { value: { user: _user_0, amount: _amount_0 } } = (await farm_pool.getEvents('Reward')).pop();
+                const { value: {
+                    user: _user_0, reward: _reward, reward_debt: _reward_debt
+                } } = (await farm_pool.getEvents('Claim')).pop();
                 expect(_user_0).to.be.equal(user1.address, 'Bad event');
-                expect(_amount_0[0]).to.be.equal(reward1.toFixed(0), 'Bad event');
-                expect(_amount_0[1]).to.be.equal(reward2.toFixed(0), 'Bad event');
+                expect(_reward[0]).to.be.equal(reward1.toFixed(0), 'Bad event');
+                expect(_reward[1]).to.be.equal(reward2.toFixed(0), 'Bad event');
 
                 const user1_bal_before_11 = await userFarmTokenWallet1_1.call({method: 'balance'});
                 const user1_bal_before_22 = await userFarmTokenWallet1_2.call({method: 'balance'});
@@ -1409,7 +1479,9 @@ describe('Test Ton Farm Pool', async function() {
                 await checkTokenBalances(
                     userTokenWallet1, 0, 0, userInitialTokenBal
                 );
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Withdraw')).pop();
+                const { value: {
+                    user: _user, amount: _amount, reward: _reward1, reward_debt: _reward_debt1
+                } } = (await farm_pool.getEvents('Withdraw')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
             });
@@ -1577,7 +1649,7 @@ describe('Test Ton Farm Pool', async function() {
                 userFarmTokenWallet1_2 = await getUserTokenWallet(farming_root_2, user1);
                 await afterRun(tx);
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
+                const { value: { user: _user, amount: _amount, reward: _reward, reward_debt: _reward_debt } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
             });
@@ -1602,7 +1674,9 @@ describe('Test Ton Farm Pool', async function() {
                     userTokenWallet1, 0, 0, userInitialTokenBal
                 );
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Withdraw')).pop();
+                const { value: {
+                    user: _user, amount: _amount, reward: _reward, reward_debt: _reward_debt
+                } } = (await farm_pool.getEvents('Withdraw')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
 
@@ -1620,6 +1694,9 @@ describe('Test Ton Farm Pool', async function() {
                 const delta_1 = user1_bal_after_1 - user1_bal_before_1;
                 const delta_2 = user1_bal_after_2 - user1_bal_before_2;
 
+                expect(_reward[0]).to.be.eq(reward_1.toFixed(0), "Bad reward");
+                expect(_reward[1]).to.be.eq(reward_1.toFixed(0), "Bad reward");
+
                 expect(delta_1.toFixed(0)).to.be.eq(reward_1.toFixed(0), "Bad reward");
                 expect(delta_2.toFixed(0)).to.be.eq(reward_2.toFixed(0), "Bad reward");
             });
@@ -1635,7 +1712,7 @@ describe('Test Ton Farm Pool', async function() {
                     userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 );
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
+                const { value: { user: _user, amount: _amount, reward: _reward, reward_debt: _reward_debt } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
 
@@ -1681,7 +1758,7 @@ describe('Test Ton Farm Pool', async function() {
                     userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 );
 
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Deposit')).pop();
+                const { value: { user: _user, amount: _amount, reward: _reward, reward_debt: _reward_debt } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
             });

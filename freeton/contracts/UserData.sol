@@ -67,50 +67,48 @@ contract UserData is IUserData {
         uint128[] newly_vested = new uint128[](_rewardDebt.length);
         uint128[] updated_entitled = new uint128[](_rewardDebt.length);
 
-        if (_amount > 0) {
-            uint128[] new_entitled = new uint128[](_rewardDebt.length);
-            uint32 age = _poolLastRewardTime - lastRewardTime;
+        uint128[] new_entitled = new uint128[](_rewardDebt.length);
+        uint32 age = _poolLastRewardTime - lastRewardTime;
 
-            for (uint i = 0; i < _rewardDebt.length; i++) {
-                uint256 _reward = uint256(_amount) * _accTonPerShare[i];
-                new_entitled[i] = uint128(_reward / SCALING_FACTOR) - _rewardDebt[i];
-                if (vestingRatio > 0) {
-                    // calc which part should be payed immediately and with vesting from new reward
-                    uint128 vesting_part = (new_entitled[i] * vestingRatio) / MAX_VESTING_RATIO;
-                    uint128 clear_part = new_entitled[i] - vesting_part;
+        for (uint i = 0; i < _rewardDebt.length; i++) {
+            uint256 _reward = uint256(_amount) * _accTonPerShare[i];
+            new_entitled[i] = uint128(_reward / SCALING_FACTOR) - _rewardDebt[i];
+            if (vestingRatio > 0) {
+                // calc which part should be payed immediately and with vesting from new reward
+                uint128 vesting_part = (new_entitled[i] * vestingRatio) / MAX_VESTING_RATIO;
+                uint128 clear_part = new_entitled[i] - vesting_part;
 
-                    uint256 _vested = uint256(vesting_part) * age;
-                    newly_vested[i] = uint128(_vested / (age + vestingPeriod));
+                uint256 _vested = uint256(vesting_part) * age;
+                newly_vested[i] = uint128(_vested / (age + vestingPeriod));
 
-                    // now calculate newly vested part of old entitled reward
-                    uint32 age2 = _poolLastRewardTime >= vestingTime ? vestingPeriod : _poolLastRewardTime - lastRewardTime;
-                    _vested = uint256(entitled[i]) * age2;
-                    uint128 to_vest = age2 >= vestingPeriod
-                        ? entitled[i]
-                        : uint128(_vested / (vestingTime - lastRewardTime));
+                // now calculate newly vested part of old entitled reward
+                uint32 age2 = _poolLastRewardTime >= vestingTime ? vestingPeriod : _poolLastRewardTime - lastRewardTime;
+                _vested = uint256(entitled[i]) * age2;
+                uint128 to_vest = age2 >= vestingPeriod
+                    ? entitled[i]
+                    : uint128(_vested / (vestingTime - lastRewardTime));
 
-                    // amount of reward vested from now
-                    uint128 remainingEntitled = entitled[i] == 0 ? 0 : entitled[i] - to_vest;
-                    uint128 unreleasedNewly = vesting_part - newly_vested[i];
-                    uint128 pending = remainingEntitled + unreleasedNewly;
+                // amount of reward vested from now
+                uint128 remainingEntitled = entitled[i] == 0 ? 0 : entitled[i] - to_vest;
+                uint128 unreleasedNewly = vesting_part - newly_vested[i];
+                uint128 pending = remainingEntitled + unreleasedNewly;
 
-                    // Compute the vesting time (i.e. when the entitled reward to be all vested)
-                    uint32 period;
-                    if (remainingEntitled == 0 || pending == 0) {
-                        // newly entitled reward only or nothing remain entitled
-                        period = vestingPeriod;
-                    } else {
-                        // "old" reward and, perhaps, "new" reward are pending - the weighted average applied
-                        uint32 age3 = vestingTime - _poolLastRewardTime;
-                        period = uint32(((remainingEntitled * age3) + (unreleasedNewly * vestingPeriod)) / pending);
-                    }
-
-                    new_vesting_time = _poolLastRewardTime + math.min(period, vestingPeriod);
-                    updated_entitled[i] = entitled[i] + vesting_part - to_vest - newly_vested[i];
-                    newly_vested[i] += to_vest + clear_part;
+                // Compute the vesting time (i.e. when the entitled reward to be all vested)
+                uint32 period;
+                if (remainingEntitled == 0 || pending == 0) {
+                    // newly entitled reward only or nothing remain entitled
+                    period = vestingPeriod;
                 } else {
-                    newly_vested[i] = new_entitled[i];
+                    // "old" reward and, perhaps, "new" reward are pending - the weighted average applied
+                    uint32 age3 = vestingTime - _poolLastRewardTime;
+                    period = uint32(((remainingEntitled * age3) + (unreleasedNewly * vestingPeriod)) / pending);
                 }
+
+                new_vesting_time = _poolLastRewardTime + math.min(period, vestingPeriod);
+                updated_entitled[i] = entitled[i] + vesting_part - to_vest - newly_vested[i];
+                newly_vested[i] += to_vest + clear_part;
+            } else {
+                newly_vested[i] = new_entitled[i];
             }
         }
 

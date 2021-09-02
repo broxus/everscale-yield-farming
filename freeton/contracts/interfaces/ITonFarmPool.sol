@@ -7,10 +7,10 @@ interface ITonFarmPool {
         uint128[] rewardPerSecond;
     }
     // Events
-    event Deposit(address user, uint128 amount);
-    event Withdraw(address user, uint128 amount);
-    event Reward(address user, uint128[] amount);
-    event RewardDebt(address user, uint128[] amount);
+    event Deposit(address user, uint128 amount, uint128[] reward, uint128[] reward_debt);
+    event Withdraw(address user, uint128 amount, uint128[] reward, uint128[] reward_debt);
+    event Claim(address user, uint128[] reward, uint128[] reward_debt);
+
     event RewardDeposit(address token_root, uint128 amount);
     event RewardRoundAdded(RewardRound reward_round);
     event farmEndSet(uint32 time);
