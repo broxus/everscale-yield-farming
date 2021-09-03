@@ -42,7 +42,7 @@ interface ITonFarmPool {
         uint128 withdrawAmount,
         uint128[] vested,
         address send_gas_to,
-        TvmCell callback_payload
+        uint32 nonce
     ) external;
     function finishSafeWithdraw(address user, uint128 amount, address send_gas_to) external;
 }

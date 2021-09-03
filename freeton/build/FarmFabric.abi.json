@@ -19,7 +19,8 @@
 				{"name":"tokenRoot","type":"address"},
 				{"name":"rewardTokenRoot","type":"address[]"},
 				{"name":"vestingPeriod","type":"uint32"},
-				{"name":"vestingRatio","type":"uint32"}
+				{"name":"vestingRatio","type":"uint32"},
+				{"name":"withdrawAllLockPeriod","type":"uint32"}
 			],
 			"outputs": [
 			]
@@ -33,7 +34,8 @@
 				{"name":"tokenRoot","type":"address"},
 				{"name":"rewardTokenRoot","type":"address[]"},
 				{"name":"vestingPeriod","type":"uint32"},
-				{"name":"vestingRatio","type":"uint32"}
+				{"name":"vestingRatio","type":"uint32"},
+				{"name":"withdrawAllLockPeriod","type":"uint32"}
 			],
 			"outputs": [
 			]
@@ -102,7 +104,8 @@
 				{"name":"tokenRoot","type":"address"},
 				{"name":"rewardTokenRoot","type":"address[]"},
 				{"name":"vestingPeriod","type":"uint32"},
-				{"name":"vestingRatio","type":"uint32"}
+				{"name":"vestingRatio","type":"uint32"},
+				{"name":"withdrawAllLockPeriod","type":"uint32"}
 			],
 			"outputs": [
 			]

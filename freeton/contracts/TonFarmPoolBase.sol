@@ -30,6 +30,7 @@ abstract contract TonFarmPoolBase is ITonFarmPool {
     uint8 constant BAD_REWARD_ROUNDS_INPUT = 114;
     uint8 constant BAD_FARM_END_TIME = 115;
     uint8 constant BAD_VESTING_SETUP = 116;
+    uint8 constant CANT_WITHDRAW_UNCLAIMED_ALL = 117;
 
     // constants
     uint128 constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
@@ -44,9 +45,12 @@ abstract contract TonFarmPoolBase is ITonFarmPool {
     uint128 constant FABRIC_DEPLOY_CALLBACK_VALUE = 0.1 ton;
     uint128 constant ADD_REWARD_ROUND_VALUE = 0.5 ton;
     uint128 constant SET_END_TIME_VALUE = 0.5 ton;
+    uint128 constant INCREASE_DEBT_VALUE = 0.3 ton;
 
     uint32 constant MAX_UINT32 = 0xFFFFFFFF;
     uint128 constant SCALING_FACTOR = 1e18;
+
+    uint32 withdrawAllLockPeriod;
 
     // State vars
     uint32 lastRewardTime;
@@ -84,7 +88,7 @@ abstract contract TonFarmPoolBase is ITonFarmPool {
         address user;
         uint128 amount;
         address send_gas_to;
-        TvmCell callback_payload;
+        uint32 nonce;
     }
 
     uint64 deposit_nonce = 0;

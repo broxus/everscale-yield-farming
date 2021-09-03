@@ -55,7 +55,7 @@ describe('Test Ton Farm Pool', async function() {
     let rewardPerSec_1;
     let rewardPerSec_2;
 
-    let vestingPeriod = 5;
+    let vestingPeriod = 10;
     let vestingRatio = 500;
     const MAX_VESTING_RATIO = 1000;
 
@@ -99,7 +99,7 @@ describe('Test Ton Farm Pool', async function() {
             method: 'encodeDepositPayload',
             params: {
                 deposit_owner: deposit_owner.address,
-                callback_payload: ''
+                nonce: 0
             }
         });
     }
@@ -157,7 +157,7 @@ describe('Test Ton Farm Pool', async function() {
             params: {
                 to: user.address,
                 send_gas_to: user.address,
-                callback_payload: ''
+                nonce: 0
             },
             value: convertCrystal(5, 'nano')
         })
@@ -170,7 +170,7 @@ describe('Test Ton Farm Pool', async function() {
             params: {
                 amount: withdraw_amount,
                 send_gas_to: user.address,
-                callback_payload: ''
+                nonce: 0
             },
             value: convertCrystal(5, 'nano')
         });
@@ -182,7 +182,7 @@ describe('Test Ton Farm Pool', async function() {
             method: 'claimReward',
             params: {
                 send_gas_to: user.address,
-                callback_payload: ''
+                nonce: 0
             },
             value: convertCrystal(5, 'nano')
         });
@@ -192,7 +192,7 @@ describe('Test Ton Farm Pool', async function() {
         return await user.runTarget({
             contract: farm_pool,
             method: 'withdrawAll',
-            params: {send_gas_to: user.address, callback_payload: ''},
+            params: {send_gas_to: user.address, nonce: 0},
             value: convertCrystal(5, 'nano')
         });
     }
@@ -201,7 +201,7 @@ describe('Test Ton Farm Pool', async function() {
         return await admin_user.runTarget({
             contract: farm_pool,
             method: 'addRewardRound',
-            params: {reward_round: {startTime: start_time, rewardPerSecond: reward_per_sec}},
+            params: {reward_round: {startTime: start_time, rewardPerSecond: reward_per_sec}, send_gas_to: admin_user.address},
             value: convertCrystal(1.5, 'nano')
         });
     }
@@ -210,7 +210,7 @@ describe('Test Ton Farm Pool', async function() {
         return await admin_user.runTarget({
             contract: farm_pool,
             method: 'setEndTime',
-            params: {farm_end_time: farm_end_time},
+            params: {farm_end_time: farm_end_time, send_gas_to: admin_user.address},
             value: convertCrystal(1.5, 'nano')
         });
     }
@@ -553,7 +553,8 @@ describe('Test Ton Farm Pool', async function() {
                         tokenRoot: root.address,
                         rewardTokenRoot: [farming_root_1.address, farming_root_2.address],
                         vestingPeriod: vestingPeriod,
-                        vestingRatio: vestingRatio
+                        vestingRatio: vestingRatio,
+                        withdrawAllLockPeriod: 0
                     },
                     value: convertCrystal(10, 'nano')
                 });
@@ -798,6 +799,7 @@ describe('Test Ton Farm Pool', async function() {
                 // check claim reward func
                 const claim_tx = await claimReward(user1);
                 const new_reward_time = await getLastRewardTime();
+                await sleep(500);
 
                 const reward1 = await checkRewardVesting(userFarmTokenWallet1_1, userData1, user_details, user1_bal_before_1, prev_reward_time, new_reward_time, rewardPerSec_1, 0);
                 const reward2 = await checkRewardVesting(userFarmTokenWallet1_2, userData1, user_details, user1_bal_before_2, prev_reward_time, new_reward_time, rewardPerSec_2, 1);
@@ -864,10 +866,57 @@ describe('Test Ton Farm Pool', async function() {
                 // console.log(pending_vested._vested[0].toFixed(0));
                 // console.log(pending_vested._vesting_time.toFixed(0));
             });
+
+            it("Farm end is set", async function() {
+                // deposit some dust to update lastRewardTime var
+                const tx = await depositTokens(user1, userTokenWallet1, 1);
+                await sleep(500);
+                const last_r_time = await getLastRewardTime();
+                const tx3 = await setFarmEndTime(last_r_time.plus(2).toFixed(0));
+            });
+
+            it("Reward is vesting after farm end time", async function() {
+               await sleep(2000);
+                const reward_data = await farm_pool.call({method: 'calculateRewardData'});
+                // console.log(reward_data);
+                const _accTonPerShare = reward_data._accTonPerShare.map(i => i.toFixed(0));
+                const _lastRewardTime = reward_data._lastRewardTime.toFixed(0);
+
+                const pending_vested = await userData1.call({
+                    method: 'pendingReward',
+                    params: {_accTonPerShare: _accTonPerShare, poolLastRewardTime: _lastRewardTime}}
+                )
+
+               await sleep(3000);
+                const reward_data_1 = await farm_pool.call({method: 'calculateRewardData'});
+                // console.log(reward_data);
+                const _accTonPerShare_1 = reward_data_1._accTonPerShare.map(i => i.toFixed(0));
+                const _lastRewardTime_1 = reward_data_1._lastRewardTime.toFixed(0);
+
+
+                const pending_vested_1 = await userData1.call({
+                    method: 'pendingReward',
+                    params: {_accTonPerShare: _accTonPerShare_1, poolLastRewardTime: _lastRewardTime_1}}
+                )
+
+                const entitled_before = pending_vested._entitled[0];
+                const entitled_after = pending_vested_1._entitled[0];
+
+                const vested_before = pending_vested._vested[0];
+                const vested_after = pending_vested_1._vested[0];
+
+                // console.log(entitled_after.toFixed(0), entitled_before.toFixed(0));
+                // console.log(vested_after.toFixed(0), vested_before.toFixed(0));
+                // console.log(entitled_before > entitled_after, vested_before < vested_after);
+
+               const reward_vested = entitled_before > entitled_after && vested_before < vested_after;
+               expect(reward_vested).to.be.eq(true, 'Reward Not vested')
+            });
         });
+
     });
 
-    describe.skip('Debt staking pipeline testing', async function () {
+    describe('Debt staking pipeline testing', async function () {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
                 const PoolFabric = await locklift.factory.getContract(
@@ -910,7 +959,7 @@ describe('Test Ton Farm Pool', async function() {
             });
 
             it('Deploy farm pool contract', async function() {
-                farmStart = Math.floor(Date.now() / 1000) + 1000;
+                farmStart = Math.floor(Date.now() / 1000);
                 farmEnd = Math.floor(Date.now() / 1000) + 10000;
 
                 const deploy_tx = await admin_user.runTarget({
@@ -922,7 +971,8 @@ describe('Test Ton Farm Pool', async function() {
                         tokenRoot: root.address,
                         rewardTokenRoot: [farming_root_1.address],
                         vestingPeriod: 0,
-                        vestingRatio: 0
+                        vestingRatio: 0,
+                        withdrawAllLockPeriod: 0
                     },
                     value: convertCrystal(10, 'nano')
                 });
@@ -1050,13 +1100,16 @@ describe('Test Ton Farm Pool', async function() {
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
             });
 
-            it('Withdraw tokens (debt is emitted, no reward)', async function() {
+            it('Withdraw tokens (debt is emitted, partial reward)', async function() {
                 const prev_reward_time = await getLastRewardTime();
 
                 const user1_bal_before_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
                 // const user1_bal_before_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
-
                 await sleep(2000);
+                const expected_reward = calcExpectedReward(prev_reward_time, prev_reward_time.plus(1), rewardPerSec_1);
+                // send reward only for 1 sec
+                await depositTokens(admin_user, adminFarmTokenWallet_1, expected_reward.toFixed(0));
+                const [event_1] = await farm_pool.getEvents('RewardDeposit');
 
                 const tx = await withdrawTokens(user1, minDeposit);
                 await checkTokenBalances(
@@ -1065,23 +1118,20 @@ describe('Test Ton Farm Pool', async function() {
 
                 const new_reward_time = await getLastRewardTime();
 
+                // calculate debt (plus 1, because we added reward for 1 second of farming)
+                expected_debt_1 = calcExpectedReward(prev_reward_time.plus(1), new_reward_time, rewardPerSec_1);
+                // expected_debt_2 = calcExpectedReward(prev_reward_time, new_reward_time, rewardPerSec_2);
+
                 const user1_bal_after_1 = await userFarmTokenWallet1_1.call({method: 'balance'});
                 // const user1_bal_after_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
+                const expected_balance = user1_bal_before_1.plus(expected_reward);
 
-                expect(user1_bal_before_1.toFixed(0)).to.be.equal(user1_bal_after_1.toFixed(0), 'Bad reward');
+                expect(user1_bal_after_1.toFixed(0)).to.be.equal(expected_balance.toFixed(0), 'Bad reward');
                 // expect(user1_bal_before_2.toFixed(0)).to.be.equal(user1_bal_after_2.toFixed(0), 'Bad reward');
-
-                const { value: { user: _user, amount: _amount } } = (await farm_pool.getEvents('Withdraw')).pop();
-                expect(_user).to.be.equal(user1.address, 'Bad event');
-                expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
-
-                // check debt
-                expected_debt_1 = calcExpectedReward(prev_reward_time, new_reward_time, rewardPerSec_1);
-                // expected_debt_2 = calcExpectedReward(prev_reward_time, new_reward_time, rewardPerSec_2);
 
                 const user_data_details = await getUserDataDetails(userData1);
                 const debt1 = user_data_details.pool_debt[0];
-                const debt2 = user_data_details.pool_debt[1];
+                // const debt2 = user_data_details.pool_debt[1];
 
                 expect(expected_debt_1.toFixed(0)).to.be.equal(debt1.toFixed(0), 'Bad debt');
                 // expect(expected_debt_2.toFixed(0)).to.be.equal(debt2.toFixed(0), 'Bad debt');
@@ -1092,12 +1142,13 @@ describe('Test Ton Farm Pool', async function() {
                     } } = (await farm_pool.getEvents('Withdraw')).pop();
                     // console.log(_amount1);
                     expect(_user1).to.be.equal(user1.address, 'Bad event');
-                    expect(_amount1[0]).to.be.equal(expected_debt_1.toFixed(0), 'Bad event');
-                    // expect(_amount1[1]).to.be.equal(expected_debt_2.toFixed(0), 'Bad event');
+                    expect(_reward_debt[0]).to.be.equal(expected_debt_1.toFixed(0), 'Bad event');
+                    expect(_reward[0]).to.be.equal(expected_reward.toFixed(0), 'Bad event');
+                    expect(_amount1).to.be.equal(minDeposit.toFixed(0), 'Bad event');
                 }
             });
 
-            it('Sending reward tokens to pool', async function() {
+            it('Sending more reward tokens to pool', async function() {
                 const amount_1 = (farmEnd - farmStart) * rewardPerSec_1;
                 // const amount_2 = (farmEnd - farmStart) * rewardPerSec_2;
 
@@ -1106,8 +1157,7 @@ describe('Test Ton Farm Pool', async function() {
 
                 await afterRun();
 
-                const [event_1] = await farm_pool.getEvents('RewardDeposit');
-
+                const event_1 = (await farm_pool.getEvents('RewardDeposit')).pop();
                 const { value: { amount: _amount_1} } = event_1;
                 expect(_amount_1).to.be.equal(amount_1.toFixed(0), 'Bad event');
 
@@ -1154,15 +1204,15 @@ describe('Test Ton Farm Pool', async function() {
                 } } = (await farm_pool.getEvents('Claim')).pop();
 
                 expect(_user).to.be.equal(user1.address, 'Bad event');
-                expect(_reward_debt[0]).to.be.equal(expected_debt_1.toFixed(0), 'Bad event');
+                expect(_reward[0]).to.be.equal(expected_debt_1.toFixed(0), 'Bad event');
+                expect(_reward_debt[0]).to.be.equal('0', 'Bad event');
                 // expect(_amount[1]).to.be.equal(expected_debt_2.toFixed(0), 'Bad event');
-                expect(_reward[0]).to.be.equal('0', 'Bad event');
 
             });
         })
     });
 
-    describe.skip('Base staking pipeline testing', async function() {
+    describe('Base staking pipeline testing', async function() {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
                 const PoolFabric = await locklift.factory.getContract(
@@ -1217,7 +1267,8 @@ describe('Test Ton Farm Pool', async function() {
                         tokenRoot: root.address,
                         rewardTokenRoot: [farming_root_1.address, farming_root_2.address],
                         vestingPeriod: 0,
-                        vestingRatio: 0
+                        vestingRatio: 0,
+                        withdrawAllLockPeriod: 0
                     },
                     value: convertCrystal(10, 'nano')
                 });
@@ -1700,6 +1751,10 @@ describe('Test Ton Farm Pool', async function() {
                 expect(delta_1.toFixed(0)).to.be.eq(reward_1.toFixed(0), "Bad reward");
                 expect(delta_2.toFixed(0)).to.be.eq(reward_2.toFixed(0), "Bad reward");
             });
+
+            it("Admin withdraw all remaining balance", async function() {
+
+            })
         });
 
         describe('Withdraw all test', async function() {

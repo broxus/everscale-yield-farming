@@ -62,7 +62,7 @@
 				{"name":"_accTonPerShare","type":"uint256[]"},
 				{"name":"poolLastRewardTime","type":"uint32"},
 				{"name":"send_gas_to","type":"address"},
-				{"name":"callback_payload","type":"cell"}
+				{"name":"nonce","type":"uint32"}
 			],
 			"outputs": [
 			]
@@ -73,7 +73,7 @@
 				{"name":"_accTonPerShare","type":"uint256[]"},
 				{"name":"poolLastRewardTime","type":"uint32"},
 				{"name":"send_gas_to","type":"address"},
-				{"name":"callback_payload","type":"cell"}
+				{"name":"nonce","type":"uint32"}
 			],
 			"outputs": [
 			]
@@ -84,7 +84,7 @@
 				{"name":"_accTonPerShare","type":"uint256[]"},
 				{"name":"poolLastRewardTime","type":"uint32"},
 				{"name":"send_gas_to","type":"address"},
-				{"name":"callback_payload","type":"cell"}
+				{"name":"nonce","type":"uint32"}
 			],
 			"outputs": [
 			]

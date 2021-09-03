@@ -13,6 +13,7 @@ interface IFabric {
         address tokenRoot,
         address[] rewardTokenRoot,
         uint32 vestingPeriod,
-        uint32 vestingRatio
+        uint32 vestingRatio,
+        uint32 withdrawAllLockPeriod
     ) external;
 }
