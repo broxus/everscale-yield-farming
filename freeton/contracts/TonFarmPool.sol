@@ -154,17 +154,19 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         TvmBuilder builder;
         builder.store(nonce);
         for (uint i = 0; i < _reward.length; i++) {
-            ITONTokenWallet(rewardTokenWallet[i]).transferToRecipient{value: TOKEN_TRANSFER_VALUE, flag: 0}(
-                0,
-                receiver_addr,
-                _reward[i],
-                0,
-                0,
-                send_gas_to,
-                true,
-                builder.toCell()
-            );
-            rewardTokenBalance[i] -= _reward[i];
+            if (_reward[i] > 0) {
+                ITONTokenWallet(rewardTokenWallet[i]).transferToRecipient{value: TOKEN_TRANSFER_VALUE, flag: 0}(
+                    0,
+                    receiver_addr,
+                    _reward[i],
+                    0,
+                    0,
+                    send_gas_to,
+                    true,
+                    builder.toCell()
+                );
+                rewardTokenBalance[i] -= _reward[i];
+            }
         }
         return (_reward, _reward_debt);
     }
