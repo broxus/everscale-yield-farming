@@ -149,7 +149,7 @@ contract UserData is IUserData {
                 uint128 vesting_part = (new_entitled[i] * vestingRatio) / MAX_VESTING_RATIO;
                 uint128 clear_part = new_entitled[i] - vesting_part;
 
-                if (lastRewardTime < _farmEndTime) {
+                if (lastRewardTime < _farmEndTime || _farmEndTime == 0) {
                     newly_vested[i] = _computeVestedForNewlyEntitled(vesting_part, _poolLastRewardTime, _farmEndTime);
                 } else {
                     // no new entitled rewards after farm end, nothing to compute
