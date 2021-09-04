@@ -234,7 +234,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
             deposits[deposit_nonce] = PendingDeposit(deposit_owner, amount, original_gas_to, nonce);
 
             address userDataAddr = getUserDataAddress(deposit_owner);
-            IUserData(userDataAddr).processDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(deposit_nonce, amount, accTonPerShare, lastRewardTime);
+            IUserData(userDataAddr).processDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(deposit_nonce, amount, accTonPerShare, lastRewardTime, farmEndTime);
         } else {
             for (uint i = 0; i < rewardTokenWallet.length; i++) {
                 if (msg.sender == rewardTokenWallet[i]) {
@@ -277,7 +277,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
         address userDataAddr = getUserDataAddress(msg.sender);
         // we cant check if user has any balance here, delegate it to UserData
-        IUserData(userDataAddr).processWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(amount, accTonPerShare, lastRewardTime, send_gas_to, nonce);
+        IUserData(userDataAddr).processWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(amount, accTonPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
     function withdrawAll(address send_gas_to, uint32 nonce) public {
@@ -289,7 +289,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
         address userDataAddr = getUserDataAddress(msg.sender);
         // we cant check if user has any balance here, delegate it to UserData
-        IUserData(userDataAddr).processWithdrawAll{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, send_gas_to, nonce);
+        IUserData(userDataAddr).processWithdrawAll{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
     function claimReward(address send_gas_to, uint32 nonce) public {
@@ -301,7 +301,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
         address userDataAddr = getUserDataAddress(msg.sender);
         // we cant check if user has any balance here, delegate it to UserData
-        IUserData(userDataAddr).processClaimReward{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, send_gas_to, nonce);
+        IUserData(userDataAddr).processClaimReward{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
     function finishWithdraw(
@@ -569,7 +569,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
                 );
             }
             // try again
-            IUserData(user_data_addr).processDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(_deposit_nonce, deposit.amount, accTonPerShare, lastRewardTime);
+            IUserData(user_data_addr).processDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(_deposit_nonce, deposit.amount, accTonPerShare, lastRewardTime, farmEndTime);
 
         }
     }

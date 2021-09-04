@@ -21,7 +21,7 @@ contract UserData is IUserData {
     uint8 constant NOT_FARM_POOL = 101;
     uint128 constant CONTRACT_MIN_BALANCE = 0.1 ton;
     uint32 constant MAX_VESTING_RATIO = 1000;
-    uint128 constant SCALING_FACTOR = 1e18;
+    uint256 constant SCALING_FACTOR = 1e18;
 
     constructor(uint8 reward_tokens_count, uint32 _vestingPeriod, uint32 _vestingRatio) public {
         require (farmPool == msg.sender, NOT_FARM_POOL);
@@ -46,22 +46,93 @@ contract UserData is IUserData {
     // user_amount and user_reward_debt should be fetched from UserData at first
     function pendingReward(
         uint256[] _accTonPerShare,
-        uint32 poolLastRewardTime
+        uint32 poolLastRewardTime,
+        uint32 farmEndTime
     ) external view returns (uint128[] _entitled, uint128[] _vested, uint128[] _pool_debt, uint32 _vesting_time) {
         (
             _entitled,
             _vested,
             _vesting_time
-        ) = _computeVesting(amount, rewardDebt, _accTonPerShare, poolLastRewardTime);
+        ) = _computeVesting(amount, rewardDebt, _accTonPerShare, poolLastRewardTime, farmEndTime);
 
         return (_entitled, _vested, pool_debt, _vesting_time);
+    }
+
+    function _isEven(uint64 num) internal pure returns (bool) {
+        return (num / 2) == 0 ? true : false;
+    }
+
+    function _rangeSum(uint64 range) internal pure returns (uint64) {
+        if (_isEven(range)) {
+            return (range / 2) * range + (range / 2);
+        }
+        return ((range / 2) + 1) * range;
+    }
+
+    // interval should be less than max
+    function _rangeIntervalAverage(uint32 interval, uint32 max) internal pure returns (uint256) {
+        return (_rangeSum(uint64(interval)) * SCALING_FACTOR) / max;
+    }
+
+    // only applied if _interval is bigger than vestingPeriod, will throw integer overflow otherwise
+    function _computeVestedForInterval(uint128 _entitled, uint32 _interval) internal view returns (uint128, uint128) {
+        uint32 periods_passed = ((_interval / vestingPeriod) - 1);
+        uint32 full_vested_part = periods_passed * vestingPeriod + _interval % vestingPeriod;
+        uint32 partly_vested_part = _interval - full_vested_part;
+
+        // get part of entitled reward that already vested, because their vesting period is passed
+        uint128 clear_part_1 = uint128((((full_vested_part * SCALING_FACTOR) / _interval) * _entitled) / SCALING_FACTOR);
+        uint128 vested_part = _entitled - clear_part_1;
+
+        // now calculate vested share of remaining part
+        uint256 clear_part_2_share = _rangeIntervalAverage(partly_vested_part, vestingPeriod) / partly_vested_part;
+        uint128 clear_part_2 = uint128(vested_part * clear_part_2_share / SCALING_FACTOR);
+        uint128 remaining_entitled = vested_part - clear_part_2;
+
+        return (clear_part_1 + clear_part_2, remaining_entitled);
+    }
+
+    // this is used only when lastRewardTime < farmEndTime, because newly entitled reward not emitted otherwise
+    // will throw with integer overflow otherwise
+    function _computeVestedForNewlyEntitled(uint128 _entitled, uint32 _poolLastRewardTime, uint32 _farmEndTime) internal view returns (uint128 _vested) {
+        if (_entitled == 0) {
+            return 0;
+        }
+        if (_farmEndTime == 0 || _poolLastRewardTime < _farmEndTime) {
+            uint32 age = _poolLastRewardTime - lastRewardTime;
+
+            if (age > vestingPeriod) {
+                (uint128 _vested_part, uint128 _) = _computeVestedForInterval(_entitled, age);
+                return _vested_part;
+            } else {
+                uint256 clear_part_share = _rangeIntervalAverage(age, vestingPeriod) / age;
+                return uint128(_entitled * clear_part_share / SCALING_FACTOR);
+            }
+        } else {
+            uint32 age_before = _farmEndTime - lastRewardTime;
+            uint32 age_after = math.min(_poolLastRewardTime - _farmEndTime, vestingPeriod);
+
+            uint128 _vested_before;
+            uint128 _entitled_before;
+            if (age_before > vestingPeriod) {
+                (_vested_before, _entitled_before) = _computeVestedForInterval(_entitled, age_before);
+            } else {
+                uint256 clear_part_share = _rangeIntervalAverage(age_before, vestingPeriod) / age_before;
+                _vested_before = uint128(_entitled * clear_part_share / SCALING_FACTOR);
+                _entitled_before = _entitled - _vested_before;
+            }
+
+            uint128 _vested_after = _entitled_before * age_after / vestingPeriod;
+            return (_vested_before + _vested_after);
+        }
     }
 
     function _computeVesting(
         uint128 _amount,
         uint128[] _rewardDebt,
         uint256[] _accTonPerShare,
-        uint32 _poolLastRewardTime
+        uint32 _poolLastRewardTime,
+        uint32 _farmEndTime
     ) internal view returns (uint128[], uint128[], uint32) {
         uint32 new_vesting_time;
         uint128[] newly_vested = new uint128[](_rewardDebt.length);
@@ -78,12 +149,16 @@ contract UserData is IUserData {
                 uint128 vesting_part = (new_entitled[i] * vestingRatio) / MAX_VESTING_RATIO;
                 uint128 clear_part = new_entitled[i] - vesting_part;
 
-                uint256 _vested = uint256(vesting_part) * age;
-                newly_vested[i] = uint128(_vested / (age + vestingPeriod));
+                if (lastRewardTime < _farmEndTime) {
+                    newly_vested[i] = _computeVestedForNewlyEntitled(vesting_part, _poolLastRewardTime, _farmEndTime);
+                } else {
+                    // no new entitled rewards after farm end, nothing to compute
+                    newly_vested[i] = 0;
+                }
 
                 // now calculate newly vested part of old entitled reward
                 uint32 age2 = _poolLastRewardTime >= vestingTime ? vestingPeriod : _poolLastRewardTime - lastRewardTime;
-                _vested = uint256(entitled[i]) * age2;
+                uint256 _vested = uint256(entitled[i]) * age2;
                 uint128 to_vest = age2 >= vestingPeriod
                     ? entitled[i]
                     : uint128(_vested / (vestingTime - lastRewardTime));
@@ -95,7 +170,10 @@ contract UserData is IUserData {
 
                 // Compute the vesting time (i.e. when the entitled reward to be all vested)
                 uint32 period;
-                if (remainingEntitled == 0 || pending == 0) {
+                if (pending == 0) {
+                    // no unreleased or remaining rewards, no vesting applied
+                    period = 0;
+                } else if (remainingEntitled == 0 || unreleasedNewly == 0) {
                     // newly entitled reward only or nothing remain entitled
                     period = vestingPeriod;
                 } else {
@@ -105,6 +183,7 @@ contract UserData is IUserData {
                 }
 
                 new_vesting_time = _poolLastRewardTime + math.min(period, vestingPeriod);
+                new_vesting_time = _farmEndTime > 0 ? math.min(_farmEndTime + vestingPeriod, new_vesting_time) : new_vesting_time;
                 updated_entitled[i] = entitled[i] + vesting_part - to_vest - newly_vested[i];
                 newly_vested[i] += to_vest + clear_part;
             } else {
@@ -126,7 +205,7 @@ contract UserData is IUserData {
         send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
     }
 
-    function processDeposit(uint64 nonce, uint128 _amount, uint256[] _accTonPerShare, uint32 poolLastRewardTime) external override {
+    function processDeposit(uint64 nonce, uint128 _amount, uint256[] _accTonPerShare, uint32 poolLastRewardTime, uint32 farmEndTime) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(_reserve(), 2);
 
@@ -143,7 +222,7 @@ contract UserData is IUserData {
             uint128[] _entitled,
             uint128[] _vested,
             uint32 _vestingTime
-        ) = _computeVesting(prevAmount, prevRewardDebt, _accTonPerShare, poolLastRewardTime);
+        ) = _computeVesting(prevAmount, prevRewardDebt, _accTonPerShare, poolLastRewardTime, farmEndTime);
         entitled = _entitled;
         vestingTime = _vestingTime;
         lastRewardTime = poolLastRewardTime;
@@ -156,7 +235,7 @@ contract UserData is IUserData {
         ITonFarmPool(msg.sender).finishDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(nonce, _vested);
     }
 
-    function _withdraw(uint128 _amount, uint256[] _accTonPerShare, uint32 poolLastRewardTime, address send_gas_to, uint32 nonce) internal {
+    function _withdraw(uint128 _amount, uint256[] _accTonPerShare, uint32 poolLastRewardTime, uint32 farmEndTime, address send_gas_to, uint32 nonce) internal {
         // bad input. User does not have enough staked balance. At least we can return some gas
         if (_amount > amount) {
             send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
@@ -176,7 +255,7 @@ contract UserData is IUserData {
             uint128[] _entitled,
             uint128[] _vested,
             uint32 _vestingTime
-        ) = _computeVesting(prevAmount, prevRewardDebt, _accTonPerShare, poolLastRewardTime);
+        ) = _computeVesting(prevAmount, prevRewardDebt, _accTonPerShare, poolLastRewardTime, farmEndTime);
         entitled = _entitled;
         vestingTime = _vestingTime;
         lastRewardTime = poolLastRewardTime;
@@ -193,27 +272,28 @@ contract UserData is IUserData {
         uint128 _amount,
         uint256[] _accTonPerShare,
         uint32 poolLastRewardTime,
+        uint32 farmEndTime,
         address send_gas_to,
         uint32 nonce
     ) public override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(_reserve(), 2);
 
-        _withdraw(_amount, _accTonPerShare, poolLastRewardTime, send_gas_to, nonce);
+        _withdraw(_amount, _accTonPerShare, poolLastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
-    function processWithdrawAll(uint256[] _accTonPerShare, uint32 poolLastRewardTime, address send_gas_to, uint32 nonce) external override {
+    function processWithdrawAll(uint256[] _accTonPerShare, uint32 poolLastRewardTime, uint32 farmEndTime, address send_gas_to, uint32 nonce) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(_reserve(), 2);
 
-        _withdraw(amount, _accTonPerShare, poolLastRewardTime, send_gas_to, nonce);
+        _withdraw(amount, _accTonPerShare, poolLastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
-    function processClaimReward(uint256[] _accTonPerShare, uint32 poolLastRewardTime, address send_gas_to, uint32 nonce) external override {
+    function processClaimReward(uint256[] _accTonPerShare, uint32 poolLastRewardTime, uint32 farmEndTime, address send_gas_to, uint32 nonce) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
         tvm.rawReserve(_reserve(), 2);
 
-        _withdraw(0, _accTonPerShare, poolLastRewardTime, send_gas_to, nonce);
+        _withdraw(0, _accTonPerShare, poolLastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
     function processSafeWithdraw(address send_gas_to) external override {
