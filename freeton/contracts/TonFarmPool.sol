@@ -353,7 +353,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     function withdrawUnclaimedAll(address to, address send_gas_to, uint32 nonce) external onlyOwner {
         require (msg.value >= MIN_CLAIM_REWARD_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
         require (farmEndTime > 0, CANT_WITHDRAW_UNCLAIMED_ALL);
-        require (now >= farmEndTime + withdrawAllLockPeriod, CANT_WITHDRAW_UNCLAIMED_ALL);
+        require (now >= farmEndTime + vestingPeriod + withdrawAllLockPeriod, CANT_WITHDRAW_UNCLAIMED_ALL);
         // minimum value that should remain on contract
         tvm.rawReserve(_reserve(), 2);
 
