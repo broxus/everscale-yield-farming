@@ -169,20 +169,21 @@ contract UserData is IUserData {
                 uint128 pending = remainingEntitled + unreleasedNewly;
 
                 // Compute the vesting time (i.e. when the entitled reward to be all vested)
-                uint32 period;
                 if (pending == 0) {
-                    // no unreleased or remaining rewards, no vesting applied
-                    period = 0;
-                } else if (remainingEntitled == 0 || unreleasedNewly == 0) {
-                    // newly entitled reward only or nothing remain entitled
-                    period = vestingPeriod;
+                    new_vesting_time = _poolLastRewardTime;
+                } else if (remainingEntitled == 0) {
+                    // only new reward, set vesting time to vesting period
+                    new_vesting_time = _poolLastRewardTime + vestingPeriod;
+                } else if (unreleasedNewly == 0) {
+                    // only unlocking old reward, dont change vesting time
+                    new_vesting_time = vestingTime;
                 } else {
                     // "old" reward and, perhaps, "new" reward are pending - the weighted average applied
                     uint32 age3 = vestingTime - _poolLastRewardTime;
-                    period = uint32(((remainingEntitled * age3) + (unreleasedNewly * vestingPeriod)) / pending);
+                    uint32 period = uint32(((remainingEntitled * age3) + (unreleasedNewly * vestingPeriod)) / pending);
+                    new_vesting_time = _poolLastRewardTime + math.min(period, vestingPeriod);
                 }
 
-                new_vesting_time = _poolLastRewardTime + math.min(period, vestingPeriod);
                 new_vesting_time = _farmEndTime > 0 ? math.min(_farmEndTime + vestingPeriod, new_vesting_time) : new_vesting_time;
                 updated_entitled[i] = entitled[i] + vesting_part - to_vest - newly_vested[i];
                 newly_vested[i] += to_vest + clear_part;
