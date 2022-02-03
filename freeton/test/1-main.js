@@ -803,6 +803,7 @@ describe('Test Ton Farm Pool', async function() {
                 const user1_bal_before_2 = await userFarmTokenWallet1_2.call({method: 'balance'});
 
                 await sleep(2000);
+                const user_details = await getUserDataDetails(userData1);
 
                 const tx = await withdrawTokens(user1, minDeposit);
                 await sleep(500);
