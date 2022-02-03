@@ -1,6 +1,6 @@
 {
 	"ABI version": 2,
-	"version": "2.1",
+	"version": "2.2",
 	"header": ["time", "expire"],
 	"functions": [
 		{
@@ -37,6 +37,14 @@
 			]
 		},
 		{
+			"name": "dummy",
+			"inputs": [
+				{"name":"_","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "receiveTokenWalletAddress",
 			"inputs": [
 				{"name":"wallet","type":"address"}
@@ -66,16 +74,13 @@
 			]
 		},
 		{
-			"name": "tokensReceivedCallback",
+			"name": "onAcceptTokensTransfer",
 			"inputs": [
-				{"name":"token_wallet","type":"address"},
-				{"name":"token_root","type":"address"},
+				{"name":"tokenRoot","type":"address"},
 				{"name":"amount","type":"uint128"},
-				{"name":"sender_public_key","type":"uint256"},
-				{"name":"sender_address","type":"address"},
-				{"name":"sender_wallet","type":"address"},
-				{"name":"original_gas_to","type":"address"},
-				{"name":"updated_balance","type":"uint128"},
+				{"name":"sender","type":"address"},
+				{"name":"senderWallet","type":"address"},
+				{"name":"remainingGasTo","type":"address"},
 				{"name":"payload","type":"cell"}
 			],
 			"outputs": [

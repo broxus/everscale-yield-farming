@@ -1,9 +1,7 @@
-pragma ton-solidity ^0.49.0;
+pragma ton-solidity ^0.56.0;
 pragma AbiHeader expire;
 
-import "./interfaces/IRootTokenContract.sol";
-import "./interfaces/ITONTokenWallet.sol";
-import "./interfaces/ITokensReceivedCallback.sol";
+
 import "./interfaces/IUserData.sol";
 import "./interfaces/ITonFarmPool.sol";
 import "./interfaces/IFabric.sol";
@@ -12,7 +10,7 @@ import "./UserData.sol";
 import "../../node_modules/@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 
-contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
+contract TonFarmPool is TonFarmPoolBase {
     constructor(
         address _owner,
         RewardRound[] _rewardRounds,
@@ -79,32 +77,20 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     */
     function setUpTokenWallets() internal view {
         // Deploy vault's token wallet
-        IRootTokenContract(tokenRoot).deployEmptyWallet{value: TOKEN_WALLET_DEPLOY_VALUE}(
-            TOKEN_WALLET_DEPLOY_GRAMS_VALUE, // deploy grams
-            0, // owner pubkey
-            address(this), // owner address
-            address(this) // gas refund address
+        ITokenRoot(tokenRoot).deployWallet{value: TOKEN_WALLET_DEPLOY_VALUE, callback: TonFarmPool.receiveTokenWalletAddress }(
+            address(this), // owner
+            TOKEN_WALLET_DEPLOY_GRAMS_VALUE // deploy grams
         );
 
-        // Request for token wallet address
-        IRootTokenContract(tokenRoot).getWalletAddress{
-            value: GET_WALLET_ADDRESS_VALUE, callback: TonFarmPool.receiveTokenWalletAddress
-        }(0, address(this));
-
         for (uint i = 0; i < rewardTokenRoot.length; i++) {
-            IRootTokenContract(rewardTokenRoot[i]).deployEmptyWallet{value: TOKEN_WALLET_DEPLOY_VALUE}(
-                TOKEN_WALLET_DEPLOY_GRAMS_VALUE, // deploy grams
-                0, // owner pubkey
+            ITokenRoot(rewardTokenRoot[i]).deployWallet{value: TOKEN_WALLET_DEPLOY_VALUE, callback: TonFarmPool.receiveTokenWalletAddress}(
                 address(this), // owner address
-                address(this) // gas refund address
+                TOKEN_WALLET_DEPLOY_GRAMS_VALUE // deploy grams
             );
-
-            // Request for token wallet address
-            IRootTokenContract(rewardTokenRoot[i]).getWalletAddress{
-                value: GET_WALLET_ADDRESS_VALUE, callback: TonFarmPool.receiveTokenWalletAddress
-            }(0, address(this));
         }
     }
+
+    function dummy(address _) external { tvm.rawReserve(_reserve(), 0); }
 
     /*
         @notice Store vault's token wallet address
@@ -114,14 +100,14 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     function receiveTokenWalletAddress(
         address wallet
     ) external {
+        tvm.rawReserve(_reserve(), 0);
+
         if (msg.sender == tokenRoot) {
             tokenWallet = wallet;
-            ITONTokenWallet(wallet).setReceiveCallback{value: 0.05 ton}(address(this), false);
         } else {
             for (uint i = 0; i < rewardTokenRoot.length; i++) {
                 if (msg.sender == rewardTokenRoot[i]) {
                     rewardTokenWallet[i] = wallet;
-                    ITONTokenWallet(wallet).setReceiveCallback{value: 0.05 ton}(address(this), false);
                 }
             }
         }
@@ -155,11 +141,9 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         builder.store(nonce);
         for (uint i = 0; i < _reward.length; i++) {
             if (_reward[i] > 0) {
-                ITONTokenWallet(rewardTokenWallet[i]).transferToRecipient{value: TOKEN_TRANSFER_VALUE, flag: 0}(
-                    0,
-                    receiver_addr,
+                ITokenWallet(rewardTokenWallet[i]).transfer{value: TOKEN_TRANSFER_VALUE, flag: 0}(
                     _reward[i],
-                    0,
+                    receiver_addr,
                     0,
                     send_gas_to,
                     true,
@@ -194,32 +178,28 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     }
 
     // deposit occurs here
-    function tokensReceivedCallback(
-        address token_wallet,
-        address token_root,
+    function onAcceptTokensTransfer(
+        address tokenRoot,
         uint128 amount,
-        uint256 sender_public_key,
-        address sender_address,
-        address sender_wallet,
-        address original_gas_to,
-        uint128 updated_balance,
+        address sender,
+        address senderWallet,
+        address remainingGasTo,
         TvmCell payload
     ) external override {
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         if (msg.sender == tokenWallet) {
-
             // check if payload assembled correctly
             (address deposit_owner, uint32 nonce, bool correct) = decodeDepositPayload(payload);
 
-            if (sender_address.value == 0 || !correct || msg.value < (MIN_DEPOSIT_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length)) {
-                // external owner or too low deposit value or too low msg.value or incorrect deposit payload
+            if (!correct || msg.value < (MIN_DEPOSIT_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length)) {
+                // too low deposit value or too low msg.value or incorrect deposit payload
                 // for incorrect deposit payload send tokens back to sender
-                ITONTokenWallet(tokenWallet).transfer{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
-                    sender_wallet,
+                ITokenWallet(tokenWallet).transfer{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
                     amount,
+                    sender,
                     0,
-                    original_gas_to,
+                    remainingGasTo,
                     true,
                     payload
                 );
@@ -231,7 +211,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
             deposit_nonce += 1;
             tokenBalance += amount;
 
-            deposits[deposit_nonce] = PendingDeposit(deposit_owner, amount, original_gas_to, nonce);
+            deposits[deposit_nonce] = PendingDeposit(deposit_owner, amount, remainingGasTo, nonce);
 
             address userDataAddr = getUserDataAddress(deposit_owner);
             IUserData(userDataAddr).processDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(deposit_nonce, amount, accTonPerShare, lastRewardTime, farmEndTime);
@@ -244,7 +224,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
                     emit RewardDeposit(rewardTokenRoot[i], amount);
                 }
             }
-            original_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
+            remainingGasTo.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
             return;
         }
     }
@@ -254,7 +234,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         address expectedAddr = getUserDataAddress(deposit.user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
 
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         (
             uint128[] _reward,
@@ -268,10 +248,9 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     }
 
     function withdraw(uint128 amount, address send_gas_to, uint32 nonce) public {
-        require (msg.sender.value != 0, EXTERNAL_CALL);
         require (amount > 0, ZERO_AMOUNT_INPUT);
         require (msg.value >= MIN_WITHDRAW_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         updatePoolInfo();
 
@@ -281,9 +260,8 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     }
 
     function withdrawAll(address send_gas_to, uint32 nonce) public {
-        require (msg.sender.value != 0, EXTERNAL_CALL);
         require (msg.value >= MIN_WITHDRAW_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         updatePoolInfo();
 
@@ -293,9 +271,8 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     }
 
     function claimReward(address send_gas_to, uint32 nonce) public {
-        require (msg.sender.value != 0, EXTERNAL_CALL);
         require (msg.value >= MIN_CLAIM_REWARD_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         updatePoolInfo();
 
@@ -313,7 +290,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     ) public override {
         address expectedAddr = getUserDataAddress(user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         (
         uint128[] _reward,
@@ -327,8 +304,13 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
             emit Withdraw(user, _withdrawAmount, _reward, _reward_debt);
             TvmBuilder builder;
             builder.store(nonce);
-            ITONTokenWallet(tokenWallet).transferToRecipient{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
-                0, user, _withdrawAmount, 0, 0, send_gas_to, true, builder.toCell()
+            ITokenWallet(tokenWallet).transfer{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
+                _withdrawAmount,
+                user,
+                0,
+                send_gas_to,
+                true,
+                builder.toCell()
             );
         // claim is called
         } else {
@@ -340,7 +322,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     function withdrawUnclaimed(address to, address send_gas_to, uint32 nonce) external onlyOwner {
         require (msg.value >= MIN_CLAIM_REWARD_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
         // minimum value that should remain on contract
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         transferReward(address.makeAddrNone(), to, unclaimedReward, send_gas_to, nonce);
         for (uint i = 0; i < unclaimedReward.length; i++) {
@@ -355,7 +337,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         require (farmEndTime > 0, CANT_WITHDRAW_UNCLAIMED_ALL);
         require (now >= farmEndTime + vestingPeriod + withdrawAllLockPeriod, CANT_WITHDRAW_UNCLAIMED_ALL);
         // minimum value that should remain on contract
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         transferReward(address.makeAddrNone(), to, rewardTokenBalance, send_gas_to, nonce);
         for (uint i = 0; i < unclaimedReward.length; i++) {
@@ -372,7 +354,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         require (reward_round.rewardPerSecond.length == rewardTokenRoot.length, BAD_REWARD_ROUNDS_INPUT);
         require (farmEndTime == 0, BAD_REWARD_ROUNDS_INPUT);
 
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
         rewardRounds.push(reward_round);
         emit RewardRoundAdded(reward_round);
         send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
@@ -384,7 +366,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         require (farm_end_time >= rewardRounds[rewardRounds.length - 1].startTime, BAD_FARM_END_TIME);
         require (farmEndTime == 0, BAD_FARM_END_TIME);
 
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
         farmEndTime = farm_end_time;
         emit farmEndSet(farm_end_time);
         send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
@@ -392,9 +374,8 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
 
     // withdraw all staked tokens without reward in case of some critical logic error / insufficient tons on FarmPool balance
     function safeWithdraw(address send_gas_to) external view {
-        require (msg.sender.value != 0, EXTERNAL_CALL);
         require (msg.value >= MIN_WITHDRAW_MSG_VALUE, LOW_WITHDRAW_MSG_VALUE);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         address user_data_addr = getUserDataAddress(msg.sender);
         IUserData(user_data_addr).processSafeWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(send_gas_to);
@@ -403,7 +384,7 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
     function finishSafeWithdraw(address user, uint128 amount, address send_gas_to) external override {
         address expectedAddr = getUserDataAddress(user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         tokenBalance -= amount;
 
@@ -413,8 +394,13 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         TvmCell tvmcell;
         emit Withdraw(user, amount, _reward, _reward_debt);
 
-        ITONTokenWallet(tokenWallet).transferToRecipient{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
-            0, user, uint128(amount), 0, 0, send_gas_to, false, tvmcell
+        ITokenWallet(tokenWallet).transfer{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
+            amount,
+            user,
+            0,
+            send_gas_to,
+            true,
+            tvmcell
         );
     }
 
@@ -555,18 +541,16 @@ contract TonFarmPool is ITokensReceivedCallback, TonFarmPoolBase {
         uint32 functionId = slice.decode(uint32);
         // if processing failed - contract was not deployed. Deploy and try again
         if (functionId == tvm.functionId(UserData.processDeposit)) {
-            tvm.rawReserve(_reserve(), 2);
+            tvm.rawReserve(_reserve(), 0);
 
             uint64 _deposit_nonce = slice.decode(uint64);
             PendingDeposit deposit = deposits[_deposit_nonce];
             address user_data_addr = deployUserData(deposit.user);
             for (uint i = 0; i < rewardTokenRoot.length; i++) {
                 // user first deposit? try deploy wallet for him
-                IRootTokenContract(rewardTokenRoot[i]).deployEmptyWallet{value: TOKEN_WALLET_DEPLOY_VALUE}(
-                    TOKEN_WALLET_DEPLOY_GRAMS_VALUE, // deploy grams
-                    0, // owner pubkey
-                    deposit.user, // owner address
-                    deposit.user // gas refund address
+                ITokenRoot(rewardTokenRoot[i]).deployWallet{value: TOKEN_WALLET_DEPLOY_VALUE, callback: TonFarmPool.dummy}(
+                    deposit.user,
+                    TOKEN_WALLET_DEPLOY_GRAMS_VALUE // deploy grams
                 );
             }
             // try again

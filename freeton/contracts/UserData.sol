@@ -1,4 +1,4 @@
-pragma ton-solidity ^0.49.0;
+pragma ton-solidity ^0.56.0;
 pragma AbiHeader expire;
 
 import "./interfaces/ITonFarmPool.sol";
@@ -137,9 +137,7 @@ contract UserData is IUserData {
         uint32 new_vesting_time;
         uint128[] newly_vested = new uint128[](_rewardDebt.length);
         uint128[] updated_entitled = new uint128[](_rewardDebt.length);
-
         uint128[] new_entitled = new uint128[](_rewardDebt.length);
-        uint32 age = _poolLastRewardTime - lastRewardTime;
 
         for (uint i = 0; i < _rewardDebt.length; i++) {
             uint256 _reward = uint256(_amount) * _accTonPerShare[i];
@@ -197,7 +195,7 @@ contract UserData is IUserData {
 
     function increasePoolDebt(uint128[] _pool_debt, address send_gas_to) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         for (uint i = 0; i < _pool_debt.length; i++) {
             pool_debt[i] += _pool_debt[i];
@@ -208,7 +206,7 @@ contract UserData is IUserData {
 
     function processDeposit(uint64 nonce, uint128 _amount, uint256[] _accTonPerShare, uint32 poolLastRewardTime, uint32 farmEndTime) external override {
         require(msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         uint128 prevAmount = amount;
         uint128[] prevRewardDebt = rewardDebt;
@@ -278,28 +276,28 @@ contract UserData is IUserData {
         uint32 nonce
     ) public override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         _withdraw(_amount, _accTonPerShare, poolLastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
     function processWithdrawAll(uint256[] _accTonPerShare, uint32 poolLastRewardTime, uint32 farmEndTime, address send_gas_to, uint32 nonce) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         _withdraw(amount, _accTonPerShare, poolLastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
     function processClaimReward(uint256[] _accTonPerShare, uint32 poolLastRewardTime, uint32 farmEndTime, address send_gas_to, uint32 nonce) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         _withdraw(0, _accTonPerShare, poolLastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
     function processSafeWithdraw(address send_gas_to) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
-        tvm.rawReserve(_reserve(), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         uint128 prevAmount = amount;
         amount = 0;

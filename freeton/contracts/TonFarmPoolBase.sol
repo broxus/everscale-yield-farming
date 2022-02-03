@@ -1,10 +1,11 @@
-pragma ton-solidity ^0.49.0;
+pragma ton-solidity ^0.56.0;
 pragma AbiHeader expire;
 
 
-import "./interfaces/IRootTokenContract.sol";
-import "./interfaces/ITONTokenWallet.sol";
-import "./interfaces/ITokensReceivedCallback.sol";
+import "../../node_modules/broxus-ton-tokens-contracts/contracts/interfaces/ITokenRoot.sol";
+import "../../node_modules/broxus-ton-tokens-contracts/contracts/interfaces/ITokenWallet.sol";
+import "../../node_modules/broxus-ton-tokens-contracts/contracts/interfaces/IAcceptTokensTransferCallback.sol";
+
 import "./interfaces/IUserData.sol";
 import "./interfaces/ITonFarmPool.sol";
 import "./interfaces/IFabric.sol";
@@ -12,7 +13,7 @@ import "./UserData.sol";
 import "../../node_modules/@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 
-abstract contract TonFarmPoolBase is ITonFarmPool {
+abstract contract TonFarmPoolBase is ITonFarmPool, IAcceptTokensTransferCallback {
     // ERRORS
     uint8 constant NOT_OWNER = 101;
     uint8 constant NOT_ROOT = 102;
@@ -35,7 +36,6 @@ abstract contract TonFarmPoolBase is ITonFarmPool {
     // constants
     uint128 constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
     uint128 constant TOKEN_WALLET_DEPLOY_GRAMS_VALUE = 0.1 ton;
-    uint128 constant GET_WALLET_ADDRESS_VALUE = 0.5 ton;
     uint128 constant MIN_DEPOSIT_MSG_VALUE = 1 ton;
     uint128 constant MIN_WITHDRAW_MSG_VALUE = 1 ton;
     uint128 constant MIN_CLAIM_REWARD_MSG_VALUE = 1 ton;

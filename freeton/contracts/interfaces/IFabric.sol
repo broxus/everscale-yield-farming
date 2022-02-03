@@ -1,4 +1,4 @@
-pragma ton-solidity ^0.49.0;
+pragma ton-solidity ^0.56.0;
 pragma AbiHeader expire;
 
 
