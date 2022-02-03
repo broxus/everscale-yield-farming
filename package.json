@@ -30,15 +30,7 @@
   },
   "devDependencies": {
     "@broxus/contracts": "^1.0.3",
-    "@nomiclabs/hardhat-ethers": "^2.0.2",
-    "@nomiclabs/hardhat-etherscan": "^2.1.3",
-    "@nomiclabs/hardhat-web3": "^2.0.0",
-    "@openzeppelin/hardhat-upgrades": "^1.8.2",
     "chai": "^4.3.4",
-    "chai-bignumber": "^3.0.0",
-    "commander": "^6.2.1",
-    "ethers": "^5.3.1",
-    "hardhat": "^2.3.3",
-    "hardhat-abi-exporter": "^2.2.1"
+    "chai-bignumber": "^3.0.0"
   }
 }
