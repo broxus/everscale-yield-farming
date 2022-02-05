@@ -39,7 +39,7 @@
 		{
 			"name": "dummy",
 			"inputs": [
-				{"name":"_","type":"address"}
+				{"name":"user_wallet","type":"address"}
 			],
 			"outputs": [
 			]

@@ -254,6 +254,7 @@ describe('Test Ton Farm Pool', async function() {
         const vesting_part = expected_reward * vestingRatio / MAX_VESTING_RATIO;
         const clear_part = expected_reward - vesting_part;
 
+        // TODO: up to new math
         const newly_vested = Math.floor((vesting_part * time_passed) / (time_passed + vestingPeriod));
 
         const age = newRewardTime >= vestingTime ? vestingPeriod : (newRewardTime - prevRewardTime);
@@ -263,20 +264,28 @@ describe('Test Ton Farm Pool', async function() {
         const unreleased_newly = vesting_part - newly_vested;
         const pending = remaining_entitled + unreleased_newly;
 
-        let period;
+
+        let new_vesting_time;
+        // Compute the vesting time (i.e. when the entitled reward to be all vested)
         if (pending === 0) {
-            period = 0;
-        } else if (remaining_entitled === 0 || unreleased_newly === 0) {
-            period = vestingPeriod;
+            new_vesting_time = newRewardTime;
+        } else if (remaining_entitled === 0) {
+            // only new reward, set vesting time to vesting period
+            new_vesting_time = newRewardTime + vestingPeriod;
+        } else if (unreleased_newly === 0) {
+            // only unlocking old reward, dont change vesting time
+            new_vesting_time = vestingTime;
         } else {
-            const age2 = vestingTime - newRewardTime;
-            period = Math.floor(((remaining_entitled * age2) + (unreleased_newly * vestingPeriod)) / pending);
+            // "old" reward and, perhaps, "new" reward are pending - the weighted average applied
+            const age3 = vestingTime - newRewardTime;
+            const period = Math.floor(((remaining_entitled * age3) + (unreleased_newly * vestingPeriod)) / pending);
+            new_vesting_time = newRewardTime.plus(Math.min(period, vestingPeriod));
         }
 
-        to_vest = new BigNumber(to_vest.toFixed(0));
-
-        const new_vesting_time = newRewardTime.plus(Math.min(period, vestingPeriod));
         const final_entitled = entitled.plus(vesting_part).minus(to_vest).minus(newly_vested);
+
+        const newly_vested_ = new BigNumber(newly_vested);
+        const final_vested = newly_vested_.plus(to_vest).plus(clear_part);
         // console.log(
         //     entitled.toFixed(),
         //     vesting_part.toFixed(),
@@ -284,8 +293,7 @@ describe('Test Ton Farm Pool', async function() {
         //     newly_vested.toFixed(),
         //     final_entitled.toFixed()
         // );
-        const newly_vested_ = new BigNumber(newly_vested);
-        const final_vested = newly_vested_.plus(to_vest).plus(clear_part);
+
         // console.log(final_vested.toFixed(0), newly_vested_ + to_vest + clear_part);
         // console.log(prevRewardTime.toFixed(0), newRewardTime.toFixed(0));
 
@@ -543,7 +551,7 @@ describe('Test Ton Farm Pool', async function() {
         });
     });
 
-    describe('Vesting staking pipeline testing', async function() {
+    describe.skip('Vesting staking pipeline testing', async function() {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
                 const PoolFabric = await locklift.factory.getContract(
@@ -763,20 +771,18 @@ describe('Test Ton Farm Pool', async function() {
                 //     method: 'pendingReward',
                 //     params: {_accTonPerShare: _accTonPerShare, poolLastRewardTime: _lastRewardTime, farmEndTime: 0}}
                 // )
-                // console.log(pending_vested);
-                // console.log(pending_vested.map(i => i.toFixed(0)));
-                // console.log(user_details.amount.toNumber(), '000000');
+
+                // console.log('Vested', pending_vested._vested.map(i => i.toFixed(0)));
+                // console.log('Entitled', pending_vested._entitled.map(i => i.toFixed(0)));
+                // console.log('Debt', pending_vested._pool_debt.map(i => i.toFixed(0)));
+
 
                 const tx = await depositTokens(user1, userTokenWallet1, minDeposit);
                 await afterRun(tx);
                 await checkTokenBalances(
                     userTokenWallet1, minDeposit * 2, minDeposit * 2, userInitialTokenBal - minDeposit * 2
                 );
-
-                console.log('This will fail ->> ', tx.transaction.out_msgs);
-
-                const user_details11 = await getUserDataDetails(userData1);
-                // console.log(user_details11.amount.toNumber(), '1111');
+                console.log(tx.transaction.out_msgs);
 
                 const new_reward_time = await getLastRewardTime();
 
@@ -788,6 +794,8 @@ describe('Test Ton Farm Pool', async function() {
                 const { value: { user: _user, amount: _amount, reward: _reward, reward_debt: _reward_debt } } = (await farm_pool.getEvents('Deposit')).pop();
                 expect(_user).to.be.equal(user1.address, 'Bad event');
                 expect(_amount).to.be.equal(minDeposit.toFixed(0), 'Bad event');
+
+                console.log(x, x1);
 
                 expect(_reward[0]).to.be.eq(x.toFixed(0), 'Bad event');
                 expect(_reward[1]).to.be.eq(x1.toFixed(0), 'Bad event');
@@ -864,7 +872,6 @@ describe('Test Ton Farm Pool', async function() {
 
                 const tx = await withdrawTokens(user1, minDeposit);
                 const new_reward_time_2 = await getLastRewardTime();
-                // console.log(tx.transaction.out_msgs);
 
                 // console.log(user1_bal_before_1.toFixed(0), user1_bal_before_11.toFixed(0), new_reward_time.toNumber(), new_reward_time_2.toNumber());
                 await checkRewardVesting(userFarmTokenWallet1_1, userData1, user_details_1, user1_bal_before_11, new_reward_time, new_reward_time_2, rewardPerSec_1, 0);
@@ -1079,22 +1086,17 @@ describe('Test Ton Farm Pool', async function() {
                 // farm_pool_reward_wallet_2.setAddress(farm_pool_reward_wallet_addrs[1]);
                 await afterRun();
                 // call in order to check if wallet is deployed
-                const details = await farm_pool_wallet.call({method: 'getDetails'});
-                expect(details.owner_address).to.be.equal(farm_pool.address, 'Wrong farm pool token wallet owner');
-                expect(details.receive_callback).to.be.equal(farm_pool.address, 'Wrong farm pool token wallet receive callback');
-                expect(details.root_address).to.be.equal(root.address, 'Wrong farm pool token wallet root');
+                const owner = await farm_pool_wallet.call({method: 'owner'});
+                const root_ = await farm_pool_wallet.call({method: 'root'});
 
-                // call in order to check if wallet is deployed
-                const details2 = await farm_pool_reward_wallet_1.call({method: 'getDetails'});
-                expect(details2.owner_address).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet owner');
-                expect(details2.receive_callback).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet receive callback');
-                expect(details2.root_address).to.be.equal(farming_root_1.address, 'Wrong farm pool reward token wallet root');
+                expect(owner).to.be.equal(farm_pool.address, 'Wrong farm pool token wallet owner');
+                expect(root_).to.be.equal(root.address, 'Wrong farm pool token wallet owner');
 
-                // call in order to check if wallet is deployed
-                // const details3 = await farm_pool_reward_wallet_2.call({method: 'getDetails'});
-                // expect(details3.owner_address).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet owner');
-                // expect(details3.receive_callback).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet receive callback');
-                // expect(details3.root_address).to.be.equal(farming_root_2.address, 'Wrong farm pool reward token wallet root');
+                const owner1 = await farm_pool_reward_wallet_1.call({method: 'owner'});
+                const root1_ = await farm_pool_reward_wallet_1.call({method: 'root'});
+
+                expect(owner1).to.be.equal(farm_pool.address, 'Wrong farm pool token wallet owner');
+                expect(root1_).to.be.equal(farming_root_1.address, 'Wrong farm pool token wallet owner');
             });
         });
 
@@ -1104,7 +1106,7 @@ describe('Test Ton Farm Pool', async function() {
 
             it('Deposit tokens', async function() {
                 const tx = await depositTokens(user1, userTokenWallet1, minDeposit);
-                console.log(tx.transaction.out_msgs);
+                // console.log(tx.transaction.out_msgs);
                 await checkTokenBalances(
                     userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
                 );
@@ -1238,7 +1240,7 @@ describe('Test Ton Farm Pool', async function() {
         })
     });
 
-    describe.skip('Base staking pipeline testing', async function() {
+    describe('Base staking pipeline testing', async function() {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
                 const PoolFabric = await locklift.factory.getContract(
@@ -1352,24 +1354,24 @@ describe('Test Ton Farm Pool', async function() {
                     '../node_modules/broxus-ton-tokens-contracts/build'
                 );
                 farm_pool_reward_wallet_2.setAddress(farm_pool_reward_wallet_addrs[1]);
-                await afterRun();
-                // call in order to check if wallet is deployed
-                const details = await farm_pool_wallet.call({method: 'getDetails'});
-                expect(details.owner_address).to.be.equal(farm_pool.address, 'Wrong farm pool token wallet owner');
-                expect(details.receive_callback).to.be.equal(farm_pool.address, 'Wrong farm pool token wallet receive callback');
-                expect(details.root_address).to.be.equal(root.address, 'Wrong farm pool token wallet root');
+                await afterRun();                // call in order to check if wallet is deployed
+                const owner = await farm_pool_wallet.call({method: 'owner'});
+                const root_ = await farm_pool_wallet.call({method: 'root'});
 
-                // call in order to check if wallet is deployed
-                const details2 = await farm_pool_reward_wallet_1.call({method: 'getDetails'});
-                expect(details2.owner_address).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet owner');
-                expect(details2.receive_callback).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet receive callback');
-                expect(details2.root_address).to.be.equal(farming_root_1.address, 'Wrong farm pool reward token wallet root');
+                expect(owner).to.be.equal(farm_pool.address, 'Wrong farm pool token wallet owner');
+                expect(root_).to.be.equal(root.address, 'Wrong farm pool token wallet owner');
 
-                // call in order to check if wallet is deployed
-                const details3 = await farm_pool_reward_wallet_2.call({method: 'getDetails'});
-                expect(details3.owner_address).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet owner');
-                expect(details3.receive_callback).to.be.equal(farm_pool.address, 'Wrong farm pool reward token wallet receive callback');
-                expect(details3.root_address).to.be.equal(farming_root_2.address, 'Wrong farm pool reward token wallet root');
+                const owner1 = await farm_pool_reward_wallet_1.call({method: 'owner'});
+                const root1_ = await farm_pool_reward_wallet_1.call({method: 'root'});
+
+                expect(owner1).to.be.equal(farm_pool.address, 'Wrong farm pool token wallet owner');
+                expect(root1_).to.be.equal(farming_root_1.address, 'Wrong farm pool token wallet owner');
+
+                const owner2 = await farm_pool_reward_wallet_2.call({method: 'owner'});
+                const root2_ = await farm_pool_reward_wallet_2.call({method: 'root'});
+
+                expect(owner2).to.be.equal(farm_pool.address, 'Wrong farm pool token wallet owner');
+                expect(root2_).to.be.equal(farming_root_2.address, 'Wrong farm pool token wallet owner');
             });
 
             it('Sending reward tokens to pool', async function() {

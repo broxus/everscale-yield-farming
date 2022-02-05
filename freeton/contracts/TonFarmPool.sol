@@ -1,4 +1,4 @@
-pragma ton-solidity ^0.56.0;
+pragma ton-solidity ^0.57.1;
 pragma AbiHeader expire;
 
 
@@ -90,7 +90,7 @@ contract TonFarmPool is TonFarmPoolBase {
         }
     }
 
-    function dummy(address _) external { tvm.rawReserve(_reserve(), 0); }
+    function dummy(address user_wallet) external { tvm.rawReserve(_reserve(), 0); }
 
     /*
         @notice Store vault's token wallet address
