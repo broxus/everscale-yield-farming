@@ -39,8 +39,8 @@ contract TonFarmPool is TonFarmPoolBase {
         vestingPeriod = _vestingPeriod;
         withdrawAllLockPeriod = _withdrawAllLockPeriod;
 
-        _initialize_reward_arrays();
-        setUpTokenWallets();
+        setUp();
+
         IFabric(fabric).onPoolDeploy{value: FABRIC_DEPLOY_CALLBACK_VALUE}(
             deploy_nonce, _owner, _rewardRounds, _tokenRoot, _rewardTokenRoot, vestingPeriod, vestingRatio, withdrawAllLockPeriod
         );
@@ -73,9 +73,10 @@ contract TonFarmPool is TonFarmPoolBase {
     }
 
     /*
-        @notice Creates token wallet for configured root token
+        @notice Creates token wallet for configured root token, initialize arrays and send callback to fabric
     */
-    function setUpTokenWallets() internal view {
+    function setUp() internal {
+        _initialize_reward_arrays();
         // Deploy vault's token wallet
         ITokenRoot(tokenRoot).deployWallet{value: TOKEN_WALLET_DEPLOY_VALUE, callback: TonFarmPool.receiveTokenWalletAddress }(
             address(this), // owner
@@ -192,7 +193,7 @@ contract TonFarmPool is TonFarmPoolBase {
             // check if payload assembled correctly
             (address deposit_owner, uint32 nonce, bool correct) = decodeDepositPayload(payload);
 
-            if (!correct || msg.value < (MIN_DEPOSIT_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length)) {
+            if (!correct || msg.value < (MIN_CALL_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length)) {
                 // too low deposit value or too low msg.value or incorrect deposit payload
                 // for incorrect deposit payload send tokens back to sender
                 ITokenWallet(tokenWallet).transfer{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
@@ -247,9 +248,9 @@ contract TonFarmPool is TonFarmPoolBase {
         deposit.send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
     }
 
-    function withdraw(uint128 amount, address send_gas_to, uint32 nonce) public {
+    function withdraw(uint128 amount, address send_gas_to, uint32 nonce) external {
         require (amount > 0, ZERO_AMOUNT_INPUT);
-        require (msg.value >= MIN_WITHDRAW_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
+        require (msg.value >= MIN_CALL_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
         updatePoolInfo();
@@ -259,8 +260,8 @@ contract TonFarmPool is TonFarmPoolBase {
         IUserData(userDataAddr).processWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(amount, accTonPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
-    function withdrawAll(address send_gas_to, uint32 nonce) public {
-        require (msg.value >= MIN_WITHDRAW_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
+    function withdrawAll(address send_gas_to, uint32 nonce) external {
+        require (msg.value >= MIN_CALL_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
         updatePoolInfo();
@@ -270,8 +271,8 @@ contract TonFarmPool is TonFarmPoolBase {
         IUserData(userDataAddr).processWithdrawAll{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce);
     }
 
-    function claimReward(address send_gas_to, uint32 nonce) public {
-        require (msg.value >= MIN_CLAIM_REWARD_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
+    function claimReward(address send_gas_to, uint32 nonce) external {
+        require (msg.value >= MIN_CALL_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
         updatePoolInfo();
@@ -287,7 +288,7 @@ contract TonFarmPool is TonFarmPoolBase {
         uint128[] _vested,
         address send_gas_to,
         uint32 nonce
-    ) public override {
+    ) external override {
         address expectedAddr = getUserDataAddress(user);
         require (expectedAddr == msg.sender, NOT_USER_DATA);
         tvm.rawReserve(_reserve(), 0);
@@ -320,7 +321,7 @@ contract TonFarmPool is TonFarmPoolBase {
     }
 
     function withdrawUnclaimed(address to, address send_gas_to, uint32 nonce) external onlyOwner {
-        require (msg.value >= MIN_CLAIM_REWARD_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
+        require (msg.value >= MIN_CALL_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
         // minimum value that should remain on contract
         tvm.rawReserve(_reserve(), 0);
 
@@ -333,7 +334,7 @@ contract TonFarmPool is TonFarmPoolBase {
     }
 
     function withdrawUnclaimedAll(address to, address send_gas_to, uint32 nonce) external onlyOwner {
-        require (msg.value >= MIN_CLAIM_REWARD_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
+        require (msg.value >= MIN_CALL_MSG_VALUE + TOKEN_TRANSFER_VALUE * rewardTokenRoot.length, LOW_WITHDRAW_MSG_VALUE);
         require (farmEndTime > 0, CANT_WITHDRAW_UNCLAIMED_ALL);
         require (now >= farmEndTime + vestingPeriod + withdrawAllLockPeriod, CANT_WITHDRAW_UNCLAIMED_ALL);
         // minimum value that should remain on contract
@@ -374,7 +375,7 @@ contract TonFarmPool is TonFarmPoolBase {
 
     // withdraw all staked tokens without reward in case of some critical logic error / insufficient tons on FarmPool balance
     function safeWithdraw(address send_gas_to) external view {
-        require (msg.value >= MIN_WITHDRAW_MSG_VALUE, LOW_WITHDRAW_MSG_VALUE);
+        require (msg.value >= MIN_CALL_MSG_VALUE, LOW_WITHDRAW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
         address user_data_addr = getUserDataAddress(msg.sender);

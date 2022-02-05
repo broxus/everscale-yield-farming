@@ -36,16 +36,14 @@ abstract contract TonFarmPoolBase is ITonFarmPool, IAcceptTokensTransferCallback
     // constants
     uint128 constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
     uint128 constant TOKEN_WALLET_DEPLOY_GRAMS_VALUE = 0.1 ton;
-    uint128 constant MIN_DEPOSIT_MSG_VALUE = 1 ton;
-    uint128 constant MIN_WITHDRAW_MSG_VALUE = 1 ton;
-    uint128 constant MIN_CLAIM_REWARD_MSG_VALUE = 1 ton;
-    uint128 constant CONTRACT_MIN_BALANCE = 1 ton;
+    uint128 constant MIN_CALL_MSG_VALUE = 1 ton;
     uint128 constant USER_DATA_DEPLOY_VALUE = 0.2 ton;
     uint128 constant TOKEN_TRANSFER_VALUE = 1 ton;
     uint128 constant FABRIC_DEPLOY_CALLBACK_VALUE = 0.1 ton;
     uint128 constant ADD_REWARD_ROUND_VALUE = 0.5 ton;
     uint128 constant SET_END_TIME_VALUE = 0.5 ton;
     uint128 constant INCREASE_DEBT_VALUE = 0.3 ton;
+    uint128 constant CONTRACT_MIN_BALANCE = 1 ton;
 
     uint32 constant MAX_UINT32 = 0xFFFFFFFF;
     uint128 constant SCALING_FACTOR = 1e18;

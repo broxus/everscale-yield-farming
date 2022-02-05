@@ -4,6 +4,7 @@ pragma AbiHeader expire;
 import './TonFarmPool.sol';
 import "./interfaces/IFabric.sol";
 import './UserData.sol';
+import "../../node_modules/@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 contract FarmFabric is IFabric {
     event NewFarmPool(
@@ -26,10 +27,11 @@ contract FarmFabric is IFabric {
     // fabric deployment seed
     uint128 public static nonce;
 
-    uint8 public constant WRONG_PUBKEY = 101;
-    uint8 public constant NOT_OWNER = 102;
-    uint8 public constant NOT_POOL = 103;
-    uint128 public constant FARM_POOL_DEPLOY_VALUE = 5 ton;
+    uint8 constant WRONG_PUBKEY = 101;
+    uint8 constant NOT_OWNER = 102;
+    uint8 constant NOT_POOL = 103;
+    uint8 constant LOW_MSG_VALUE = 104;
+    uint128 constant FARM_POOL_DEPLOY_VALUE = 5 ton;
     uint128 constant CONTRACT_MIN_BALANCE = 1 ton;
 
     constructor(address _owner) public {
@@ -37,6 +39,10 @@ contract FarmFabric is IFabric {
         tvm.accept();
 
         owner = _owner;
+    }
+
+    function _reserve() internal pure returns (uint128) {
+        return math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE);
     }
 
     function deployFarmPool(
@@ -47,8 +53,9 @@ contract FarmFabric is IFabric {
         uint32 vestingPeriod,
         uint32 vestingRatio,
         uint32 withdrawAllLockPeriod
-    ) public {
-        tvm.rawReserve(math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE), 2);
+    ) external {
+        tvm.rawReserve(_reserve(), 0);
+        require (msg.value >= FARM_POOL_DEPLOY_VALUE, LOW_MSG_VALUE);
 
         TvmCell stateInit = tvm.buildStateInit({
             contr: TonFarmPool,
@@ -60,9 +67,9 @@ contract FarmFabric is IFabric {
 
         address farm_pool = new TonFarmPool{
             stateInit: stateInit,
-            value: FARM_POOL_DEPLOY_VALUE,
+            value: 0,
             wid: address(this).wid,
-            flag: 1
+            flag: MsgFlag.ALL_NOT_RESERVED
         }(pool_owner, reward_rounds, tokenRoot, rewardTokenRoot, vestingPeriod, vestingRatio, withdrawAllLockPeriod);
     }
 
@@ -85,7 +92,7 @@ contract FarmFabric is IFabric {
         address pool_address = address(tvm.hash(stateInit));
         require (msg.sender == pool_address, NOT_POOL);
 
-        tvm.rawReserve(math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE), 2);
+        tvm.rawReserve(_reserve(), 0);
 
         emit NewFarmPool(pool_address, pool_owner, reward_rounds, tokenRoot, rewardTokenRoot, vestingPeriod, vestingRatio, withdrawAllLockPeriod);
     }
@@ -93,6 +100,8 @@ contract FarmFabric is IFabric {
 
     function upgrade(TvmCell new_code) public {
         require (msg.sender == owner, NOT_OWNER);
+
+        tvm.rawReserve(_reserve(), 0);
         TvmBuilder builder;
 
         // storage vars
