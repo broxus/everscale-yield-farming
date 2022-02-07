@@ -4,7 +4,7 @@ pragma AbiHeader expire;
 import './TonFarmPool.sol';
 import "./interfaces/IFabric.sol";
 import './UserData.sol';
-import "../../node_modules/@broxus/contracts/contracts/libraries/MsgFlag.sol";
+import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 contract FarmFabric is IFabric {
     event NewFarmPool(

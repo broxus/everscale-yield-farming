@@ -7,7 +7,7 @@ import "./interfaces/ITonFarmPool.sol";
 import "./interfaces/IFabric.sol";
 import "./TonFarmPoolBase.sol";
 import "./UserData.sol";
-import "../../node_modules/@broxus/contracts/contracts/libraries/MsgFlag.sol";
+import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 
 contract TonFarmPool is TonFarmPoolBase {

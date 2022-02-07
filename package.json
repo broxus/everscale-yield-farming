@@ -21,15 +21,15 @@
   "license": "ISC",
   "dependencies": {
     "bignumber.js": "^9.0.1",
-    "broxus-ton-tokens-contracts": "github:broxus/ton-eth-bridge-token-contracts#105ed95716c75699235e7584f1b09f09279c5f89",
+    "broxus-ton-tokens-contracts": "github:broxus/ton-eth-bridge-token-contracts#9720279528091b730ccc47a3b39d18de67a79d57",
     "chai-as-promised": "^7.1.1",
     "ethereum-freeton-bridge-contracts": "github:broxus/ton-eth-bridge-contracts#f36507d5488f19221c50aaa78ba4c53ebec2da17",
-    "locklift": "github:broxus/ton-locklift#8e029c3d16f5955ee193d0721770f89029777e50",
+    "locklift": "^1.5.1",
     "mocha-logger": "^1.0.7",
     "wton": "github:broxus/ton-wton"
   },
   "devDependencies": {
-    "@broxus/contracts": "^1.0.3",
+    "@broxus/contracts": "^1.0.4",
     "chai": "^4.3.4",
     "chai-bignumber": "^3.0.0"
   }

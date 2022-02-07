@@ -2,15 +2,15 @@ pragma ton-solidity ^0.57.1;
 pragma AbiHeader expire;
 
 
-import "../../node_modules/broxus-ton-tokens-contracts/contracts/interfaces/ITokenRoot.sol";
-import "../../node_modules/broxus-ton-tokens-contracts/contracts/interfaces/ITokenWallet.sol";
-import "../../node_modules/broxus-ton-tokens-contracts/contracts/interfaces/IAcceptTokensTransferCallback.sol";
+import "broxus-ton-tokens-contracts/contracts/interfaces/ITokenRoot.sol";
+import "broxus-ton-tokens-contracts/contracts/interfaces/ITokenWallet.sol";
+import "broxus-ton-tokens-contracts/contracts/interfaces/IAcceptTokensTransferCallback.sol";
 
 import "./interfaces/IUserData.sol";
 import "./interfaces/ITonFarmPool.sol";
 import "./interfaces/IFabric.sol";
 import "./UserData.sol";
-import "../../node_modules/@broxus/contracts/contracts/libraries/MsgFlag.sol";
+import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 
 abstract contract TonFarmPoolBase is ITonFarmPool, IAcceptTokensTransferCallback {

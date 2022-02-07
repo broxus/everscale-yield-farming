@@ -75,25 +75,6 @@ describe('Test Ton Farm Pool', async function() {
     let farm_pool_reward_wallet_1;
     let farm_pool_reward_wallet_2;
 
-    const clearTokenWallet = async function(user, userTokenWallet) {
-        const balance = await userTokenWallet.call({method: 'balance'});
-        return await user.runTarget({
-            contract: userTokenWallet,
-            method: 'transferToRecipient',
-            params: {
-                recipient_public_key: 0,
-                recipient_address: admin_user.address,
-                tokens: balance.toFixed(0),
-                deploy_grams: 0,
-                transfer_grams: 0,
-                send_gas_to: user.address,
-                notify_receiver: true,
-                payload: ''
-            },
-            value: convertCrystal(2.5, 'nano')
-        });
-    }
-
     const getDepositPayload = async function(deposit_owner) {
         return await farm_pool.call({
             method: 'encodeDepositPayload',
