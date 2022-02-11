@@ -3,35 +3,33 @@ const {
 } = locklift.utils;
 
 const fs = require('fs')
-let deploy_params = JSON.parse(fs.readFileSync('fabric_config.json', 'utf-8'))
+const prompts = require('prompts');
+const { isValidTonAddress } = require('../test/utils');
 
 
 async function main() {
-    console.log(`Deploying Farm Pool with next params:`);
-    console.dir(deploy_params, {depth: null, colors: true});
+    const response = await prompts({
+        type: 'text',
+        name: 'owner',
+        message: 'Fabric owner (can upgrade pool/user data codes)',
+        validate: value => isValidTonAddress(value) ? true : 'Invalid address'
+    });
 
-    const PoolFabric = await locklift.factory.getContract(
-        'FarmFabric',
-        './build'
-    );
+    console.log(`Deploying Farm Pool with owner: ${response.owner}`)
 
-    const TonFarmPool = await locklift.factory.getContract(
-        'TonFarmPool',
-        './build'
-    );
+    const PoolFabric = await locklift.factory.getContract('FarmFabric');
 
-    const UserData = await locklift.factory.getContract(
-        'UserData',
-        './build'
-    );
+    const TonFarmPool = await locklift.factory.getContract('EverFarmPool');
+
+    const UserData = await locklift.factory.getContract('UserData');
 
     const Platform = await locklift.factory.getContract('Platform');
 
     const [keyPair] = await locklift.keys.getKeyPairs();
 
-    fabric = await locklift.giver.deployContract({
+    const fabric = await locklift.giver.deployContract({
         contract: PoolFabric,
-        constructorParams: deploy_params,
+        constructorParams: { _owner: response.owner },
         initParams: {
             FarmPoolCode: TonFarmPool.code,
             FarmPoolUserDataCode: UserData.code,

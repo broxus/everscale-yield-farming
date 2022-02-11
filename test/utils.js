@@ -11,6 +11,8 @@ async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+const isValidTonAddress = (address) => /^(?:-1|0):[0-9a-fA-F]{64}$/.test(address);
+
 
 const afterRun = async (tx) => {
     if (locklift.network === 'dev' || locklift.network === 'main') {
@@ -647,5 +649,6 @@ module.exports = {
     deployUser,
     calcExpectedReward,
     checkReward,
-    FarmPool
+    FarmPool,
+    isValidTonAddress
 };
