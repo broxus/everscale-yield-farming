@@ -3,7 +3,8 @@ pragma AbiHeader expire;
 
 import "./interfaces/ITonFarmPool.sol";
 import "./interfaces/IUserData.sol";
-import "../../node_modules/@broxus/contracts/contracts/libraries/MsgFlag.sol";
+import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
+
 
 contract UserData is IUserData {
     uint32 current_version;
