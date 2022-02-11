@@ -14,6 +14,7 @@ interface ITonFarmPool {
     event RewardDeposit(address token_root, uint128 amount);
     event RewardRoundAdded(RewardRound reward_round);
     event farmEndSet(uint32 time);
+    event UserDataCodeUpdated(uint32 prev_version, uint32 new_version);
 
     struct Details {
         uint32 lastRewardTime;
@@ -32,6 +33,8 @@ interface ITonFarmPool {
         uint128[] unclaimedReward;
         address owner;
         address fabric;
+        uint32 user_data_version;
+        uint32 pool_version;
     }
     function finishDeposit(
         uint64 _nonce,
@@ -45,4 +48,6 @@ interface ITonFarmPool {
         uint32 nonce
     ) external;
     function finishSafeWithdraw(address user, uint128 amount, address send_gas_to) external;
+    function upgrade(TvmCell new_code, uint32 new_version, address send_gas_to) external;
+    function updateUserDataCode(TvmCell new_code, uint32 new_version, address send_gas_to) external;
 }

@@ -254,6 +254,15 @@
 	],
 	"events": [
 		{
+			"name": "PoolUpdated",
+			"inputs": [
+				{"name":"prev_version","type":"uint32"},
+				{"name":"new_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "Deposit",
 			"inputs": [
 				{"name":"user","type":"address"},

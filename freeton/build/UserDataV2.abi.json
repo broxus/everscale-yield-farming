@@ -119,6 +119,15 @@
 	"data": [
 	],
 	"events": [
+		{
+			"name": "UserDataUpdated",
+			"inputs": [
+				{"name":"prev_version","type":"uint32"},
+				{"name":"new_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		}
 	],
 	"fields": [
 		{"name":"_pubkey","type":"uint256"},

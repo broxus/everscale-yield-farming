@@ -1,11 +1,14 @@
 pragma ton-solidity ^0.57.1;
 pragma AbiHeader expire;
 
-import "./interfaces/ITonFarmPool.sol";
-import "./interfaces/IUserData.sol";
-import "../../node_modules/@broxus/contracts/contracts/libraries/MsgFlag.sol";
+import "../interfaces/ITonFarmPool.sol";
+import "../interfaces/IUserData.sol";
+import "../../../node_modules/@broxus/contracts/contracts/libraries/MsgFlag.sol";
+
 
 contract UserData is IUserData {
+    event UserDataUpdated(uint32 prev_version, uint32 new_version);
+
     uint32 current_version;
     TvmCell platform_code;
 
@@ -58,9 +61,9 @@ contract UserData is IUserData {
         uint32 farmEndTime
     ) external view returns (uint128[] _entitled, uint128[] _vested, uint128[] _pool_debt, uint32 _vesting_time) {
         (
-            _entitled,
-            _vested,
-            _vesting_time
+        _entitled,
+        _vested,
+        _vesting_time
         ) = _computeVesting(amount, rewardDebt, _accTonPerShare, poolLastRewardTime, farmEndTime);
 
         return (_entitled, _vested, pool_debt, _vesting_time);
@@ -166,8 +169,8 @@ contract UserData is IUserData {
                 uint32 age2 = _poolLastRewardTime >= vestingTime ? vestingPeriod : _poolLastRewardTime - lastRewardTime;
                 uint256 _vested = uint256(entitled[i]) * age2;
                 uint128 to_vest = age2 >= vestingPeriod
-                    ? entitled[i]
-                    : uint128(_vested / (vestingTime - lastRewardTime));
+                ? entitled[i]
+                : uint128(_vested / (vestingTime - lastRewardTime));
 
                 // amount of reward vested from now
                 uint128 remainingEntitled = entitled[i] == 0 ? 0 : entitled[i] - to_vest;
@@ -226,9 +229,9 @@ contract UserData is IUserData {
         }
 
         (
-            uint128[] _entitled,
-            uint128[] _vested,
-            uint32 _vestingTime
+        uint128[] _entitled,
+        uint128[] _vested,
+        uint32 _vestingTime
         ) = _computeVesting(prevAmount, prevRewardDebt, _accTonPerShare, poolLastRewardTime, farmEndTime);
         entitled = _entitled;
         vestingTime = _vestingTime;
@@ -259,9 +262,9 @@ contract UserData is IUserData {
         }
 
         (
-            uint128[] _entitled,
-            uint128[] _vested,
-            uint32 _vestingTime
+        uint128[] _entitled,
+        uint128[] _vested,
+        uint32 _vestingTime
         ) = _computeVesting(prevAmount, prevRewardDebt, _accTonPerShare, poolLastRewardTime, farmEndTime);
         entitled = _entitled;
         vestingTime = _vestingTime;
@@ -316,7 +319,7 @@ contract UserData is IUserData {
         ITonFarmPool(msg.sender).finishSafeWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(user, prevAmount, send_gas_to);
     }
 
-    function upgrade(TvmCell new_code, uint32 new_version, address send_gas_to) external virtual override {
+    function upgrade(TvmCell new_code, uint32 new_version, address send_gas_to) external override {
         require (msg.sender == farmPool, NOT_FARM_POOL);
 
         if (new_version == current_version) {
@@ -376,12 +379,26 @@ contract UserData is IUserData {
         user = initialData.decode(address);
 
         TvmSlice params = s.loadRefAsSlice();
-        (current_version, ) = params.decode(uint32, uint32);
+        uint32 prev_version;
+        (current_version, prev_version) = params.decode(uint32, uint32);
+        if (prev_version != current_version) {
+            // upgrade from old version
+            TvmSlice data = s.loadRefAsSlice();
+            lastRewardTime = data.decode(uint32);
+            vestingPeriod = data.decode(uint32);
+            vestingRatio = data.decode(uint32);
+            vestingTime = data.decode(uint32);
+            amount = data.decode(uint128);
+            rewardDebt = data.decode(uint128[]);
+            entitled = data.decode(uint128[]);
+            pool_debt = data.decode(uint128[]);
 
-        (uint8 tokens_num, uint32 _vestingPeriod, uint32 _vestingRatio) = params.decode(uint8, uint32, uint32);
-
-        _init(tokens_num, _vestingPeriod, _vestingRatio);
-
+            emit UserDataUpdated(prev_version, current_version);
+        } else {
+            // initialization from platform
+            (uint8 tokens_num, uint32 _vestingPeriod, uint32 _vestingRatio) = params.decode(uint8, uint32, uint32);
+            _init(tokens_num, _vestingPeriod, _vestingRatio);
+        }
         send_gas_to.transfer({ value: 0, bounce: false, flag: MsgFlag.ALL_NOT_RESERVED });
     }
 

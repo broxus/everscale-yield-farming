@@ -6,14 +6,14 @@ import "broxus-ton-tokens-contracts/contracts/interfaces/ITokenRoot.sol";
 import "broxus-ton-tokens-contracts/contracts/interfaces/ITokenWallet.sol";
 import "broxus-ton-tokens-contracts/contracts/interfaces/IAcceptTokensTransferCallback.sol";
 
-import "./interfaces/IUserData.sol";
-import "./interfaces/ITonFarmPool.sol";
-import "./interfaces/IFabric.sol";
-import "./UserData.sol";
+import "../interfaces/IUserData.sol";
+import "../interfaces/ITonFarmPool.sol";
+import "../interfaces/IFabric.sol";
+import "../UserData.sol";
 import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 
-abstract contract TonFarmPoolBase is ITonFarmPool, IAcceptTokensTransferCallback {
+abstract contract TonFarmPoolStorage is ITonFarmPool, IAcceptTokensTransferCallback {
     // ERRORS
     uint8 constant NOT_OWNER = 101;
     uint8 constant NOT_ROOT = 102;
@@ -32,12 +32,15 @@ abstract contract TonFarmPoolBase is ITonFarmPool, IAcceptTokensTransferCallback
     uint8 constant BAD_FARM_END_TIME = 115;
     uint8 constant BAD_VESTING_SETUP = 116;
     uint8 constant CANT_WITHDRAW_UNCLAIMED_ALL = 117;
+    uint8 constant LOW_MSG_VALUE = 118;
 
     // constants
     uint128 constant TOKEN_WALLET_DEPLOY_VALUE = 0.5 ton;
     uint128 constant TOKEN_WALLET_DEPLOY_GRAMS_VALUE = 0.1 ton;
     uint128 constant MIN_CALL_MSG_VALUE = 1 ton;
     uint128 constant USER_DATA_DEPLOY_VALUE = 0.2 ton;
+    uint128 constant USER_DATA_UPGRADE_VALUE = 1 ton;
+    uint128 constant REQUEST_UPGRADE_VALUE = 1.5 ton;
     uint128 constant TOKEN_TRANSFER_VALUE = 1 ton;
     uint128 constant FABRIC_DEPLOY_CALLBACK_VALUE = 0.1 ton;
     uint128 constant ADD_REWARD_ROUND_VALUE = 0.5 ton;
@@ -93,9 +96,14 @@ abstract contract TonFarmPoolBase is ITonFarmPool, IAcceptTokensTransferCallback
     // this is used to prevent data loss on bounced messages during deposit
     mapping (uint64 => PendingDeposit) deposits;
     //
+    TvmCell static platformCode;
+
     TvmCell static userDataCode;
 
     address static fabric;
 
     uint64 static deploy_nonce;
+
+    uint32 user_data_version;
+    uint32 pool_version;
 }

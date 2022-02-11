@@ -16,4 +16,6 @@ interface IFabric {
         uint32 vestingRatio,
         uint32 withdrawAllLockPeriod
     ) external;
+    function processUpgradePoolRequest(address send_gas_to) external;
+    function processUpdatePoolUserDataRequest(address send_gas_to) external;
 }

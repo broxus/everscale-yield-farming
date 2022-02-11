@@ -5,8 +5,6 @@ const {
 const fs = require('fs')
 let deploy_params = JSON.parse(fs.readFileSync('fabric_config.json', 'utf-8'))
 
-const getRandomNonce = () => Math.random() * 64000 | 0;
-
 
 async function main() {
     console.log(`Deploying Farm Pool with next params:`);
@@ -27,6 +25,8 @@ async function main() {
         './build'
     );
 
+    const Platform = await locklift.factory.getContract('Platform');
+
     const [keyPair] = await locklift.keys.getKeyPairs();
 
     fabric = await locklift.giver.deployContract({
@@ -35,7 +35,8 @@ async function main() {
         initParams: {
             FarmPoolCode: TonFarmPool.code,
             FarmPoolUserDataCode: UserData.code,
-            nonce: getRandomNonce()
+            PlatformCode: Platform.code,
+            nonce: locklift.utils.getRandomNonce()
         },
         keyPair,
     }, convertCrystal(2, 'nano'));
