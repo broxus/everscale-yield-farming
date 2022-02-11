@@ -212,7 +212,7 @@ describe('Test Ton Farm Pool - upgrade', async function() {
 
             describe('Update farm pool and userdata', async function() {
                 it('Update farm pool', async function() {
-                    const poolV2 = await locklift.factory.getContract('TonFarmPoolV2');
+                    const poolV2 = await locklift.factory.getContract('EverFarmPoolV2');
                     const tx = await fabric.installNewFarmPoolCode(poolV2.code);
 
                     const pool_version_fabric = await fabric.pool_version();
@@ -234,7 +234,7 @@ describe('Test Ton Farm Pool - upgrade', async function() {
                     }
 
                     // up to new abi
-                    farm_pool = await FarmPool.from_addr(farm_pool.address, farm_pool.owner, 'TonFarmPoolV2');
+                    farm_pool = await FarmPool.from_addr(farm_pool.address, farm_pool.owner, 'EverFarmPoolV2');
 
                     const { value: { prev_version: _prev_version, new_version: _new_version} } = (await farm_pool.getEvents('PoolUpdated')).pop();
                     expect(_prev_version).to.be.equal('0', 'Bad event');
@@ -527,7 +527,7 @@ describe('Test Ton Farm Pool - upgrade', async function() {
 
         describe('Additional upgrade hooks', async function() {
            it('Install new codes to fabric', async function() {
-               const poolV2 = await locklift.factory.getContract('TonFarmPoolV2');
+               const poolV2 = await locklift.factory.getContract('EverFarmPoolV2');
                const tx = await fabric.installNewFarmPoolCode(poolV2.code);
 
                const pool_version_fabric = await fabric.pool_version();
@@ -557,7 +557,7 @@ describe('Test Ton Farm Pool - upgrade', async function() {
                }
 
                // up to new abi
-               farm_pool = await FarmPool.from_addr(farm_pool.address, farm_pool.owner, 'TonFarmPoolV2');
+               farm_pool = await FarmPool.from_addr(farm_pool.address, farm_pool.owner, 'EverFarmPoolV2');
 
                const { value: { prev_version: _prev_version, new_version: _new_version} } = (await farm_pool.getEvents('PoolUpdated')).pop();
                expect(_prev_version).to.be.equal('1', 'Bad event');

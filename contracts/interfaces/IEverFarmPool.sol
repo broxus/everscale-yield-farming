@@ -1,7 +1,7 @@
 pragma ton-solidity ^0.57.1;
 pragma AbiHeader expire;
 
-interface ITonFarmPool {
+interface IEverFarmPool {
     struct RewardRound {
         uint32 startTime;
         uint128[] rewardPerSecond;
@@ -25,7 +25,7 @@ interface ITonFarmPool {
         address tokenWallet;
         uint128 tokenBalance;
         RewardRound[] rewardRounds;
-        uint256[] accTonPerShare;
+        uint256[] accRewardPerShare;
         address[] rewardTokenRoot;
         address[] rewardTokenWallet;
         uint128[] rewardTokenBalance;

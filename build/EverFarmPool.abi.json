@@ -33,7 +33,7 @@
 				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
-				{"components":[{"name":"lastRewardTime","type":"uint32"},{"name":"farmEndTime","type":"uint32"},{"name":"vestingPeriod","type":"uint32"},{"name":"vestingRatio","type":"uint32"},{"name":"tokenRoot","type":"address"},{"name":"tokenWallet","type":"address"},{"name":"tokenBalance","type":"uint128"},{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"rewardRounds","type":"tuple[]"},{"name":"accTonPerShare","type":"uint256[]"},{"name":"rewardTokenRoot","type":"address[]"},{"name":"rewardTokenWallet","type":"address[]"},{"name":"rewardTokenBalance","type":"uint128[]"},{"name":"rewardTokenBalanceCumulative","type":"uint128[]"},{"name":"unclaimedReward","type":"uint128[]"},{"name":"owner","type":"address"},{"name":"fabric","type":"address"},{"name":"user_data_version","type":"uint32"},{"name":"pool_version","type":"uint32"}],"name":"value0","type":"tuple"}
+				{"components":[{"name":"lastRewardTime","type":"uint32"},{"name":"farmEndTime","type":"uint32"},{"name":"vestingPeriod","type":"uint32"},{"name":"vestingRatio","type":"uint32"},{"name":"tokenRoot","type":"address"},{"name":"tokenWallet","type":"address"},{"name":"tokenBalance","type":"uint128"},{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"rewardRounds","type":"tuple[]"},{"name":"accRewardPerShare","type":"uint256[]"},{"name":"rewardTokenRoot","type":"address[]"},{"name":"rewardTokenWallet","type":"address[]"},{"name":"rewardTokenBalance","type":"uint128[]"},{"name":"rewardTokenBalanceCumulative","type":"uint128[]"},{"name":"unclaimedReward","type":"uint128[]"},{"name":"owner","type":"address"},{"name":"fabric","type":"address"},{"name":"user_data_version","type":"uint32"},{"name":"pool_version","type":"uint32"}],"name":"value0","type":"tuple"}
 			]
 		},
 		{
@@ -231,7 +231,7 @@
 			],
 			"outputs": [
 				{"name":"_lastRewardTime","type":"uint32"},
-				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"_accRewardPerShare","type":"uint256[]"},
 				{"name":"_unclaimedReward","type":"uint128[]"}
 			]
 		},
@@ -253,15 +253,6 @@
 		{"key":4,"name":"deploy_nonce","type":"uint64"}
 	],
 	"events": [
-		{
-			"name": "PoolUpdated",
-			"inputs": [
-				{"name":"prev_version","type":"uint32"},
-				{"name":"new_version","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
 		{
 			"name": "Deposit",
 			"inputs": [
@@ -342,7 +333,7 @@
 		{"name":"tokenWallet","type":"address"},
 		{"name":"tokenBalance","type":"uint128"},
 		{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"rewardRounds","type":"tuple[]"},
-		{"name":"accTonPerShare","type":"uint256[]"},
+		{"name":"accRewardPerShare","type":"uint256[]"},
 		{"name":"rewardTokenRoot","type":"address[]"},
 		{"name":"rewardTokenWallet","type":"address[]"},
 		{"name":"rewardTokenBalance","type":"uint128[]"},

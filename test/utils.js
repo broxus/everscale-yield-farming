@@ -62,7 +62,7 @@ class TokenWallet {
     static async from_addr(addr, owner) {
         let userTokenWallet = await locklift.factory.getContract(
             'TokenWallet',
-            '../node_modules/broxus-ton-tokens-contracts/build'
+            'node_modules/broxus-ton-tokens-contracts/build'
         );
 
         userTokenWallet.setAddress(addr);
@@ -113,7 +113,7 @@ class Token {
     static async from_addr (addr, owner) {
         const rootToken = await locklift.factory.getContract(
             'TokenRoot',
-            '../node_modules/broxus-ton-tokens-contracts/build'
+            'node_modules/broxus-ton-tokens-contracts/build'
         );
         rootToken.setAddress(addr);
         return new Token(rootToken, owner);
@@ -378,7 +378,7 @@ class FarmPool {
         });
     }
 
-    static async from_addr(addr, owner, name='TonFarmPool') {
+    static async from_addr(addr, owner, name='EverFarmPool') {
         const pool = await locklift.factory.getContract(name);
         pool.setAddress(addr);
         return new FarmPool(pool, owner);
@@ -423,7 +423,7 @@ class Fabric {
         logger.log(`Farm Pool address: ${_pool}`);
         // Wait until farm farm pool is indexed
         await wait_acc_deployed(_pool);
-        const _farm_pool = await locklift.factory.getContract('TonFarmPool');
+        const _farm_pool = await locklift.factory.getContract('EverFarmPool');
         _farm_pool.setAddress(_pool);
 
         const pool = new FarmPool(_farm_pool, pool_owner);
@@ -518,7 +518,7 @@ class Fabric {
 // -------------------------- SETUP METHODS --------------------------
 const setupFabric = async (owner) => {
     const PoolFabric = await locklift.factory.getContract('FarmFabric',);
-    const TonFarmPool = await locklift.factory.getContract('TonFarmPool');
+    const EverFarmPool = await locklift.factory.getContract('EverFarmPool');
     const UserData = await locklift.factory.getContract('UserData');
     const Platform = await locklift.factory.getContract('Platform');
 
@@ -530,7 +530,7 @@ const setupFabric = async (owner) => {
             _owner: owner.address
         },
         initParams: {
-            FarmPoolCode: TonFarmPool.code,
+            FarmPoolCode: EverFarmPool.code,
             FarmPoolUserDataCode: UserData.code,
             PlatformCode: Platform.code,
             nonce: locklift.utils.getRandomNonce()
@@ -553,12 +553,12 @@ const setupFabric = async (owner) => {
 const setupTokenRoot = async function(token_name, token_symbol, owner) {
     const RootToken = await locklift.factory.getContract(
         'TokenRoot',
-        '../node_modules/broxus-ton-tokens-contracts/build'
+        'node_modules/broxus-ton-tokens-contracts/build'
     );
 
     const TokenWallet = await locklift.factory.getContract(
         'TokenWallet',
-        '../node_modules/broxus-ton-tokens-contracts/build'
+        'node_modules/broxus-ton-tokens-contracts/build'
     );
 
     const [keyPair] = await locklift.keys.getKeyPairs();

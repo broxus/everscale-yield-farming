@@ -7,13 +7,13 @@ import "broxus-ton-tokens-contracts/contracts/interfaces/ITokenWallet.sol";
 import "broxus-ton-tokens-contracts/contracts/interfaces/IAcceptTokensTransferCallback.sol";
 
 import "../interfaces/IUserData.sol";
-import "../interfaces/ITonFarmPool.sol";
+import "../interfaces/IEverFarmPool.sol";
 import "../interfaces/IFabric.sol";
 import "../UserData.sol";
 import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 
-abstract contract TonFarmPoolStorage is ITonFarmPool, IAcceptTokensTransferCallback {
+abstract contract EverFarmPoolStorage is IEverFarmPool, IAcceptTokensTransferCallback {
     // ERRORS
     uint8 constant NOT_OWNER = 101;
     uint8 constant NOT_ROOT = 102;
@@ -71,7 +71,7 @@ abstract contract TonFarmPoolStorage is ITonFarmPool, IAcceptTokensTransferCallb
 
     RewardRound[] rewardRounds;
 
-    uint256[] accTonPerShare;
+    uint256[] accRewardPerShare;
 
     address[] rewardTokenRoot;
 

@@ -22,7 +22,7 @@
 		{
 			"name": "pendingReward",
 			"inputs": [
-				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"_accRewardPerShare","type":"uint256[]"},
 				{"name":"poolLastRewardTime","type":"uint32"},
 				{"name":"farmEndTime","type":"uint32"}
 			],
@@ -48,7 +48,7 @@
 			"inputs": [
 				{"name":"nonce","type":"uint64"},
 				{"name":"_amount","type":"uint128"},
-				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"_accRewardPerShare","type":"uint256[]"},
 				{"name":"poolLastRewardTime","type":"uint32"},
 				{"name":"farmEndTime","type":"uint32"},
 				{"name":"code_version","type":"uint32"}
@@ -60,7 +60,7 @@
 			"name": "processWithdraw",
 			"inputs": [
 				{"name":"_amount","type":"uint128"},
-				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"_accRewardPerShare","type":"uint256[]"},
 				{"name":"poolLastRewardTime","type":"uint32"},
 				{"name":"farmEndTime","type":"uint32"},
 				{"name":"send_gas_to","type":"address"},
@@ -73,7 +73,7 @@
 		{
 			"name": "processWithdrawAll",
 			"inputs": [
-				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"_accRewardPerShare","type":"uint256[]"},
 				{"name":"poolLastRewardTime","type":"uint32"},
 				{"name":"farmEndTime","type":"uint32"},
 				{"name":"send_gas_to","type":"address"},
@@ -86,7 +86,7 @@
 		{
 			"name": "processClaimReward",
 			"inputs": [
-				{"name":"_accTonPerShare","type":"uint256[]"},
+				{"name":"_accRewardPerShare","type":"uint256[]"},
 				{"name":"poolLastRewardTime","type":"uint32"},
 				{"name":"farmEndTime","type":"uint32"},
 				{"name":"send_gas_to","type":"address"},

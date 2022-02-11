@@ -1,9 +1,9 @@
 pragma ton-solidity ^0.57.1;
 pragma AbiHeader expire;
 
-import './TonFarmPool.sol';
+import './EverFarmPool.sol';
 import "./interfaces/IFabric.sol";
-import './interfaces/ITonFarmPool.sol';
+import './interfaces/IEverFarmPool.sol';
 import './UserData.sol';
 import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
@@ -11,7 +11,7 @@ contract FarmFabric is IFabric {
     event NewFarmPool(
         address pool,
         address pool_owner,
-        TonFarmPool.RewardRound[] reward_rounds,
+        EverFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
         address[] rewardTokenRoot,
         uint32 vestingPeriod,
@@ -90,7 +90,7 @@ contract FarmFabric is IFabric {
         require (msg.value >= POOL_UPGRADE_VALUE, LOW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
-        ITonFarmPool(pool).upgrade{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
+        IEverFarmPool(pool).upgrade{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
             FarmPoolCode, farm_pool_version, send_gas_to
         );
     }
@@ -100,7 +100,7 @@ contract FarmFabric is IFabric {
         require (msg.value >= POOL_UPGRADE_VALUE, LOW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
-        ITonFarmPool(pool).updateUserDataCode{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
+        IEverFarmPool(pool).updateUserDataCode{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
             FarmPoolUserDataCode, user_data_version, send_gas_to
         );
     }
@@ -109,7 +109,7 @@ contract FarmFabric is IFabric {
         require (msg.value >= POOL_UPGRADE_VALUE, LOW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
-        ITonFarmPool(msg.sender).upgrade{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
+        IEverFarmPool(msg.sender).upgrade{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
             FarmPoolCode, farm_pool_version, send_gas_to
         );
     }
@@ -118,14 +118,14 @@ contract FarmFabric is IFabric {
         require (msg.value >= POOL_UPGRADE_VALUE, LOW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
-        ITonFarmPool(msg.sender).updateUserDataCode{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
+        IEverFarmPool(msg.sender).updateUserDataCode{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
             FarmPoolUserDataCode, user_data_version, send_gas_to
         );
     }
 
     function deployFarmPool(
         address pool_owner,
-        TonFarmPool.RewardRound[] reward_rounds,
+        EverFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
         address[] rewardTokenRoot,
         uint32 vestingPeriod,
@@ -136,7 +136,7 @@ contract FarmFabric is IFabric {
         require (msg.value >= FARM_POOL_DEPLOY_VALUE, LOW_MSG_VALUE);
 
         TvmCell stateInit = tvm.buildStateInit({
-            contr: TonFarmPool,
+            contr: EverFarmPool,
             varInit: {
                 userDataCode: FarmPoolUserDataCode,
                 platformCode: PlatformCode,
@@ -148,7 +148,7 @@ contract FarmFabric is IFabric {
         });
         pools_count += 1;
 
-        address farm_pool = new TonFarmPool{
+        address farm_pool = new EverFarmPool{
             stateInit: stateInit,
             value: 0,
             wid: address(this).wid,
@@ -159,7 +159,7 @@ contract FarmFabric is IFabric {
     function onPoolDeploy(
         uint64 pool_deploy_nonce,
         address pool_owner,
-        TonFarmPool.RewardRound[] reward_rounds,
+        EverFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
         address[] rewardTokenRoot,
         uint32 vestingPeriod,
@@ -167,7 +167,7 @@ contract FarmFabric is IFabric {
         uint32 withdrawAllLockPeriod
     ) external override {
         TvmCell stateInit = tvm.buildStateInit({
-            contr: TonFarmPool,
+            contr: EverFarmPool,
             varInit: {
                 userDataCode: FarmPoolUserDataCode,
                 platformCode: PlatformCode,

@@ -1,11 +1,13 @@
 pragma ton-solidity ^0.57.1;
 pragma AbiHeader expire;
 
-import "./base/TonFarmPoolBase.sol";
-import "./interfaces/ITonFarmPool.sol";
+import "../base/EverFarmPoolBase.sol";
+import "../interfaces/IEverFarmPool.sol";
 
 
-contract TonFarmPool is TonFarmPoolBase {
+contract EverFarmPoolV2 is EverFarmPoolBase {
+    event PoolUpdated(uint32 prev_version, uint32 new_version);
+
     constructor(
         address _owner,
         RewardRound[] _rewardRounds,
@@ -41,6 +43,7 @@ contract TonFarmPool is TonFarmPoolBase {
         );
     }
 
+    // we dont need it for testing
     function upgrade(TvmCell new_code, uint32 new_version, address send_gas_to) external override {
         require (msg.sender == fabric, NOT_FABRIC);
 
@@ -64,7 +67,7 @@ contract TonFarmPool is TonFarmPoolBase {
         builder_1.store(tokenWallet); // 267
         builder_1.store(tokenBalance); // 128
         builder_1.store(rewardRounds); // 33 + ref
-        builder_1.store(accTonPerShare); // 33 + ref
+        builder_1.store(accRewardPerShare); // 33 + ref
         builder_1.store(rewardTokenRoot); // 33 + ref
         // 1017 + 3 ref
 
@@ -100,5 +103,45 @@ contract TonFarmPool is TonFarmPoolBase {
         onCodeUpgrade(main_builder.toCell());
     }
 
-    function onCodeUpgrade(TvmCell upgrade_data) private {}
+    function onCodeUpgrade(TvmCell upgrade_data) private {
+        tvm.resetStorage();
+        tvm.rawReserve(_reserve(), 0);
+
+        TvmSlice s = upgrade_data.toSlice();
+        pool_version = s.decode(uint32);
+        address send_gas_to = s.decode(address);
+
+        TvmSlice data_1 = s.loadRefAsSlice();
+        withdrawAllLockPeriod = data_1.decode(uint32);
+        lastRewardTime = data_1.decode(uint32);
+        farmEndTime = data_1.decode(uint32);
+        vestingPeriod = data_1.decode(uint32);
+        vestingRatio = data_1.decode(uint32);
+        tokenRoot = data_1.decode(address);
+        tokenWallet = data_1.decode(address);
+        tokenBalance = data_1.decode(uint128);
+        rewardRounds = data_1.decode(RewardRound[]);
+        accRewardPerShare = data_1.decode(uint256[]);
+        rewardTokenRoot = data_1.decode(address[]);
+
+        TvmSlice data_2 = s.loadRefAsSlice();
+        rewardTokenWallet = data_2.decode(address[]);
+        rewardTokenBalance = data_2.decode(uint128[]);
+        rewardTokenBalanceCumulative = data_2.decode(uint128[]);
+        unclaimedReward = data_2.decode(uint128[]);
+        owner = data_2.decode(address);
+        deposit_nonce = data_2.decode(uint64);
+
+        TvmSlice data_3 = s.loadRefAsSlice();
+        deposits = data_3.decode(mapping (uint64 => PendingDeposit));
+        platformCode = data_3.loadRef();
+        userDataCode = data_3.loadRef();
+        fabric = data_3.decode(address);
+        deploy_nonce = data_3.decode(uint64);
+        user_data_version = data_3.decode(uint32);
+        uint32 prev_version = data_3.decode(uint32);
+
+        emit PoolUpdated(prev_version, pool_version);
+        send_gas_to.transfer({value: 0, flag: MsgFlag.ALL_NOT_RESERVED, bounce: false});
+    }
 }

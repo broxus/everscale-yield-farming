@@ -3,18 +3,18 @@ pragma AbiHeader expire;
 
 
 import "../interfaces/IUserData.sol";
-import "../interfaces/ITonFarmPool.sol";
+import "../interfaces/IEverFarmPool.sol";
 import "../interfaces/IFabric.sol";
-import "./TonFarmPoolStorage.sol";
+import "./EverFarmPoolStorage.sol";
 import "../UserData.sol";
 import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 import "@broxus/contracts/contracts/platform/Platform.sol";
 
 
-abstract contract TonFarmPoolBase is TonFarmPoolStorage {
+abstract contract EverFarmPoolBase is EverFarmPoolStorage {
     function _initialize_reward_arrays() internal virtual {
         for (uint i = 0; i < rewardTokenRoot.length; i++) {
-            accTonPerShare.push(0);
+            accRewardPerShare.push(0);
             rewardTokenWallet.push(address.makeAddrNone());
             rewardTokenBalance.push(0);
             rewardTokenBalanceCumulative.push(0);
@@ -29,7 +29,7 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
     function getDetails() external virtual view responsible returns (Details) {
         return { value: 0, bounce: false, flag: MsgFlag.REMAINING_GAS }Details(
             lastRewardTime, farmEndTime, vestingPeriod, vestingRatio, tokenRoot, tokenWallet, tokenBalance,
-            rewardRounds, accTonPerShare, rewardTokenRoot, rewardTokenWallet, rewardTokenBalance,
+            rewardRounds, accRewardPerShare, rewardTokenRoot, rewardTokenWallet, rewardTokenBalance,
             rewardTokenBalanceCumulative, unclaimedReward, owner, fabric, user_data_version, pool_version
         );
     }
@@ -40,13 +40,13 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
     function setUp() internal virtual {
         _initialize_reward_arrays();
         // Deploy vault's token wallet
-        ITokenRoot(tokenRoot).deployWallet{value: TOKEN_WALLET_DEPLOY_VALUE, callback: TonFarmPoolBase.receiveTokenWalletAddress }(
+        ITokenRoot(tokenRoot).deployWallet{value: TOKEN_WALLET_DEPLOY_VALUE, callback: EverFarmPoolBase.receiveTokenWalletAddress }(
             address(this), // owner
             TOKEN_WALLET_DEPLOY_GRAMS_VALUE // deploy grams
         );
 
         for (uint i = 0; i < rewardTokenRoot.length; i++) {
-            ITokenRoot(rewardTokenRoot[i]).deployWallet{value: TOKEN_WALLET_DEPLOY_VALUE, callback: TonFarmPoolBase.receiveTokenWalletAddress}(
+            ITokenRoot(rewardTokenRoot[i]).deployWallet{value: TOKEN_WALLET_DEPLOY_VALUE, callback: EverFarmPoolBase.receiveTokenWalletAddress}(
                 address(this), // owner address
                 TOKEN_WALLET_DEPLOY_GRAMS_VALUE // deploy grams
             );
@@ -220,7 +220,7 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
             deposits[deposit_nonce] = PendingDeposit(deposit_owner, amount, remainingGasTo, nonce);
 
             address userDataAddr = getUserDataAddress(deposit_owner);
-            IUserData(userDataAddr).processDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(deposit_nonce, amount, accTonPerShare, lastRewardTime, farmEndTime, user_data_version);
+            IUserData(userDataAddr).processDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(deposit_nonce, amount, accRewardPerShare, lastRewardTime, farmEndTime, user_data_version);
         } else {
             for (uint i = 0; i < rewardTokenWallet.length; i++) {
                 if (msg.sender == rewardTokenWallet[i]) {
@@ -262,7 +262,7 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
 
         address userDataAddr = getUserDataAddress(msg.sender);
         // we cant check if user has any balance here, delegate it to UserData
-        IUserData(userDataAddr).processWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(amount, accTonPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce, user_data_version);
+        IUserData(userDataAddr).processWithdraw{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(amount, accRewardPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce, user_data_version);
     }
 
     function withdrawAll(address send_gas_to, uint32 nonce) external virtual {
@@ -273,7 +273,7 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
 
         address userDataAddr = getUserDataAddress(msg.sender);
         // we cant check if user has any balance here, delegate it to UserData
-        IUserData(userDataAddr).processWithdrawAll{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce, user_data_version);
+        IUserData(userDataAddr).processWithdrawAll{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accRewardPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce, user_data_version);
     }
 
     function claimReward(address send_gas_to, uint32 nonce) external virtual {
@@ -284,7 +284,7 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
 
         address userDataAddr = getUserDataAddress(msg.sender);
         // we cant check if user has any balance here, delegate it to UserData
-        IUserData(userDataAddr).processClaimReward{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accTonPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce, user_data_version);
+        IUserData(userDataAddr).processClaimReward{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(accRewardPerShare, lastRewardTime, farmEndTime, send_gas_to, nonce, user_data_version);
     }
 
     function finishWithdraw(
@@ -441,9 +441,9 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
         return _farmEndTime;
     }
 
-    function calculateRewardData() public virtual view returns (uint32 _lastRewardTime, uint256[] _accTonPerShare, uint128[] _unclaimedReward) {
+    function calculateRewardData() public virtual view returns (uint32 _lastRewardTime, uint256[] _accRewardPerShare, uint128[] _unclaimedReward) {
         _lastRewardTime = lastRewardTime;
-        _accTonPerShare = accTonPerShare;
+        _accRewardPerShare = accRewardPerShare;
         _unclaimedReward = unclaimedReward;
 
         uint32 first_round_start = rewardRounds[0].startTime;
@@ -451,7 +451,7 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
         // reward rounds still not started, nothing to calculate
         if (now < first_round_start) {
             _lastRewardTime = now;
-            return (_lastRewardTime, _accTonPerShare, _unclaimedReward);
+            return (_lastRewardTime, _accRewardPerShare, _unclaimedReward);
         }
 
         if (now > _lastRewardTime) {
@@ -493,7 +493,7 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
 
                         for (uint k = 0; k < rewardRounds[j].rewardPerSecond.length; k++) {
                             uint256 scaled_reward = uint256(new_reward[k]) * SCALING_FACTOR;
-                            _accTonPerShare[k] += scaled_reward / tokenBalance;
+                            _accRewardPerShare[k] += scaled_reward / tokenBalance;
                         }
                         _lastRewardTime = new_reward_time;
                     }
@@ -505,13 +505,13 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
                 }
             }
         }
-        return (_lastRewardTime, _accTonPerShare, _unclaimedReward);
+        return (_lastRewardTime, _accRewardPerShare, _unclaimedReward);
     }
 
     function updatePoolInfo() internal virtual {
-        (uint32 _lastRewardTime, uint256[] _accTonPerShare, uint128[] _unclaimedReward) = calculateRewardData();
+        (uint32 _lastRewardTime, uint256[] _accRewardPerShare, uint128[] _unclaimedReward) = calculateRewardData();
         lastRewardTime = _lastRewardTime;
-        accTonPerShare = _accTonPerShare;
+        accRewardPerShare = _accRewardPerShare;
         unclaimedReward = _unclaimedReward;
     }
 
@@ -567,13 +567,13 @@ abstract contract TonFarmPoolBase is TonFarmPoolStorage {
             address user_data_addr = deployUserData(deposit.user);
             for (uint i = 0; i < rewardTokenRoot.length; i++) {
                 // user first deposit? try deploy wallet for him
-                ITokenRoot(rewardTokenRoot[i]).deployWallet{value: TOKEN_WALLET_DEPLOY_VALUE, callback: TonFarmPoolBase.dummy}(
+                ITokenRoot(rewardTokenRoot[i]).deployWallet{value: TOKEN_WALLET_DEPLOY_VALUE, callback: EverFarmPoolBase.dummy}(
                     deposit.user,
                     TOKEN_WALLET_DEPLOY_GRAMS_VALUE // deploy grams
                 );
             }
             // try again
-            IUserData(user_data_addr).processDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(_deposit_nonce, deposit.amount, accTonPerShare, lastRewardTime, farmEndTime, user_data_version);
+            IUserData(user_data_addr).processDeposit{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(_deposit_nonce, deposit.amount, accRewardPerShare, lastRewardTime, farmEndTime, user_data_version);
 
         }
     }
