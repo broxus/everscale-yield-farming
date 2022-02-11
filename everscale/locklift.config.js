@@ -1,11 +1,11 @@
 module.exports = {
     compiler: {
         // Specify path to your TON-Solidity-Compiler
-        path: '/usr/bin/solcton',
+        path: '/usr/bin/solc_0571',
     },
     linker: {
         // Path to your TVM Linker
-        path: '/usr/bin/tvm_linker',
+        path: '/usr/bin/tvm_linker_056',
     },
     networks: {
         // You can use TON labs graphql endpoints or local node

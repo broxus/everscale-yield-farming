@@ -1,0 +1,2418 @@
+.version sol 0.57.1
+
+.macro constructor
+DROP
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7_with_init_storage$
+}
+GETGLOB 6
+THROWIF 51
+ENDS
+.loc ../contracts/UserData.sol, 30
+THROW 100
+.loc ../contracts/UserData.sol, 0
+
+.globl	_init_internal
+.type	_init_internal, @function
+CALL $_init_internal_macro$
+
+.macro _init_internal_macro
+.loc ../contracts/UserData.sol, 34
+GETGLOB 20
+GETGLOB 9
+SDEQ
+THROWIFNOT 101
+.loc ../contracts/UserData.sol, 35
+PUSHINT 0
+PUSHCONT {
+	PUSH2 S0, S3
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 36
+	GETGLOB 17
+	PUSHINT 0
+	NEWC
+	STU 128
+	SWAP
+	UNPAIR
+	OVER
+	INC
+	ROLLREV 3
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 17
+	.loc ../contracts/UserData.sol, 37
+	GETGLOB 18
+	PUSHINT 0
+	NEWC
+	STU 128
+	SWAP
+	UNPAIR
+	OVER
+	INC
+	ROLLREV 3
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 18
+	.loc ../contracts/UserData.sol, 38
+	GETGLOB 19
+	PUSHINT 0
+	NEWC
+	STU 128
+	SWAP
+	UNPAIR
+	OVER
+	INC
+	ROLLREV 3
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 19
+	.loc ../contracts/UserData.sol, 35
+	INC
+	.loc ../contracts/UserData.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/UserData.sol, 40
+SWAP
+SETGLOB 13
+.loc ../contracts/UserData.sol, 41
+SETGLOB 14
+.loc ../contracts/UserData.sol, 0
+DROP
+
+.globl	_reserve_internal
+.type	_reserve_internal, @function
+CALL $_reserve_internal_macro$
+
+.macro _reserve_internal_macro
+.loc ../contracts/UserData.sol, 45
+GETPARAM 7
+FIRST
+DEPTH
+ADDCONST -2
+PICK
+SUB
+UFITS 128
+PUSHINT 100000000
+MAX
+.loc ../contracts/UserData.sol, 0
+
+.macro getDetails
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/UserData.sol, 48
+LDU 32
+GETGLOB 4
+ROT
+SETINDEXQ 5
+SETGLOB 4
+ENDS
+.loc ../contracts/UserData.sol, 0
+CALLREF {
+	CALL $getDetails_internal_macro$
+}
+OVER
+PUSHCONT {
+	PUSH S3
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 1
+	STUR 98
+	SWAP
+	NEWC
+	STSLICECONST xf3b13894
+	SWAP
+	UNTUPLE 8
+	REVERSE 9, 0
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	STU 32
+	STU 128
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	STSLICE
+	ROTREV
+	NEWC
+	STSLICE
+	STU 32
+	STBREFR
+	STBREFR
+	ENDC
+	PUSHINT 0
+}
+PUSHCONT {
+	GETGLOB 4
+	DUP
+	INDEX 3
+	OVER
+	THIRD
+	GETGLOB 9
+	ROLL 3
+	SECOND
+	NEWC
+	PUSHINT 2
+	STZEROES
+	STI 1
+	PUSHINT 3
+	STZEROES
+	STSLICE
+	SWAP
+	STGRAMS
+	STDICT
+	PUSHINT 1
+	STUR 106
+	SWAP
+	NEWC
+	GETGLOB 4
+	INDEX 5
+	STUR 32
+	SWAP
+	UNTUPLE 8
+	REVERSE 9, 0
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	STU 32
+	STU 128
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	STSLICE
+	ROTREV
+	NEWC
+	STSLICE
+	STU 32
+	STBREFR
+	STBREFR
+	ENDC
+	GETGLOB 4
+	INDEX 4
+}
+IFELSE
+SENDRAWMSG
+IFREF {
+	CALL $upd_only_time_in_c4$
+}
+THROW 0
+
+.macro getDetails_internal_macro
+.loc ../contracts/UserData.sol, 49
+GETGLOB 4
+PUSHINT 0
+SETINDEXQ 2
+FALSE
+SETINDEXQ 1
+PUSHINT 64
+SETINDEXQ 4
+SETGLOB 4
+GETGLOB 19
+GETGLOB 18
+GETGLOB 15
+GETGLOB 16
+GETGLOB 17
+GETGLOB 20
+GETGLOB 21
+GETGLOB 10
+TUPLE 8
+.loc ../contracts/UserData.sol, 0
+
+.macro pendingReward
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/UserData.sol, 55
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDU 32
+LDU 32
+ENDS
+.loc ../contracts/UserData.sol, 0
+CALLREF {
+	CALL $pendingReward_internal_macro$
+}
+PUSH S4
+PUSHCONT {
+	PUSH S6
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 98
+	STZEROES
+	REVERSE 4, 1
+	STSLICECONST xae87e7a2
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	SWAP
+	UNPAIR
+	XCHG S2
+	STU 32
+	STDICT
+	STU 32
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	BLKDROP 4
+}
+IFELSE
+IFREF {
+	CALL $upd_only_time_in_c4$
+}
+THROW 0
+
+.macro pendingReward_internal_macro
+.loc ../contracts/UserData.sol, 55
+PUSHINT 0
+NEWDICT
+PAIR
+DUP
+.loc ../contracts/UserData.sol, 60
+GETGLOB 16
+GETGLOB 17
+BLKSWAP 3, 4
+CALLREF {
+	CALL $_computeVesting_internal_macro$
+}
+XCHG S2
+POP S4
+POP S2
+.loc ../contracts/UserData.sol, 66
+ROTREV
+GETGLOB 19
+ROLL 3
+.loc ../contracts/UserData.sol, 0
+
+.globl	_isEven_internal
+.type	_isEven_internal, @function
+CALL $_isEven_internal_macro$
+
+.macro _isEven_internal_macro
+.loc ../contracts/UserData.sol, 70
+RSHIFT 1
+PUSHCONT {
+	FALSE
+}
+PUSHCONT {
+	TRUE
+}
+IFELSE
+.loc ../contracts/UserData.sol, 0
+
+.globl	_rangeSum_internal
+.type	_rangeSum_internal, @function
+CALL $_rangeSum_internal_macro$
+
+.macro _rangeSum_internal_macro
+.loc ../contracts/UserData.sol, 74
+DUP
+CALLREF {
+	CALL $_isEven_internal_macro$
+}
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 75
+	DUP
+	RSHIFT 1
+	OVER
+	MUL
+	UFITS 64
+	SWAP
+	RSHIFT 1
+	ADD
+	UFITS 64
+	.loc ../contracts/UserData.sol, 0
+}
+IFJMP
+.loc ../contracts/UserData.sol, 77
+DUP
+RSHIFT 1
+INC
+UFITS 64
+MUL
+UFITS 64
+.loc ../contracts/UserData.sol, 0
+
+.globl	_rangeIntervalAverage_internal
+.type	_rangeIntervalAverage_internal, @function
+CALL $_rangeIntervalAverage_internal_macro$
+
+.macro _rangeIntervalAverage_internal_macro
+.loc ../contracts/UserData.sol, 82
+SWAP
+CALLREF {
+	CALL $_rangeSum_internal_macro$
+}
+PUSHINT 1000000000000000000
+MUL
+SWAP
+DIV
+.loc ../contracts/UserData.sol, 0
+
+.globl	_computeVestedForInterval_internal
+.type	_computeVestedForInterval_internal, @function
+CALL $_computeVestedForInterval_internal_macro$
+
+.macro _computeVestedForInterval_internal_macro
+.loc ../contracts/UserData.sol, 87
+DUP
+GETGLOB 13
+DIV
+DEC
+UFITS 32
+.loc ../contracts/UserData.sol, 88
+GETGLOB 13
+MUL
+UFITS 32
+OVER
+GETGLOB 13
+MOD
+ADD
+UFITS 32
+.loc ../contracts/UserData.sol, 89
+DUP2
+SUB
+UFITS 32
+.loc ../contracts/UserData.sol, 92
+SWAP
+PUSHINT 1000000000000000000
+MUL
+ROT
+DIV
+PUSH S2
+MUL
+PUSHINT 1000000000000000000
+DIV
+UFITS 128
+.loc ../contracts/UserData.sol, 93
+ROT
+OVER
+SUB
+UFITS 128
+.loc ../contracts/UserData.sol, 96
+PUSH S2
+GETGLOB 13
+CALLREF {
+	CALL $_rangeIntervalAverage_internal_macro$
+}
+ROLL 3
+DIV
+.loc ../contracts/UserData.sol, 97
+OVER
+MUL
+PUSHINT 1000000000000000000
+DIV
+UFITS 128
+.loc ../contracts/UserData.sol, 98
+TUCK
+SUB
+UFITS 128
+.loc ../contracts/UserData.sol, 100
+ROTREV
+ADD
+UFITS 128
+SWAP
+.loc ../contracts/UserData.sol, 0
+
+.globl	_computeVestedForNewlyEntitled_internal
+.type	_computeVestedForNewlyEntitled_internal, @function
+CALL $_computeVestedForNewlyEntitled_internal_macro$
+
+.macro _computeVestedForNewlyEntitled_internal_macro
+.loc ../contracts/UserData.sol, 105
+PUSHINT 0
+.loc ../contracts/UserData.sol, 106
+PUSH S3
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 107
+	BLKDROP 4
+	PUSHINT 0
+	.loc ../contracts/UserData.sol, 0
+}
+IFNOTJMP
+.loc ../contracts/UserData.sol, 109
+OVER
+EQINT 0
+OVER2
+LESS
+OR
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 110
+	ROT
+	GETGLOB 12
+	SUB
+	UFITS 32
+	.loc ../contracts/UserData.sol, 112
+	DUP
+	GETGLOB 13
+	GREATER
+	PUSHCONT {
+		.loc ../contracts/UserData.sol, 113
+		ROLL 3
+		SWAP
+		CALLREF {
+			CALL $_computeVestedForInterval_internal_macro$
+		}
+		.loc ../contracts/UserData.sol, 114
+		DROP
+		BLKDROP2 2, 1
+		.loc ../contracts/UserData.sol, 0
+	}
+	PUSHCONT {
+		.loc ../contracts/UserData.sol, 116
+		DUP
+		GETGLOB 13
+		CALLREF {
+			CALL $_rangeIntervalAverage_internal_macro$
+		}
+		SWAP
+		DIV
+		.loc ../contracts/UserData.sol, 117
+		ROLL 3
+		MUL
+		PUSHINT 1000000000000000000
+		DIV
+		UFITS 128
+		BLKDROP2 2, 1
+		.loc ../contracts/UserData.sol, 0
+	}
+	IFELSE
+	.loc ../contracts/UserData.sol, 0
+}
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 120
+	OVER
+	GETGLOB 12
+	SUB
+	UFITS 32
+	.loc ../contracts/UserData.sol, 121
+	SWAP2
+	SUB
+	UFITS 32
+	GETGLOB 13
+	MIN
+	.loc ../contracts/UserData.sol, 123
+	PUSHINT 0
+	PUSH2 S0, S2
+	.loc ../contracts/UserData.sol, 125
+	GETGLOB 13
+	GREATER
+	PUSHCONT {
+		.loc ../contracts/UserData.sol, 126
+		PUSH2 S5, S3
+		CALLREF {
+			CALL $_computeVestedForInterval_internal_macro$
+		}
+		BLKDROP2 2, 2
+	}
+	PUSHCONT {
+		.loc ../contracts/UserData.sol, 128
+		PUSH S3
+		GETGLOB 13
+		CALLREF {
+			CALL $_rangeIntervalAverage_internal_macro$
+		}
+		PUSH S4
+		DIV
+		.loc ../contracts/UserData.sol, 129
+		PUSH S6
+		MUL
+		PUSHINT 1000000000000000000
+		DIV
+		UFITS 128
+		POP S2
+		.loc ../contracts/UserData.sol, 130
+		PUSH2 S5, S1
+		SUB
+		UFITS 128
+		NIP
+	}
+	IFELSE
+	.loc ../contracts/UserData.sol, 133
+	ROT
+	MUL
+	UFITS 128
+	GETGLOB 13
+	DIV
+	.loc ../contracts/UserData.sol, 134
+	ADD
+	UFITS 128
+	BLKDROP2 3, 1
+	.loc ../contracts/UserData.sol, 0
+}
+IFELSE
+.loc ../contracts/UserData.sol, 0
+
+.globl	_computeVesting_internal
+.type	_computeVesting_internal, @function
+CALL $_computeVesting_internal_macro$
+
+.macro _computeVesting_internal_macro
+.loc ../contracts/UserData.sol, 145
+PUSHINT 0
+.loc ../contracts/UserData.sol, 146
+PUSH S4
+FIRST
+PUSHINT 0
+NEWC
+STU 128
+PUSHINT 0
+NEWDICT
+PUSH S3
+PUSHCONT {
+	BLKPUSH 2, 2
+	INC
+	XCHG S3
+	ROT
+	PUSHINT 32
+	DICTUSETB
+}
+REPEAT
+BLKDROP2 2, 1
+PAIR
+.loc ../contracts/UserData.sol, 147
+PUSH S5
+FIRST
+PUSHINT 0
+NEWC
+STU 128
+PUSHINT 0
+NEWDICT
+PUSH S3
+PUSHCONT {
+	BLKPUSH 2, 2
+	INC
+	XCHG S3
+	ROT
+	PUSHINT 32
+	DICTUSETB
+}
+REPEAT
+BLKDROP2 2, 1
+PAIR
+.loc ../contracts/UserData.sol, 148
+PUSH S6
+FIRST
+PUSHINT 0
+NEWC
+STU 128
+PUSHINT 0
+NEWDICT
+PUSH S3
+PUSHCONT {
+	BLKPUSH 2, 2
+	INC
+	XCHG S3
+	ROT
+	PUSHINT 32
+	DICTUSETB
+}
+REPEAT
+BLKDROP2 2, 1
+PAIR
+.loc ../contracts/UserData.sol, 150
+PUSHINT 0
+PUSHCONT {
+	PUSH2 S0, S8
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 151
+	PUSH3 S9, S0, S7
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 256
+	MUL
+	.loc ../contracts/UserData.sol, 152
+	PUSHINT 1000000000000000000
+	DIV
+	UFITS 128
+	PUSH2 S1, S9
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 128
+	SUB
+	UFITS 128
+	PUSH S2
+	UNPAIR
+	PUXC S3, S-1
+	PUSH2 S1, S2
+	LESS
+	THROWIFNOT 50
+	ROLL 3
+	NEWC
+	STU 128
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	POP S2
+	.loc ../contracts/UserData.sol, 153
+	GETGLOB 14
+	GTINT 0
+	PUSHCONT {
+		.loc ../contracts/UserData.sol, 155
+		PUSH2 S0, S1
+		SECOND
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 128
+		GETGLOB 14
+		MUL
+		UFITS 128
+		PUSHINT 1000
+		DIV
+		.loc ../contracts/UserData.sol, 156
+		PUSH2 S1, S2
+		SECOND
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 128
+		OVER
+		SUB
+		UFITS 128
+		.loc ../contracts/UserData.sol, 158
+		GETGLOB 12
+		PUSH S8
+		LESS
+		PUSH S8
+		EQINT 0
+		OR
+		PUSHCONT {
+			.loc ../contracts/UserData.sol, 159
+			PUSH3 S1, S8, S7
+			CALLREF {
+				CALL $_computeVestedForNewlyEntitled_internal_macro$
+			}
+			PUSH S6
+			UNPAIR
+			PUXC S5, S-1
+			PUSH2 S1, S2
+			LESS
+			THROWIFNOT 50
+			ROLL 3
+		}
+		PUSHCONT {
+			.loc ../contracts/UserData.sol, 162
+			PUSH S5
+			UNPAIR
+			PUXC S4, S-1
+			PUSH2 S1, S2
+			LESS
+			THROWIFNOT 50
+			PUSHINT 0
+		}
+		IFELSE
+		NEWC
+		STU 128
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		POP S6
+		.loc ../contracts/UserData.sol, 166
+		PUSH S8
+		GETGLOB 15
+		GEQ
+		PUSHCONT {
+			GETGLOB 13
+		}
+		PUSHCONT {
+			PUSH S8
+			GETGLOB 12
+			SUB
+			UFITS 32
+		}
+		IFELSE
+		.loc ../contracts/UserData.sol, 167
+		PUSH S3
+		GETGLOB 18
+		SECOND
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 128
+		OVER
+		MUL
+		.loc ../contracts/UserData.sol, 168
+		SWAP
+		GETGLOB 13
+		GEQ
+		PUSHCONT {
+			PUSH S3
+			GETGLOB 18
+			SECOND
+			PUSHINT 32
+			DICTUGET
+			THROWIFNOT 50
+			PLDU 128
+		}
+		PUSHCONT {
+			DUP
+			GETGLOB 15
+			GETGLOB 12
+			SUB
+			UFITS 32
+			DIV
+			UFITS 128
+		}
+		IFELSE
+		.loc ../contracts/UserData.sol, 173
+		PUSH S4
+		GETGLOB 18
+		SECOND
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 128
+		PUSHCONT {
+			PUSH S4
+			GETGLOB 18
+			SECOND
+			PUSHINT 32
+			DICTUGET
+			THROWIFNOT 50
+			PLDU 128
+			OVER
+			SUB
+			UFITS 128
+		}
+		PUSHCONT {
+			PUSHINT 0
+		}
+		IFELSE
+		.loc ../contracts/UserData.sol, 174
+		PUSH3 S4, S5, S8
+		SECOND
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 128
+		SUB
+		UFITS 128
+		.loc ../contracts/UserData.sol, 175
+		DUP2
+		ADD
+		UFITS 128
+		.loc ../contracts/UserData.sol, 178
+		DUP
+		PUSHCONT {
+			PUSH S2
+			PUSHCONT {
+				OVER
+				PUSHCONT {
+					.loc ../contracts/UserData.sol, 188
+					GETGLOB 15
+					PUSH S14
+					SUB
+					UFITS 32
+					.loc ../contracts/UserData.sol, 189
+					PUSH S3
+					MUL
+					UFITS 128
+					PUSH S2
+					GETGLOB 13
+					MUL
+					UFITS 128
+					ADD
+					UFITS 128
+					OVER
+					DIV
+					UFITS 32
+					.loc ../contracts/UserData.sol, 190
+					PUXC S14, S-1
+					GETGLOB 13
+					MIN
+					ADD
+					UFITS 32
+				}
+				PUSHCONT {
+					.loc ../contracts/UserData.sol, 185
+					GETGLOB 15
+				}
+				IFELSE
+			}
+			PUSHCONT {
+				.loc ../contracts/UserData.sol, 182
+				PUSH S13
+				GETGLOB 13
+				ADD
+				UFITS 32
+			}
+			IFELSE
+		}
+		PUSHCONT {
+			.loc ../contracts/UserData.sol, 179
+			PUSH S13
+		}
+		IFELSE
+		POP S12
+		.loc ../contracts/UserData.sol, 193
+		BLKDROP 3
+		PUSH S9
+		GTINT 0
+		PUSHCONT {
+			PUSH S9
+			GETGLOB 13
+			ADD
+			UFITS 32
+			PUSH S9
+			MIN
+		}
+		PUSHCONT {
+			PUSH S8
+		}
+		IFELSE
+		POP S9
+		.loc ../contracts/UserData.sol, 194
+		PUSH S4
+		GETGLOB 18
+		SECOND
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 128
+		ROLL 4
+		ADD
+		UFITS 128
+		OVER
+		SUB
+		UFITS 128
+		PUSH2 S4, S7
+		SECOND
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 128
+		SUB
+		UFITS 128
+		PUSH S6
+		UNPAIR
+		PUXC S6, S-1
+		PUSH2 S1, S2
+		LESS
+		THROWIFNOT 50
+		ROLL 3
+		NEWC
+		STU 128
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		POP S6
+		.loc ../contracts/UserData.sol, 195
+		ROT
+		ADD
+		UFITS 128
+		PUSH S5
+		UNPAIR
+		PUXC S4, S-1
+		PUSH2 S1, S2
+		LESS
+		THROWIFNOT 50
+		DUP2
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 128
+		ROLL 4
+		ADD
+		UFITS 128
+		NEWC
+		STU 128
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		POP S5
+		.loc ../contracts/UserData.sol, 0
+		DROP
+	}
+	PUSHCONT {
+		.loc ../contracts/UserData.sol, 197
+		PUSH2 S0, S1
+		SECOND
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 128
+		PUSH S4
+		UNPAIR
+		PUXC S3, S-1
+		PUSH2 S1, S2
+		LESS
+		THROWIFNOT 50
+		ROLL 3
+		NEWC
+		STU 128
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		POP S4
+		.loc ../contracts/UserData.sol, 0
+	}
+	IFELSE
+	.loc ../contracts/UserData.sol, 150
+	INC
+	.loc ../contracts/UserData.sol, 0
+}
+WHILE
+DROP2
+.loc ../contracts/UserData.sol, 201
+XCHG S2
+BLKDROP2 5, 3
+.loc ../contracts/UserData.sol, 0
+
+.macro increasePoolDebt
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/UserData.sol, 204
+OVER
+PUSHCONT {
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+}
+IFELSE
+LDMSGADDR
+LDU 32
+ENDS
+.loc ../contracts/UserData.sol, 0
+CALLREF {
+	CALL $increasePoolDebt_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro increasePoolDebt_internal_macro
+.loc ../contracts/UserData.sol, 205
+DROP
+GETGLOB 9
+GETGLOB 20
+SDEQ
+THROWIFNOT 101
+.loc ../contracts/UserData.sol, 206
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/UserData.sol, 208
+PUSHINT 0
+PUSHCONT {
+	PUSH2 S0, S2
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 209
+	PUSH2 S0, S2
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 128
+	GETGLOB 19
+	UNPAIR
+	PUXC S3, S-1
+	PUSH2 S1, S2
+	LESS
+	THROWIFNOT 50
+	DUP2
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 128
+	ROLL 4
+	ADD
+	UFITS 128
+	NEWC
+	STU 128
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 19
+	.loc ../contracts/UserData.sol, 208
+	INC
+	.loc ../contracts/UserData.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/UserData.sol, 212
+NEWC
+STSLICECONST x42_
+STSLICE
+PUSHINT 111
+STZEROES
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/UserData.sol, 0
+DROP
+
+.macro processDeposit
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/UserData.sol, 215
+LDU 64
+LDU 128
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDU 32
+LDU 32
+LDU 32
+ENDS
+.loc ../contracts/UserData.sol, 0
+CALLREF {
+	CALL $processDeposit_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro processDeposit_internal_macro
+.loc ../contracts/UserData.sol, 216
+DROP
+GETGLOB 9
+GETGLOB 20
+SDEQ
+THROWIFNOT 101
+.loc ../contracts/UserData.sol, 217
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/UserData.sol, 219
+GETGLOB 16
+.loc ../contracts/UserData.sol, 220
+GETGLOB 17
+.loc ../contracts/UserData.sol, 222
+GETGLOB 16
+ROLL 6
+ADD
+UFITS 128
+SETGLOB 16
+.loc ../contracts/UserData.sol, 223
+PUSHINT 0
+PUSHCONT {
+	DUP
+	GETGLOB 17
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 224
+	GETGLOB 16
+	PUSH2 S1, S6
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 256
+	MUL
+	.loc ../contracts/UserData.sol, 225
+	PUSHINT 1000000000000000000
+	DIV
+	UFITS 128
+	GETGLOB 17
+	UNPAIR
+	PUXC S3, S-1
+	PUSH2 S1, S2
+	LESS
+	THROWIFNOT 50
+	ROLL 3
+	NEWC
+	STU 128
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 17
+	.loc ../contracts/UserData.sol, 223
+	INC
+	.loc ../contracts/UserData.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/UserData.sol, 228
+ROLL 4
+PUSH S4
+ROLL 4
+CALLREF {
+	CALL $_computeVesting_internal_macro$
+}
+.loc ../contracts/UserData.sol, 233
+ROT
+SETGLOB 18
+.loc ../contracts/UserData.sol, 234
+SETGLOB 15
+.loc ../contracts/UserData.sol, 235
+SWAP
+SETGLOB 12
+.loc ../contracts/UserData.sol, 237
+PUSHINT 0
+PUSHCONT {
+	PUSH2 S0, S1
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 238
+	DUP
+	GETGLOB 19
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 128
+	PUSH S2
+	UNPAIR
+	PUXC S3, S-1
+	PUSH2 S1, S2
+	LESS
+	THROWIFNOT 50
+	DUP2
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 128
+	ROLL 4
+	ADD
+	UFITS 128
+	NEWC
+	STU 128
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	POP S2
+	.loc ../contracts/UserData.sol, 239
+	GETGLOB 19
+	UNPAIR
+	PUXC S2, S-1
+	PUSH2 S1, S2
+	LESS
+	THROWIFNOT 50
+	PUSHINT 0
+	NEWC
+	STU 128
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 19
+	.loc ../contracts/UserData.sol, 237
+	INC
+	.loc ../contracts/UserData.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/UserData.sol, 242
+SWAP
+GETGLOB 9
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHSLICE x0000000000000000000000000000141e48bd_
+STSLICER
+STU 64
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/UserData.sol, 0
+
+.globl	_withdraw_internal
+.type	_withdraw_internal, @function
+CALL $_withdraw_internal_macro$
+
+.macro _withdraw_internal_macro
+.loc ../contracts/UserData.sol, 247
+PUSH S5
+GETGLOB 16
+GREATER
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 248
+	DROP
+	NEWC
+	STSLICECONST x42_
+	STSLICE
+	PUSHINT 111
+	STZEROES
+	ENDC
+	PUSHINT 128
+	SENDRAWMSG
+	.loc ../contracts/UserData.sol, 249
+	BLKDROP 4
+	.loc ../contracts/UserData.sol, 0
+}
+IFJMP
+.loc ../contracts/UserData.sol, 252
+GETGLOB 16
+GETGLOB 17
+GETGLOB 16
+PUSH S8
+.loc ../contracts/UserData.sol, 255
+SUB
+UFITS 128
+SETGLOB 16
+.loc ../contracts/UserData.sol, 256
+PUSHINT 0
+PUSHCONT {
+	PUSH2 S0, S7
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 257
+	GETGLOB 16
+	PUSH2 S1, S8
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 256
+	MUL
+	.loc ../contracts/UserData.sol, 258
+	PUSHINT 1000000000000000000
+	DIV
+	UFITS 128
+	GETGLOB 17
+	UNPAIR
+	PUXC S3, S-1
+	PUSH2 S1, S2
+	LESS
+	THROWIFNOT 50
+	ROLL 3
+	NEWC
+	STU 128
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 17
+	.loc ../contracts/UserData.sol, 256
+	INC
+	.loc ../contracts/UserData.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/UserData.sol, 261
+ROLL 6
+PUSH S6
+ROLL 6
+CALLREF {
+	CALL $_computeVesting_internal_macro$
+}
+.loc ../contracts/UserData.sol, 266
+ROT
+SETGLOB 18
+.loc ../contracts/UserData.sol, 267
+SETGLOB 15
+.loc ../contracts/UserData.sol, 268
+ROLL 3
+SETGLOB 12
+.loc ../contracts/UserData.sol, 270
+PUSHINT 0
+PUSHCONT {
+	PUSH2 S0, S1
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 271
+	DUP
+	GETGLOB 19
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 128
+	PUSH S2
+	UNPAIR
+	PUXC S3, S-1
+	PUSH2 S1, S2
+	LESS
+	THROWIFNOT 50
+	DUP2
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	PLDU 128
+	ROLL 4
+	ADD
+	UFITS 128
+	NEWC
+	STU 128
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	POP S2
+	.loc ../contracts/UserData.sol, 272
+	GETGLOB 19
+	UNPAIR
+	PUXC S2, S-1
+	PUSH2 S1, S2
+	LESS
+	THROWIFNOT 50
+	PUSHINT 0
+	NEWC
+	STU 128
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 19
+	.loc ../contracts/UserData.sol, 270
+	INC
+	.loc ../contracts/UserData.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/UserData.sol, 275
+SWAP
+XCHG S3
+GETGLOB 21
+GETGLOB 9
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHINT 1
+STUR 111
+ROLLREV 5
+NEWC
+STSLICECONST x76d3ac73
+STSLICE
+STU 128
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+ROTREV
+NEWC
+STSLICE
+STU 32
+STBREFR
+STBREFR
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/UserData.sol, 0
+
+.macro processWithdraw
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/UserData.sol, 278
+OVER
+PUSHCONT {
+	LDU 128
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+	LDU 32
+	LDU 32
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDU 128
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+	LDU 32
+	LDU 32
+}
+IFELSE
+LDMSGADDR
+LDU 32
+LDU 32
+ENDS
+.loc ../contracts/UserData.sol, 0
+CALLREF {
+	CALL $processWithdraw_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	processWithdraw_internal
+.type	processWithdraw_internal, @function
+CALL $processWithdraw_internal_macro$
+
+.macro processWithdraw_internal_macro
+.loc ../contracts/UserData.sol, 287
+DROP
+GETGLOB 9
+GETGLOB 20
+SDEQ
+THROWIFNOT 101
+.loc ../contracts/UserData.sol, 288
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/UserData.sol, 290
+CALLREF {
+	CALL $_withdraw_internal_macro$
+}
+.loc ../contracts/UserData.sol, 0
+
+.macro processWithdrawAll
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/UserData.sol, 293
+OVER
+PUSHCONT {
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+	LDU 32
+	LDU 32
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+	LDU 32
+	LDU 32
+}
+IFELSE
+LDMSGADDR
+LDU 32
+LDU 32
+ENDS
+.loc ../contracts/UserData.sol, 0
+CALLREF {
+	CALL $processWithdrawAll_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro processWithdrawAll_internal_macro
+.loc ../contracts/UserData.sol, 294
+DROP
+GETGLOB 9
+GETGLOB 20
+SDEQ
+THROWIFNOT 101
+.loc ../contracts/UserData.sol, 295
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/UserData.sol, 297
+GETGLOB 16
+ROLLREV 5
+CALLREF {
+	CALL $_withdraw_internal_macro$
+}
+.loc ../contracts/UserData.sol, 0
+
+.macro processClaimReward
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/UserData.sol, 300
+OVER
+PUSHCONT {
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+	LDU 32
+	LDU 32
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+	LDU 32
+	LDU 32
+}
+IFELSE
+LDMSGADDR
+LDU 32
+LDU 32
+ENDS
+.loc ../contracts/UserData.sol, 0
+CALLREF {
+	CALL $processClaimReward_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro processClaimReward_internal_macro
+.loc ../contracts/UserData.sol, 301
+DROP
+GETGLOB 9
+GETGLOB 20
+SDEQ
+THROWIFNOT 101
+.loc ../contracts/UserData.sol, 302
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/UserData.sol, 304
+PUSHINT 0
+ROLLREV 5
+CALLREF {
+	CALL $_withdraw_internal_macro$
+}
+.loc ../contracts/UserData.sol, 0
+
+.macro processSafeWithdraw
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/UserData.sol, 307
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDMSGADDR
+LDU 32
+ENDS
+.loc ../contracts/UserData.sol, 0
+CALLREF {
+	CALL $processSafeWithdraw_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro processSafeWithdraw_internal_macro
+.loc ../contracts/UserData.sol, 308
+DROP
+GETGLOB 9
+GETGLOB 20
+SDEQ
+THROWIFNOT 101
+.loc ../contracts/UserData.sol, 309
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/UserData.sol, 311
+GETGLOB 16
+.loc ../contracts/UserData.sol, 312
+PUSHINT 0
+SETGLOB 16
+.loc ../contracts/UserData.sol, 313
+PUSHINT 0
+PUSHCONT {
+	DUP
+	GETGLOB 17
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 314
+	GETGLOB 17
+	UNPAIR
+	PUXC S2, S-1
+	PUSH2 S1, S2
+	LESS
+	THROWIFNOT 50
+	PUSHINT 0
+	NEWC
+	STU 128
+	ROTREV
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 17
+	.loc ../contracts/UserData.sol, 313
+	INC
+	.loc ../contracts/UserData.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/UserData.sol, 316
+GETGLOB 21
+GETGLOB 9
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHINT 1
+STUR 111
+ROLLREV 3
+NEWC
+STSLICECONST x53b9408c
+STSLICE
+STU 128
+SWAP
+NEWC
+STSLICE
+STBREFR
+STBREFR
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/UserData.sol, 0
+
+.macro upgrade
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/UserData.sol, 319
+OVER
+PUSHCONT {
+	LDREF
+	LDU 32
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDREF
+	LDU 32
+}
+IFELSE
+LDMSGADDR
+ENDS
+.loc ../contracts/UserData.sol, 0
+CALLREF {
+	CALL $upgrade_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro upgrade_internal_macro
+.loc ../contracts/UserData.sol, 320
+GETGLOB 9
+GETGLOB 20
+SDEQ
+THROWIFNOT 101
+.loc ../contracts/UserData.sol, 322
+OVER
+GETGLOB 10
+EQUAL
+PUSHCONT {
+	.loc ../contracts/UserData.sol, 323
+	CALLREF {
+		CALL $_reserve_internal_macro$
+	}
+	PUSHINT 0
+	RAWRESERVE
+	.loc ../contracts/UserData.sol, 324
+	NEWC
+	STSLICECONST x42_
+	STSLICE
+	PUSHINT 111
+	STZEROES
+	ENDC
+	PUSHINT 128
+	SENDRAWMSG
+	.loc ../contracts/UserData.sol, 325
+	DROP2
+	.loc ../contracts/UserData.sol, 0
+}
+IFJMP
+.loc ../contracts/UserData.sol, 329
+GETGLOB 20
+NEWC
+STSLICE
+.loc ../contracts/UserData.sol, 330
+PUSHINT 0
+SWAP
+STU 8
+.loc ../contracts/UserData.sol, 331
+STSLICE
+.loc ../contracts/UserData.sol, 333
+GETGLOB 11
+SWAP
+STREF
+.loc ../contracts/UserData.sol, 336
+GETGLOB 21
+NEWC
+STSLICE
+.loc ../contracts/UserData.sol, 339
+ROT
+NEWC
+STU 32
+.loc ../contracts/UserData.sol, 340
+GETGLOB 10
+SWAP
+STU 32
+.loc ../contracts/UserData.sol, 342
+PUSH S2
+ROT
+STBREFR
+POP S2
+.loc ../contracts/UserData.sol, 343
+STBREFR
+.loc ../contracts/UserData.sol, 346
+GETGLOB 12
+NEWC
+STU 32
+.loc ../contracts/UserData.sol, 347
+GETGLOB 13
+SWAP
+STU 32
+.loc ../contracts/UserData.sol, 348
+GETGLOB 14
+SWAP
+STU 32
+.loc ../contracts/UserData.sol, 349
+GETGLOB 15
+SWAP
+STU 32
+.loc ../contracts/UserData.sol, 350
+GETGLOB 16
+SWAP
+STU 128
+.loc ../contracts/UserData.sol, 351
+GETGLOB 17
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/UserData.sol, 352
+GETGLOB 18
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/UserData.sol, 353
+GETGLOB 19
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/UserData.sol, 355
+STBREFR
+.loc ../contracts/UserData.sol, 358
+OVER
+SETCODE
+.loc ../contracts/UserData.sol, 361
+SWAP
+CTOS
+DUP
+PUSHSLICE x8adb35
+SDEQ
+PUSHCONT {
+	PLDREFIDX 1
+	CTOS
+}
+IF
+PLDREF
+CTOS
+BLESS
+POP C3
+.loc ../contracts/UserData.sol, 362
+ENDC
+CALLREF {
+	CALL $:onCodeUpgrade$
+}
+.loc ../contracts/UserData.sol, 0
+
+.internal-alias :onCodeUpgrade, 2
+.internal :onCodeUpgrade
+.loc ../contracts/UserData.sol, 366
+PUSHINT 0
+SETGLOB 10
+PUSHREF {
+}
+SETGLOB 11
+PUSHINT 0
+SETGLOB 12
+PUSHINT 0
+SETGLOB 13
+PUSHINT 0
+SETGLOB 14
+PUSHINT 0
+SETGLOB 15
+PUSHINT 0
+SETGLOB 16
+PUSHINT 0
+NEWDICT
+PAIR
+SETGLOB 17
+PUSHINT 0
+NEWDICT
+PAIR
+SETGLOB 18
+PUSHINT 0
+NEWDICT
+PAIR
+SETGLOB 19
+PUSHREFSLICE {
+	.blob x8000000000000000000000000000000000000000000000000000000000000000001_
+}
+SETGLOB 20
+PUSHREFSLICE {
+	.blob x8000000000000000000000000000000000000000000000000000000000000000001_
+}
+SETGLOB 21
+.loc ../contracts/UserData.sol, 367
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/UserData.sol, 369
+CTOS
+.loc ../contracts/UserData.sol, 370
+DUP
+LDMSGADDR
+LDU 8
+LDMSGADDR
+POP S4
+NIP
+.loc ../contracts/UserData.sol, 371
+SWAP
+SETGLOB 20
+.loc ../contracts/UserData.sol, 373
+OVER
+LDREF
+POP S3
+SETGLOB 11
+.loc ../contracts/UserData.sol, 375
+OVER
+LDREFRTOS
+SWAP
+POP S3
+.loc ../contracts/UserData.sol, 376
+LDMSGADDR
+DROP
+SETGLOB 21
+.loc ../contracts/UserData.sol, 378
+SWAP
+LDREFRTOS
+NIP
+.loc ../contracts/UserData.sol, 379
+DUP
+LDU 32
+LDU 32
+POP S3
+DROP
+SETGLOB 10
+.loc ../contracts/UserData.sol, 381
+LDU 8
+LDU 32
+LDU 32
+DROP
+.loc ../contracts/UserData.sol, 383
+CALLREF {
+	CALL $_init_internal_macro$
+}
+.loc ../contracts/UserData.sol, 385
+NEWC
+STSLICECONST x42_
+STSLICE
+PUSHINT 111
+STZEROES
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/UserData.sol, 0
+CALLREF {
+	CALL $c7_to_c4$
+}
+COMMIT
+THROW 0
+
+.macro c4_to_c7
+PUSHROOT
+CTOS
+LDU 256 ; pubkey c4
+LDU 64 ; pubkey timestamp c4
+LDU 1 ; ctor flag
+NIP
+LDU 32
+LDREF
+LDU 32
+LDU 32
+LDU 32
+LDU 32
+LDU 128
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDREF
+ENDS
+CTOS
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDMSGADDR
+LDREF
+ENDS
+CTOS
+LDMSGADDR
+ENDS
+SETGLOB 21
+SETGLOB 20
+SETGLOB 19
+SETGLOB 18
+SETGLOB 17
+SETGLOB 16
+SETGLOB 15
+SETGLOB 14
+SETGLOB 13
+SETGLOB 12
+SETGLOB 11
+SETGLOB 10
+SETGLOB 3
+SETGLOB 2
+
+.macro c4_to_c7_with_init_storage
+PUSHROOT
+CTOS
+SBITS
+GTINT 1
+PUSHCONT {
+	PUSHINT 0
+	PUSHROOT
+	CTOS
+	PLDDICT ; D
+	PUSHINT 0
+	PUSHREF {
+	}
+	PUSHINT 0
+	BLKPUSH 5, 0
+	NEWDICT
+	PAIR
+	BLKPUSH 2, 0
+	PUSHREFSLICE {
+		.blob x8000000000000000000000000000000000000000000000000000000000000000001_
+	}
+	DUP
+	SETGLOB 21
+	SETGLOB 20
+	SETGLOB 19
+	SETGLOB 18
+	SETGLOB 17
+	SETGLOB 16
+	SETGLOB 15
+	SETGLOB 14
+	SETGLOB 13
+	SETGLOB 12
+	SETGLOB 11
+	SETGLOB 10
+	PUSHINT 64
+	DICTUGET
+	THROWIFNOT 61
+	PLDU 256
+	SETGLOB 2
+	PUSHINT 0 ; timestamp
+	SETGLOB 3
+}
+IFREFELSE {
+	CALL $c4_to_c7$
+}
+
+.macro c7_to_c4
+GETGLOB 21
+GETGLOB 20
+GETGLOB 19
+GETGLOB 18
+GETGLOB 17
+GETGLOB 16
+GETGLOB 15
+GETGLOB 14
+GETGLOB 13
+GETGLOB 12
+GETGLOB 11
+GETGLOB 10
+GETGLOB 3
+GETGLOB 2
+NEWC
+STU 256
+STU 64
+STONE
+STU 32
+STREF
+STU 32
+STU 32
+STU 32
+STU 32
+STU 128
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+ROLLREV 3
+NEWC
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+STSLICE
+SWAP
+NEWC
+STSLICE
+STBREFR
+STBREFR
+ENDC
+POPROOT
+
+.macro upd_only_time_in_c4
+PUSHROOT
+CTOS
+LDU 256
+LDU 64
+NIP
+GETGLOB 3
+ROT
+NEWC
+STU 256
+STU 64
+STSLICE
+ENDC
+POPROOT
+
+.internal-alias :main_internal, 0
+.internal :main_internal
+PUSHROOT
+CTOS
+SBITS
+NEQINT 1
+SETGLOB 6
+PUSH S2
+CTOS
+LDU 4 ; bounced tail
+LDMSGADDR ; bounced src tail
+DROP
+SETGLOB 9
+MODPOW2 1
+GETGLOB 4
+TRUE
+SETINDEXQ 1
+PUSHINT 10000000
+SETINDEXQ 2
+NULL
+SETINDEXQ 3
+PUSHINT 0
+SETINDEXQ 4
+SETGLOB 4
+IFRET
+OVER
+SEMPTY ; isEmpty
+IFJMPREF {
+	GETGLOB 6
+	THROWIFNOT 76
+}
+OVER
+LDUQ 32  ; [funcId] body' ok
+THROWIFNOT 60
+OVER
+IFNOTJMPREF {
+	GETGLOB 6
+	THROWIFNOT 76
+}
+SWAP
+CALLREF {
+	CALL $public_function_selector$
+}
+THROW 60
+
+.internal-alias :main_external, -1
+.internal :main_external
+PUSHROOT
+CTOS
+SBITS
+NEQINT 1
+SETGLOB 6
+PUSHREFSLICE {
+	.blob x8000000000000000000000000000000000000000000000000000000000000000001_
+}
+SETGLOB 9
+OVER
+CALLREF {
+	CALL $c4_to_c7_with_init_storage$
+}
+LDU 1 ; haveSign msgSlice
+SWAP
+PUSHCONT {
+	PUSHINT 512
+	LDSLICEX ; signatureSlice msgSlice
+	DUP
+	HASHSU ; signatureSlice msgSlice hashMsgSlice
+	ROT
+	GETGLOB 2
+	CHKSIGNU ; msgSlice isSigned
+	THROWIFNOT 40
+}
+IF
+LDU 64 ; timestamp msgSlice
+SWAP
+CALL $replay_protection_macro$
+LDU 32 ; expireAt msgSlice
+SWAP
+NOW ; msgSlice expireAt now
+GREATER ; msgSlice expireAt>now
+THROWIFNOT 57
+LDU 32 ; funcId body
+SWAP
+CALLREF {
+	CALL $public_function_selector$
+}
+THROW 60
+
+.macro public_function_selector
+DUP
+PUSHINT 1322502770
+LEQ
+IFJMPREF {
+	DUP
+	PUSHINT 148004568
+	EQUAL
+	IFJMPREF {
+		CALL $processDeposit$
+	}
+	DUP
+	PUSHINT 780658594
+	EQUAL
+	IFJMPREF {
+		CALL $pendingReward$
+	}
+	DUP
+	PUSHINT 977291704
+	EQUAL
+	IFJMPREF {
+		CALL $processWithdraw$
+	}
+	DUP
+	PUSHINT 1322502770
+	EQUAL
+	IFJMPREF {
+		CALL $processSafeWithdraw$
+	}
+}
+DUP
+PUSHINT 1688565960
+LEQ
+IFJMPREF {
+	DUP
+	PUSHINT 1523366242
+	EQUAL
+	IFJMPREF {
+		CALL $processWithdrawAll$
+	}
+	DUP
+	PUSHINT 1585167287
+	EQUAL
+	IFJMPREF {
+		CALL $increasePoolDebt$
+	}
+	DUP
+	PUSHINT 1611184385
+	EQUAL
+	IFJMPREF {
+		CALL $processClaimReward$
+	}
+	DUP
+	PUSHINT 1688565960
+	EQUAL
+	IFJMPREF {
+		CALL $upgrade$
+	}
+}
+DUP
+PUSHINT 1940994196
+LEQ
+IFJMPREF {
+	DUP
+	PUSHINT 1756716863
+	EQUAL
+	IFJMPREF {
+		CALL $constructor$
+	}
+	DUP
+	PUSHINT 1940994196
+	EQUAL
+	IFJMPREF {
+		CALL $getDetails$
+	}
+}
+
