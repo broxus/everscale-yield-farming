@@ -1,7 +1,7 @@
 {
   "name": "yield-farming",
   "version": "1.0.0",
-  "description": "Freeton smart-contract for staking TIP-3 tokens for ton reward",
+  "description": "Everscale smart-contract for staking TIP-3.1 tokens for tokens reward",
   "main": "index.js",
   "scripts": {
     "test": "echo \\\"Error: no freeton/test specified\\\" && exit 1"
@@ -11,11 +11,11 @@
     "url": "git@gitlab.dexpa.io:ethereum-freeton-bridge/yield-farming.git"
   },
   "keywords": [
-    "freeton",
+    "everscale",
     "smart-contracts",
     "yield-farming",
     "blockchain",
-    "ton"
+    "ever"
   ],
   "author": "Aliev Magomed",
   "license": "ISC",
@@ -23,11 +23,9 @@
     "bignumber.js": "^9.0.1",
     "broxus-ton-tokens-contracts": "github:broxus/ton-eth-bridge-token-contracts#d3c1cd920c0320ffaab03b54c878dd0e06fed3c7",
     "chai-as-promised": "^7.1.1",
-    "ethereum-freeton-bridge-contracts": "github:broxus/ton-eth-bridge-contracts#f36507d5488f19221c50aaa78ba4c53ebec2da17",
     "locklift": "^1.5.1",
     "mocha-logger": "^1.0.7",
-    "prompts": "^2.4.2",
-    "wton": "github:broxus/ton-wton"
+    "prompts": "^2.4.2"
   },
   "devDependencies": {
     "@broxus/contracts": "^1.0.4",

@@ -1,6 +1,5 @@
 const logger = require("mocha-logger");
 const {expect} = require("chai");
-const {token} = require("ethereum-freeton-bridge-contracts/ethereum/scripts/meta");
 const {
     convertCrystal
 } = locklift.utils;
