@@ -23,8 +23,10 @@ contract FarmFabric is IFabric {
 
     event FarmPoolCodeUpdated(uint32 prev_version, uint32 new_version);
     event UserDataCodeUpdated(uint32 prev_version, uint32 new_version);
+    event FabricUpdated(uint32 prev_version, uint32 new_version);
     event NewOwner(address prev_owner, address new_owner);
 
+    uint32 public fabric_version;
     uint32 public farm_pool_version;
     uint32 public user_data_version;
     uint64 public pools_count = 0;
@@ -87,24 +89,38 @@ contract FarmFabric is IFabric {
         send_gas_to.transfer({ value: 0, bounce: false, flag: MsgFlag.ALL_NOT_RESERVED });
     }
 
-    function upgradePool(address pool, address send_gas_to) external {
+    function upgradePools(address[] pools, address send_gas_to) external {
         require (msg.sender == owner, NOT_OWNER);
-        require (msg.value >= POOL_UPGRADE_VALUE, LOW_MSG_VALUE);
+        require (msg.value >= POOL_UPGRADE_VALUE * (pools.length + 1), LOW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
-        IEverFarmPool(pool).upgrade{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
-            FarmPoolCode, farm_pool_version, send_gas_to
-        );
+        for (uint i = 0; i < pools.length; i++) {
+            IEverFarmPool(pools[i]).upgrade{value: POOL_UPGRADE_VALUE, flag: MsgFlag.SENDER_PAYS_FEES}(
+                FarmPoolCode, farm_pool_version, send_gas_to
+            );
+        }
+        send_gas_to.transfer({ value: 0, bounce: false, flag: MsgFlag.ALL_NOT_RESERVED });
+}
+
+    function updatePoolsUserDataCode(address[] pools, address send_gas_to) external {
+        require (msg.sender == owner, NOT_OWNER);
+        require (msg.value >= POOL_UPGRADE_VALUE * (pools.length + 1), LOW_MSG_VALUE);
+        tvm.rawReserve(_reserve(), 0);
+
+        for (uint i = 0; i < pools.length; i++) {
+            IEverFarmPool(pools[i]).updateUserDataCode{value: POOL_UPGRADE_VALUE, flag: MsgFlag.SENDER_PAYS_FEES}(
+                FarmPoolUserDataCode, user_data_version, send_gas_to
+            );
+        }
+        send_gas_to.transfer({ value: 0, bounce: false, flag: MsgFlag.ALL_NOT_RESERVED });
     }
 
-    function updatePoolUserDataCode(address pool, address send_gas_to) external {
+    function forceUpdateUserData(address pool, address user, address send_gas_to) external {
         require (msg.sender == owner, NOT_OWNER);
         require (msg.value >= POOL_UPGRADE_VALUE, LOW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
-        IEverFarmPool(pool).updateUserDataCode{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(
-            FarmPoolUserDataCode, user_data_version, send_gas_to
-        );
+        IEverFarmPool(pool).forceUpgradeUserData{value: POOL_UPGRADE_VALUE, flag: MsgFlag.ALL_NOT_RESERVED}(user, send_gas_to);
     }
 
     function processUpgradePoolRequest(address send_gas_to) external override {
@@ -192,27 +208,44 @@ contract FarmFabric is IFabric {
     }
 
 
-    function upgrade(TvmCell new_code) public {
+    function upgrade(TvmCell new_code, address send_gas_to) public {
         require (msg.sender == owner, NOT_OWNER);
+        require (msg.value >= POOL_UPGRADE_VALUE, LOW_MSG_VALUE);
 
-        tvm.rawReserve(_reserve(), 0);
-        TvmBuilder builder;
-
-        // storage vars
-        builder.store(owner);
-        builder.store(pools_count);
-        builder.store(nonce);
-        builder.store(farm_pool_version);
-        builder.store(user_data_version);
-        builder.store(FarmPoolUserDataCode); // ref
-        builder.store(FarmPoolCode); // ref
-        builder.store(PlatformCode); // ref
+        TvmCell data = abi.encode(
+            owner,
+            pools_count,
+            nonce,
+            farm_pool_version,
+            user_data_version,
+            fabric_version,
+            FarmPoolUserDataCode,
+            FarmPoolCode,
+            PlatformCode
+        );
 
         tvm.setcode(new_code);
         tvm.setCurrentCode(new_code);
 
-        onCodeUpgrade(builder.toCell());
+        onCodeUpgrade(data);
     }
 
-    function onCodeUpgrade(TvmCell data) internal {}
+    function onCodeUpgrade(TvmCell data) internal {
+        // upgrading from v1
+        TvmSlice _data = data.toSlice();
+
+        owner = _data.decode(address);
+        pools_count = _data.decode(uint64);
+        nonce = _data.decode(uint128);
+        farm_pool_version = _data.decode(uint32);
+        user_data_version = _data.decode(uint32);
+
+        FarmPoolUserDataCode = _data.loadRef();
+        FarmPoolCode = _data.loadRef();
+        PlatformCode = _data.loadRef();
+
+        fabric_version = 1;
+
+        emit FabricUpdated(0, fabric_version);
+    }
 }

@@ -47,6 +47,7 @@ interface IEverFarmPool {
         address send_gas_to,
         uint32 nonce
     ) external;
+    function forceUpgradeUserData(address user, address send_gas_to) external;
     function finishSafeWithdraw(address user, uint128 amount, address send_gas_to) external;
     function upgrade(TvmCell new_code, uint32 new_version, address send_gas_to) external;
     function updateUserDataCode(TvmCell new_code, uint32 new_version, address send_gas_to) external;

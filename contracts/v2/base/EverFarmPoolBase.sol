@@ -83,6 +83,14 @@ abstract contract EverFarmPoolBase is EverFarmPoolStorage {
         send_gas_to.transfer(0, false, MsgFlag.ALL_NOT_RESERVED);
     }
 
+    function forceUpgradeUserData(address user, address send_gas_to) external virtual {
+        require (msg.sender == fabric, NOT_FABRIC);
+        tvm.rawReserve(_reserve(), 0);
+
+        address user_data = getUserDataAddress(user);
+        IUserData(user_data).upgrade{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(userDataCode, user_data_version, send_gas_to);
+    }
+
     function upgradeUserData(address send_gas_to) external virtual {
         require (msg.value >= USER_DATA_UPGRADE_VALUE, LOW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
