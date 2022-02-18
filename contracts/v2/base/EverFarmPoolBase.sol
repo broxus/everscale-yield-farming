@@ -6,7 +6,7 @@ import "../interfaces/IUserData.sol";
 import "../interfaces/IEverFarmPool.sol";
 import "../interfaces/IFabric.sol";
 import "./EverFarmPoolStorage.sol";
-import "../UserData.sol";
+import "../UserDataV2.sol";
 import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 import "@broxus/contracts/contracts/platform/Platform.sol";
 

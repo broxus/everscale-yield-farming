@@ -2,10 +2,9 @@ pragma ton-solidity ^0.57.1;
 pragma AbiHeader expire;
 
 
-import './EverFarmPool.sol';
+import './EverFarmPoolV2.sol';
 import "./interfaces/IFabric.sol";
 import './interfaces/IEverFarmPool.sol';
-import './UserData.sol';
 import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 

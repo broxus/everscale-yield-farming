@@ -63,6 +63,15 @@
 			]
 		},
 		{
+			"name": "forceUpgradeUserData",
+			"inputs": [
+				{"name":"user","type":"address"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "upgradeUserData",
 			"inputs": [
 				{"name":"send_gas_to","type":"address"}
@@ -250,18 +259,11 @@
 		{"key":1,"name":"platformCode","type":"cell"},
 		{"key":2,"name":"userDataCode","type":"cell"},
 		{"key":3,"name":"fabric","type":"address"},
-		{"key":4,"name":"deploy_nonce","type":"uint64"}
+		{"key":4,"name":"deploy_nonce","type":"uint64"},
+		{"key":5,"name":"user_data_version","type":"uint32"},
+		{"key":6,"name":"pool_version","type":"uint32"}
 	],
 	"events": [
-		{
-			"name": "PoolUpdated",
-			"inputs": [
-				{"name":"prev_version","type":"uint32"},
-				{"name":"new_version","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
 		{
 			"name": "Deposit",
 			"inputs": [
@@ -321,6 +323,15 @@
 		},
 		{
 			"name": "UserDataCodeUpdated",
+			"inputs": [
+				{"name":"prev_version","type":"uint32"},
+				{"name":"new_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "PoolUpdated",
 			"inputs": [
 				{"name":"prev_version","type":"uint32"},
 				{"name":"new_version","type":"uint32"}

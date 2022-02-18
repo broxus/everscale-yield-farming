@@ -39,18 +39,28 @@
 			]
 		},
 		{
-			"name": "upgradePool",
+			"name": "upgradePools",
 			"inputs": [
-				{"name":"pool","type":"address"},
+				{"name":"pools","type":"address[]"},
 				{"name":"send_gas_to","type":"address"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "updatePoolUserDataCode",
+			"name": "updatePoolsUserDataCode",
+			"inputs": [
+				{"name":"pools","type":"address[]"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "forceUpdateUserData",
 			"inputs": [
 				{"name":"pool","type":"address"},
+				{"name":"user","type":"address"},
 				{"name":"send_gas_to","type":"address"}
 			],
 			"outputs": [
@@ -104,9 +114,18 @@
 		{
 			"name": "upgrade",
 			"inputs": [
-				{"name":"new_code","type":"cell"}
+				{"name":"new_code","type":"cell"},
+				{"name":"send_gas_to","type":"address"}
 			],
 			"outputs": [
+			]
+		},
+		{
+			"name": "fabric_version",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"fabric_version","type":"uint32"}
 			]
 		},
 		{
@@ -215,6 +234,15 @@
 			]
 		},
 		{
+			"name": "FabricUpdated",
+			"inputs": [
+				{"name":"prev_version","type":"uint32"},
+				{"name":"new_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "NewOwner",
 			"inputs": [
 				{"name":"prev_owner","type":"address"},
@@ -228,6 +256,7 @@
 		{"name":"_pubkey","type":"uint256"},
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
+		{"name":"fabric_version","type":"uint32"},
 		{"name":"farm_pool_version","type":"uint32"},
 		{"name":"user_data_version","type":"uint32"},
 		{"name":"pools_count","type":"uint64"},
