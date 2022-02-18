@@ -9,11 +9,11 @@ import './UserData.sol';
 import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 
-contract FarmFabric is IFabric {
+contract FarmFabricV2 is IFabric {
     event NewFarmPool(
         address pool,
         address pool_owner,
-        EverFarmPool.RewardRound[] reward_rounds,
+        IEverFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
         address[] rewardTokenRoot,
         uint32 vestingPeriod,
@@ -143,7 +143,7 @@ contract FarmFabric is IFabric {
 
     function deployFarmPool(
         address pool_owner,
-        EverFarmPool.RewardRound[] reward_rounds,
+        IEverFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
         address[] rewardTokenRoot,
         uint32 vestingPeriod,
@@ -154,7 +154,7 @@ contract FarmFabric is IFabric {
         require (msg.value >= FARM_POOL_DEPLOY_VALUE, LOW_MSG_VALUE);
 
         TvmCell stateInit = tvm.buildStateInit({
-            contr: EverFarmPool,
+            contr: EverFarmPoolV2,
             varInit: {
                 userDataCode: FarmPoolUserDataCode,
                 platformCode: PlatformCode,
@@ -168,7 +168,7 @@ contract FarmFabric is IFabric {
         });
         pools_count += 1;
 
-        address farm_pool = new EverFarmPool{
+        address farm_pool = new EverFarmPoolV2{
             stateInit: stateInit,
             value: 0,
             wid: address(this).wid,
@@ -179,7 +179,7 @@ contract FarmFabric is IFabric {
     function onPoolDeploy(
         uint64 pool_deploy_nonce,
         address pool_owner,
-        EverFarmPool.RewardRound[] reward_rounds,
+        IEverFarmPool.RewardRound[] reward_rounds,
         address tokenRoot,
         address[] rewardTokenRoot,
         uint32 vestingPeriod,
@@ -187,7 +187,7 @@ contract FarmFabric is IFabric {
         uint32 withdrawAllLockPeriod
     ) external override {
         TvmCell stateInit = tvm.buildStateInit({
-            contr: EverFarmPool,
+            contr: EverFarmPoolV2,
             varInit: {
                 userDataCode: FarmPoolUserDataCode,
                 platformCode: PlatformCode,
@@ -206,7 +206,6 @@ contract FarmFabric is IFabric {
 
         emit NewFarmPool(pool_address, pool_owner, reward_rounds, tokenRoot, rewardTokenRoot, vestingPeriod, vestingRatio, withdrawAllLockPeriod);
     }
-
 
     function upgrade(TvmCell new_code, address send_gas_to) public {
         require (msg.sender == owner, NOT_OWNER);
@@ -231,6 +230,7 @@ contract FarmFabric is IFabric {
     }
 
     function onCodeUpgrade(TvmCell data) internal {
+        tvm.resetStorage();
         // upgrading from v1
         TvmSlice _data = data.toSlice();
 
@@ -247,5 +247,6 @@ contract FarmFabric is IFabric {
         fabric_version = 1;
 
         emit FabricUpdated(0, fabric_version);
+        owner.transfer({ value: 0, bounce: false, flag: MsgFlag.ALL_NOT_RESERVED });
     }
 }

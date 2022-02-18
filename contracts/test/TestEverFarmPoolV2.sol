@@ -1,11 +1,11 @@
 pragma ton-solidity ^0.57.1;
 pragma AbiHeader expire;
 
-import "../base/EverFarmPoolBase.sol";
-import "../interfaces/IEverFarmPool.sol";
+import "../v1/base/EverFarmPoolBase.sol";
+import "../v1/interfaces/IEverFarmPool.sol";
 
 
-contract EverFarmPoolV2 is EverFarmPoolBase {
+contract TestEverFarmPoolV2 is EverFarmPoolBase {
     event PoolUpdated(uint32 prev_version, uint32 new_version);
 
     constructor(

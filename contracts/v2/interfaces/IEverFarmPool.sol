@@ -15,6 +15,7 @@ interface IEverFarmPool {
     event RewardRoundAdded(RewardRound reward_round);
     event farmEndSet(uint32 time);
     event UserDataCodeUpdated(uint32 prev_version, uint32 new_version);
+    event PoolUpdated(uint32 prev_version, uint32 new_version);
 
     struct Details {
         uint32 lastRewardTime;

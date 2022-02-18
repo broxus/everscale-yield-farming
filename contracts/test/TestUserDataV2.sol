@@ -1,12 +1,12 @@
 pragma ton-solidity ^0.57.1;
 pragma AbiHeader expire;
 
-import "../interfaces/IEverFarmPool.sol";
-import "../interfaces/IUserData.sol";
+import "../v1/interfaces/IEverFarmPool.sol";
+import "../v1/interfaces/IUserData.sol";
 import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 
-contract UserData is IUserData {
+contract TestUserDataV2 is IUserData {
     event UserDataUpdated(uint32 prev_version, uint32 new_version);
 
     uint32 current_version;

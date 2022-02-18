@@ -35,12 +35,12 @@ LDU 32
 LDU 32
 LDU 32
 ENDS
-.loc ../contracts/v2/EverFarmPool.sol, 18
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 20
 PUSH S5
 FIRST
 GTINT 0
 THROWIFNOT 114
-.loc ../contracts/v2/EverFarmPool.sol, 19
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 21
 PUSH S2
 EQINT 0
 PUSH S2
@@ -53,7 +53,7 @@ GTINT 0
 AND
 OR
 THROWIFNOT 116
-.loc ../contracts/v2/EverFarmPool.sol, 20
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 22
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S6
@@ -61,11 +61,11 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/EverFarmPool.sol, 21
+	.loc ../contracts/test/TestEverFarmPoolV2.sol, 23
 	DUP
 	GTINT 0
 	PUSHCONT {
-		.loc ../contracts/v2/EverFarmPool.sol, 22
+		.loc ../contracts/test/TestEverFarmPoolV2.sol, 24
 		PUSH2 S0, S6
 		SECOND
 		PUSHINT 32
@@ -103,10 +103,10 @@ PUSHCONT {
 		FIRST
 		GREATER
 		THROWIFNOT 114
-		.loc ../contracts/v2/EverFarmPool.sol, 0
+		.loc ../contracts/test/TestEverFarmPoolV2.sol, 0
 	}
 	IF
-	.loc ../contracts/v2/EverFarmPool.sol, 24
+	.loc ../contracts/test/TestEverFarmPoolV2.sol, 26
 	PUSH2 S0, S6
 	SECOND
 	PUSHINT 32
@@ -127,44 +127,44 @@ PUSHCONT {
 	FIRST
 	EQUAL
 	THROWIFNOT 114
-	.loc ../contracts/v2/EverFarmPool.sol, 20
+	.loc ../contracts/test/TestEverFarmPoolV2.sol, 22
 	INC
-	.loc ../contracts/v2/EverFarmPool.sol, 0
+	.loc ../contracts/test/TestEverFarmPoolV2.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/EverFarmPool.sol, 26
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 28
 GETGLOB 9
 GETGLOB 30
 SDEQ
 THROWIFNOT 112
-.loc ../contracts/v2/EverFarmPool.sol, 27
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 29
 ACCEPT
-.loc ../contracts/v2/EverFarmPool.sol, 29
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 31
 PUSH S5
 SETGLOB 18
-.loc ../contracts/v2/EverFarmPool.sol, 30
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 32
 PUSH S4
 SETGLOB 15
-.loc ../contracts/v2/EverFarmPool.sol, 31
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 33
 PUSH S3
 SETGLOB 20
-.loc ../contracts/v2/EverFarmPool.sol, 32
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 34
 PUSH S6
 SETGLOB 25
-.loc ../contracts/v2/EverFarmPool.sol, 33
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 35
 SWAP
 SETGLOB 14
-.loc ../contracts/v2/EverFarmPool.sol, 34
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 36
 SWAP
 SETGLOB 13
-.loc ../contracts/v2/EverFarmPool.sol, 35
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 37
 SETGLOB 10
-.loc ../contracts/v2/EverFarmPool.sol, 37
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 39
 CALLREF {
 	CALL $setUp_internal_macro$
 }
-.loc ../contracts/v2/EverFarmPool.sol, 39
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 41
 GETGLOB 10
 GETGLOB 14
 GETGLOB 13
@@ -203,7 +203,7 @@ STBREFR
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/v2/EverFarmPool.sol, 0
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 0
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -218,7 +218,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/EverFarmPool.sol, 44
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 47
 OVER
 PUSHCONT {
 	LDREF
@@ -234,7 +234,7 @@ PUSHCONT {
 IFELSE
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/EverFarmPool.sol, 0
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 0
 CALLREF {
 	CALL $upgrade_internal_macro$
 }
@@ -245,24 +245,24 @@ CALLREF {
 THROW 0
 
 .macro upgrade_internal_macro
-.loc ../contracts/v2/EverFarmPool.sol, 45
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 48
 GETGLOB 9
 GETGLOB 30
 SDEQ
 THROWIFNOT 112
-.loc ../contracts/v2/EverFarmPool.sol, 47
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 50
 OVER
 PUSHINT 33
 GETGLOBVAR
 EQUAL
 PUSHCONT {
-	.loc ../contracts/v2/EverFarmPool.sol, 48
+	.loc ../contracts/test/TestEverFarmPoolV2.sol, 51
 	CALLREF {
 		CALL $_reserve_internal_macro$
 	}
 	PUSHINT 0
 	RAWRESERVE
-	.loc ../contracts/v2/EverFarmPool.sol, 49
+	.loc ../contracts/test/TestEverFarmPoolV2.sol, 52
 	NEWC
 	STSLICECONST x42_
 	STSLICE
@@ -271,119 +271,146 @@ PUSHCONT {
 	ENDC
 	PUSHINT 128
 	SENDRAWMSG
-	.loc ../contracts/v2/EverFarmPool.sol, 50
+	.loc ../contracts/test/TestEverFarmPoolV2.sol, 53
 	DROP2
-	.loc ../contracts/v2/EverFarmPool.sol, 0
+	.loc ../contracts/test/TestEverFarmPoolV2.sol, 0
 }
 IFJMP
-.loc ../contracts/v2/EverFarmPool.sol, 54
-PUSHINT 33
-GETGLOBVAR
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 57
+SWAP
+NEWC
+STU 32
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 58
+STSLICE
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 61
+GETGLOB 10
+NEWC
+STU 32
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 62
+GETGLOB 11
+SWAP
+STU 32
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 63
+GETGLOB 12
+SWAP
+STU 32
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 64
+GETGLOB 13
+SWAP
+STU 32
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 65
+GETGLOB 14
+SWAP
+STU 32
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 66
+GETGLOB 15
+SWAP
+STSLICE
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 67
+GETGLOB 16
+SWAP
+STSLICE
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 68
+GETGLOB 17
+SWAP
+STU 128
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 69
+GETGLOB 18
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 70
+GETGLOB 19
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 71
+GETGLOB 20
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 75
+NEWC
+GETGLOB 21
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 76
+GETGLOB 22
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 77
+GETGLOB 23
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 78
+GETGLOB 24
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 79
+GETGLOB 25
+SWAP
+STSLICE
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 80
+GETGLOB 26
+SWAP
+STU 64
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 84
+GETGLOB 27
+NEWC
+STDICT
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 85
+GETGLOB 28
+SWAP
+STREF
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 86
+GETGLOB 29
+SWAP
+STREF
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 87
+GETGLOB 30
+SWAP
+STSLICE
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 88
+GETGLOB 31
+SWAP
+STU 64
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 89
 PUSHINT 32
 GETGLOBVAR
-GETGLOB 31
-GETGLOB 30
-GETGLOB 29
-GETGLOB 28
-GETGLOB 27
-GETGLOB 26
-GETGLOB 25
-GETGLOB 24
-GETGLOB 23
-GETGLOB 22
-GETGLOB 21
-GETGLOB 20
-GETGLOB 19
-GETGLOB 18
-GETGLOB 17
-GETGLOB 16
-GETGLOB 15
-GETGLOB 14
-GETGLOB 13
-GETGLOB 12
-GETGLOB 11
-GETGLOB 10
-PUSHINT 2
-PUSHINT 24
-BLKSWX
 SWAP
-NEWC
 STU 32
-STSLICE
-STU 32
-STU 32
-STU 32
-STU 32
-STU 32
-PUSHINT 19
-ROLLREVX
-NEWC
-STSLICE
-PUSHINT 18
-ROLLREVX
-NEWC
-STSLICE
-STU 128
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 90
+PUSHINT 33
+GETGLOBVAR
 SWAP
-UNPAIR
-XCHG S2
 STU 32
-STDICT
-SWAP
-UNPAIR
-XCHG S2
-STU 32
-STDICT
-SWAP
-UNPAIR
-XCHG S2
-STU 32
-STDICT
-ROLLREV 13
-NEWC
-SWAP
-UNPAIR
-XCHG S2
-STU 32
-STDICT
-SWAP
-UNPAIR
-XCHG S2
-STU 32
-STDICT
-SWAP
-UNPAIR
-XCHG S2
-STU 32
-STDICT
-ROLLREV 10
-NEWC
-SWAP
-UNPAIR
-XCHG S2
-STU 32
-STDICT
-STSLICE
-STU 64
-STDICT
-STREF
-ROLLREV 5
-NEWC
-STREF
-STSLICE
-STU 64
-STU 32
-STU 32
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 93
+PUSH S3
+ROLL 3
 STBREFR
+POP S3
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 94
+PUSH S2
+ROT
 STBREFR
+POP S2
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 95
 STBREFR
-STBREFR
-STBREFR
-ENDC
-.loc ../contracts/v2/EverFarmPool.sol, 84
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 99
 OVER
 SETCODE
-.loc ../contracts/v2/EverFarmPool.sol, 86
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 102
 SWAP
 CTOS
 DUP
@@ -398,15 +425,16 @@ PLDREF
 CTOS
 BLESS
 POP C3
-.loc ../contracts/v2/EverFarmPool.sol, 88
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 103
+ENDC
 CALLREF {
 	CALL $:onCodeUpgrade$
 }
-.loc ../contracts/v2/EverFarmPool.sol, 0
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 0
 
 .internal-alias :onCodeUpgrade, 2
 .internal :onCodeUpgrade
-.loc ../contracts/v2/EverFarmPool.sol, 93
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 107
 PUSHINT 0
 SETGLOB 10
 PUSHINT 0
@@ -481,164 +509,164 @@ SETGLOBVAR
 PUSHINT 0
 PUSHINT 33
 SETGLOBVAR
-.loc ../contracts/v2/EverFarmPool.sol, 94
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 108
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/EverFarmPool.sol, 96
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 110
 CTOS
-.loc ../contracts/v2/EverFarmPool.sol, 97
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 111
 DUP
 LDU 32
 POP S2
 PUSHINT 33
 SETGLOBVAR
-.loc ../contracts/v2/EverFarmPool.sol, 98
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 112
 DUP
 LDMSGADDR
 POP S2
-.loc ../contracts/v2/EverFarmPool.sol, 100
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 114
 OVER
 LDREFRTOS
 SWAP
 POP S3
-.loc ../contracts/v2/EverFarmPool.sol, 101
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 115
 DUP
 LDU 32
 POP S2
 SETGLOB 10
-.loc ../contracts/v2/EverFarmPool.sol, 102
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 116
 DUP
 LDU 32
 POP S2
 SETGLOB 11
-.loc ../contracts/v2/EverFarmPool.sol, 103
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 117
 DUP
 LDU 32
 POP S2
 SETGLOB 12
-.loc ../contracts/v2/EverFarmPool.sol, 104
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 118
 DUP
 LDU 32
 POP S2
 SETGLOB 13
-.loc ../contracts/v2/EverFarmPool.sol, 105
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 119
 DUP
 LDU 32
 POP S2
 SETGLOB 14
-.loc ../contracts/v2/EverFarmPool.sol, 106
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 120
 DUP
 LDMSGADDR
 POP S2
 SETGLOB 15
-.loc ../contracts/v2/EverFarmPool.sol, 107
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 121
 DUP
 LDMSGADDR
 POP S2
 SETGLOB 16
-.loc ../contracts/v2/EverFarmPool.sol, 108
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 122
 DUP
 LDU 128
 POP S2
 SETGLOB 17
-.loc ../contracts/v2/EverFarmPool.sol, 109
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 123
 LDU 32
 LDDICT
 ROTREV
 PAIR
 SETGLOB 18
-.loc ../contracts/v2/EverFarmPool.sol, 110
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 124
 LDU 32
 LDDICT
 ROTREV
 PAIR
 SETGLOB 19
-.loc ../contracts/v2/EverFarmPool.sol, 111
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 125
 LDU 32
 LDDICT
 DROP
 PAIR
 SETGLOB 20
-.loc ../contracts/v2/EverFarmPool.sol, 113
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 127
 OVER
 LDREFRTOS
 SWAP
 POP S3
-.loc ../contracts/v2/EverFarmPool.sol, 114
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 128
 LDU 32
 LDDICT
 ROTREV
 PAIR
 SETGLOB 21
-.loc ../contracts/v2/EverFarmPool.sol, 115
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 129
 LDU 32
 LDDICT
 ROTREV
 PAIR
 SETGLOB 22
-.loc ../contracts/v2/EverFarmPool.sol, 116
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 130
 LDU 32
 LDDICT
 ROTREV
 PAIR
 SETGLOB 23
-.loc ../contracts/v2/EverFarmPool.sol, 117
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 131
 LDU 32
 LDDICT
 ROTREV
 PAIR
 SETGLOB 24
-.loc ../contracts/v2/EverFarmPool.sol, 118
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 132
 DUP
 LDMSGADDR
 POP S2
 SETGLOB 25
-.loc ../contracts/v2/EverFarmPool.sol, 119
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 133
 LDU 64
 DROP
 SETGLOB 26
-.loc ../contracts/v2/EverFarmPool.sol, 121
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 135
 SWAP
 LDREFRTOS
 NIP
-.loc ../contracts/v2/EverFarmPool.sol, 122
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 136
 DUP
 LDDICT
 POP S2
 SETGLOB 27
-.loc ../contracts/v2/EverFarmPool.sol, 123
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 137
 DUP
 LDREF
 POP S2
 SETGLOB 28
-.loc ../contracts/v2/EverFarmPool.sol, 124
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 138
 DUP
 LDREF
 POP S2
 SETGLOB 29
-.loc ../contracts/v2/EverFarmPool.sol, 125
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 139
 DUP
 LDMSGADDR
 POP S2
 SETGLOB 30
-.loc ../contracts/v2/EverFarmPool.sol, 126
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 140
 DUP
 LDU 64
 POP S2
 SETGLOB 31
-.loc ../contracts/v2/EverFarmPool.sol, 127
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 141
 DUP
 LDU 32
 POP S2
 PUSHINT 32
 SETGLOBVAR
-.loc ../contracts/v2/EverFarmPool.sol, 128
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 142
 LDU 32
 DROP
-.loc ../contracts/v2/EverFarmPool.sol, 130
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 144
 PUSHINT 33
 GETGLOBVAR
 SWAP
@@ -650,7 +678,7 @@ STU 32
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/v2/EverFarmPool.sol, 131
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 145
 NEWC
 STSLICECONST x42_
 STSLICE
@@ -659,7 +687,7 @@ STZEROES
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/EverFarmPool.sol, 0
+.loc ../contracts/test/TestEverFarmPoolV2.sol, 0
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -671,7 +699,7 @@ THROW 0
 CALL $_initialize_reward_arrays_internal_macro$
 
 .macro _initialize_reward_arrays_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 16
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 16
 PUSHINT 0
 PUSHCONT {
 	DUP
@@ -680,7 +708,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 17
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 17
 	GETGLOB 19
 	PUSHINT 0
 	NEWC
@@ -694,7 +722,7 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 19
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 18
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 18
 	PUSHSLICE x2_
 	GETGLOB 21
 	UNPAIR
@@ -705,7 +733,7 @@ PUSHCONT {
 	DICTUSET
 	PAIR
 	SETGLOB 21
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 19
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 19
 	GETGLOB 22
 	PUSHINT 0
 	NEWC
@@ -719,7 +747,7 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 22
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 20
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 20
 	GETGLOB 23
 	PUSHINT 0
 	NEWC
@@ -733,7 +761,7 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 23
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 21
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 21
 	GETGLOB 24
 	PUSHINT 0
 	NEWC
@@ -747,20 +775,20 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 24
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 16
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 16
 	INC
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .globl	_reserve_internal
 .type	_reserve_internal, @function
 CALL $_reserve_internal_macro$
 
 .macro _reserve_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 26
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 26
 GETPARAM 7
 FIRST
 DEPTH
@@ -770,7 +798,7 @@ SUB
 UFITS 128
 PUSHINT 1000000000
 MAX
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro getDetails
 DROP
@@ -781,14 +809,14 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 29
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 29
 LDU 32
 GETGLOB 4
 ROT
 SETINDEXQ 5
 SETGLOB 4
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $getDetails_internal_macro$
 }
@@ -979,7 +1007,7 @@ IFREF {
 THROW 0
 
 .macro getDetails_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 30
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 30
 GETGLOB 4
 PUSHINT 0
 SETINDEXQ 2
@@ -1010,18 +1038,18 @@ PUSHINT 33
 GETGLOBVAR
 PUSHINT 18
 TUPLEVAR
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .globl	setUp_internal
 .type	setUp_internal, @function
 CALL $setUp_internal_macro$
 
 .macro setUp_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 41
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 41
 CALLREF {
 	CALL $_initialize_reward_arrays_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 43
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 43
 PUSHINT 100000000
 MYADDR
 GETGLOB 15
@@ -1040,7 +1068,7 @@ STBREFR
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 48
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 48
 PUSHINT 0
 PUSHCONT {
 	DUP
@@ -1049,7 +1077,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 49
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 49
 	PUSHINT 100000000
 	MYADDR
 	PUSH S2
@@ -1073,13 +1101,13 @@ PUSHCONT {
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 48
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 48
 	INC
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro requestUpdateUserDataCode
 DROP
@@ -1090,7 +1118,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 56
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 56
 OVER
 PUSHCONT {
 	LDREF
@@ -1100,7 +1128,7 @@ PUSHCONT {
 IF
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $requestUpdateUserDataCode_internal_macro$
 }
@@ -1111,25 +1139,25 @@ CALLREF {
 THROW 0
 
 .macro requestUpdateUserDataCode_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 590
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 582
 GETGLOB 9
 GETGLOB 25
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 57
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 57
 DEPTH
 ADDCONST -2
 PICK
 PUSHINT 1500000000
 GEQ
 THROWIFNOT 118
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 58
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 58
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 60
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 60
 GETGLOB 30
 NEWC
 STSLICECONST x62_
@@ -1144,7 +1172,7 @@ STBREFR
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro requestUpgradePool
 DROP
@@ -1155,7 +1183,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 63
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 63
 OVER
 PUSHCONT {
 	LDREF
@@ -1165,7 +1193,7 @@ PUSHCONT {
 IF
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $requestUpgradePool_internal_macro$
 }
@@ -1176,25 +1204,25 @@ CALLREF {
 THROW 0
 
 .macro requestUpgradePool_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 590
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 582
 GETGLOB 9
 GETGLOB 25
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 64
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 64
 DEPTH
 ADDCONST -2
 PICK
 PUSHINT 1500000000
 GEQ
 THROWIFNOT 118
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 65
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 65
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 67
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 67
 GETGLOB 30
 NEWC
 STSLICECONST x62_
@@ -1209,7 +1237,7 @@ STBREFR
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro updateUserDataCode
 DROP
@@ -1220,7 +1248,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 70
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 70
 OVER
 PUSHCONT {
 	LDREF
@@ -1236,7 +1264,7 @@ PUSHCONT {
 IFELSE
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $updateUserDataCode_internal_macro$
 }
@@ -1247,24 +1275,24 @@ CALLREF {
 THROW 0
 
 .macro updateUserDataCode_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 71
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 71
 GETGLOB 9
 GETGLOB 30
 SDEQ
 THROWIFNOT 112
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 72
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 72
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 74
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 74
 OVER
 PUSHINT 32
 GETGLOBVAR
 EQUAL
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 75
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 75
 	NEWC
 	STSLICECONST x42_
 	STSLICE
@@ -1273,15 +1301,15 @@ PUSHCONT {
 	ENDC
 	PUSHINT 128
 	SENDRAWMSG
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 76
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 76
 	DROP2
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 IFJMP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 79
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 79
 ROT
 SETGLOB 29
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 80
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 80
 OVER
 PUSHINT 32
 GETGLOBVAR
@@ -1293,11 +1321,11 @@ STU 32
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 81
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 81
 SWAP
 PUSHINT 32
 SETGLOBVAR
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 83
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 83
 NEWC
 STSLICECONST x42_
 STSLICE
@@ -1306,80 +1334,7 @@ STZEROES
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
-
-.macro forceUpgradeUserData
-DROP
-GETGLOB 6
-THROWIFNOT 76
-GETGLOB 2
-ISNULL
-IFREF {
-	CALL $c4_to_c7$
-}
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 86
-OVER
-PUSHCONT {
-	LDREF
-	ENDS
-	CTOS
-}
-IF
-LDMSGADDR
-LDREF
-ENDS
-CTOS
-LDMSGADDR
-ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
-CALLREF {
-	CALL $forceUpgradeUserData_internal_macro$
-}
-DROP
-CALLREF {
-	CALL $c7_to_c4$
-}
-THROW 0
-
-.macro forceUpgradeUserData_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 87
-GETGLOB 9
-GETGLOB 30
-SDEQ
-THROWIFNOT 112
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 88
-CALLREF {
-	CALL $_reserve_internal_macro$
-}
-PUSHINT 0
-RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 90
-SWAP
-CALLREF {
-	CALL $getUserDataAddress_internal_macro$
-}
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 91
-SWAP
-PUSHINT 32
-GETGLOBVAR
-GETGLOB 29
-ROLL 3
-NEWC
-STSLICECONST x62_
-STSLICE
-PUSHINT 1
-STUR 111
-ROLLREV 3
-NEWC
-STSLICECONST x64a578c8
-STREF
-STU 32
-STSLICE
-STBREFR
-ENDC
-PUSHINT 128
-SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro upgradeUserData
 DROP
@@ -1390,7 +1345,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 94
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 86
 OVER
 PUSHCONT {
 	LDREF
@@ -1400,7 +1355,7 @@ PUSHCONT {
 IF
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $upgradeUserData_internal_macro$
 }
@@ -1411,25 +1366,25 @@ CALLREF {
 THROW 0
 
 .macro upgradeUserData_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 95
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 87
 DEPTH
 ADDCONST -2
 PICK
 PUSHINT 1000000000
 GEQ
 THROWIFNOT 118
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 96
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 88
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 98
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 90
 GETGLOB 9
 CALLREF {
 	CALL $getUserDataAddress_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 99
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 91
 SWAP
 PUSHINT 32
 GETGLOBVAR
@@ -1450,7 +1405,7 @@ STBREFR
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro dummy
 DROP
@@ -1461,7 +1416,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 102
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 94
 OVER
 PUSHCONT {
 	LDREF
@@ -1471,7 +1426,7 @@ PUSHCONT {
 IF
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $dummy_internal_macro$
 }
@@ -1482,14 +1437,14 @@ CALLREF {
 THROW 0
 
 .macro dummy_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 102
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 94
 DROP
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro receiveTokenWalletAddress
 DROP
@@ -1500,7 +1455,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 109
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 101
 OVER
 PUSHCONT {
 	LDREF
@@ -1510,7 +1465,7 @@ PUSHCONT {
 IF
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $receiveTokenWalletAddress_internal_macro$
 }
@@ -1521,23 +1476,23 @@ CALLREF {
 THROW 0
 
 .macro receiveTokenWalletAddress_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 112
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 104
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 114
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 106
 GETGLOB 9
 GETGLOB 15
 SDEQ
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 115
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 107
 	DUP
 	SETGLOB 16
 }
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 117
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 109
 	PUSHINT 0
 	PUSHCONT {
 		DUP
@@ -1546,7 +1501,7 @@ PUSHCONT {
 		LESS
 	}
 	PUSHCONT {
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 118
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 110
 		GETGLOB 9
 		OVER
 		GETGLOB 20
@@ -1556,7 +1511,7 @@ PUSHCONT {
 		THROWIFNOT 50
 		SDEQ
 		PUSHCONT {
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 119
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 111
 			OVER
 			GETGLOB 21
 			UNPAIR
@@ -1569,18 +1524,18 @@ PUSHCONT {
 			DICTUSET
 			PAIR
 			SETGLOB 21
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 		}
 		IF
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 117
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 109
 		INC
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 	}
 	WHILE
 	DROP
 }
 IFELSE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 DROP
 
 .globl	transferReward_internal
@@ -1588,9 +1543,9 @@ DROP
 CALL $transferReward_internal_macro$
 
 .macro transferReward_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 132
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 124
 PUSH2 S2, S2
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 133
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 125
 FIRST
 PUSHINT 0
 NEWC
@@ -1609,7 +1564,7 @@ PUSHCONT {
 REPEAT
 BLKDROP2 2, 1
 PAIR
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 136
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 128
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S5
@@ -1617,7 +1572,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 137
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 129
 	DUP
 	GETGLOB 22
 	SECOND
@@ -1633,7 +1588,7 @@ PUSHCONT {
 	PLDU 128
 	LESS
 	PUSHCONT {
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 138
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 130
 		PUSH2 S0, S5
 		SECOND
 		PUSHINT 32
@@ -1663,7 +1618,7 @@ PUSHCONT {
 		DICTUSETB
 		PAIR
 		POP S2
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 139
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 131
 		PUSH2 S0, S1
 		SECOND
 		PUSHINT 32
@@ -1691,21 +1646,21 @@ PUSHCONT {
 		DICTUSETB
 		PAIR
 		POP S3
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 	}
 	IF
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 136
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 128
 	INC
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 145
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 137
 PUSH S6
 PUSHSLICE x2_
 SDEQ
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 146
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 138
 	PUSHINT 0
 	PUSHCONT {
 		PUSH2 S0, S1
@@ -1713,7 +1668,7 @@ PUSHCONT {
 		LESS
 	}
 	PUSHCONT {
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 147
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 139
 		PUSH2 S0, S1
 		SECOND
 		PUSHINT 32
@@ -1722,7 +1677,7 @@ PUSHCONT {
 		PLDU 128
 		GTINT 0
 		PUSHCONT {
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 148
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 140
 			PUSHINT 32
 			GETGLOBVAR
 			PUSH3 S5, S2, S8
@@ -1745,25 +1700,25 @@ PUSHCONT {
 			ENDC
 			PUSHINT 0
 			SENDRAWMSG
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 149
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 141
 			RETALT
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 		}
 		IFJMP
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 146
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 138
 		INC
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 	}
 	WHILEBRK
 	DROP
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 IFNOT
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 155
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 147
 ROT
 NEWC
 STU 32
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 156
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 148
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S3
@@ -1771,7 +1726,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 157
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 149
 	PUSH2 S0, S3
 	SECOND
 	PUSHINT 32
@@ -1780,7 +1735,7 @@ PUSHCONT {
 	PLDU 128
 	GTINT 0
 	PUSHCONT {
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 158
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 150
 		OVER
 		ENDC
 		TRUE
@@ -1819,7 +1774,7 @@ PUSHCONT {
 		ENDC
 		PUSHINT 0
 		SENDRAWMSG
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 166
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 158
 		PUSH2 S0, S3
 		SECOND
 		PUSHINT 32
@@ -1847,24 +1802,24 @@ PUSHCONT {
 		DICTUSETB
 		PAIR
 		SETGLOB 22
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 	}
 	IF
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 156
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 148
 	INC
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 WHILE
 DROP2
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 169
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 161
 BLKDROP2 4, 2
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro encodeDepositPayload
 DROP
 GETGLOB 6
 THROWIFNOT 76
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 172
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 164
 OVER
 PUSHCONT {
 	LDREF
@@ -1875,7 +1830,7 @@ IF
 LDMSGADDR
 LDU 32
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $encodeDepositPayload_internal_macro$
 }
@@ -1907,15 +1862,15 @@ IFREF {
 THROW 0
 
 .macro encodeDepositPayload_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 174
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 166
 SWAP
 NEWC
 STSLICE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 175
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 167
 STU 32
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 176
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 168
 ENDC
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro decodeDepositPayload
 DROP
@@ -1926,10 +1881,10 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 180
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 172
 LDREF
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $decodeDepositPayload_internal_macro$
 }
@@ -1971,30 +1926,30 @@ THROW 0
 CALL $decodeDepositPayload_internal_macro$
 
 .macro decodeDepositPayload_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 182
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 174
 CTOS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 184
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 176
 DUP
 PUSHINT 299
 PUSHINT 0
 SCHKBITREFSQ
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 185
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 177
 	PUSHSLICE x2_
 	PUSHINT 0
 	DUP
 	BLKDROP2 1, 3
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 IFNOTJMP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 188
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 180
 LDMSGADDR
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 189
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 181
 LDU 32
 DROP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 191
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 183
 TRUE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro onAcceptTokensTransfer
 DROP
@@ -2005,7 +1960,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 195
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 187
 OVER
 PUSHCONT {
 	LDREF
@@ -2029,7 +1984,7 @@ CTOS
 LDMSGADDR
 LDREF
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $onAcceptTokensTransfer_internal_macro$
 }
@@ -2040,24 +1995,24 @@ CALLREF {
 THROW 0
 
 .macro onAcceptTokensTransfer_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 203
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 195
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 205
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 197
 FALSE ; decl return flag
 GETGLOB 9
 GETGLOB 16
 SDEQ
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 207
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 199
 	OVER
 	CALLREF {
 		CALL $decodeDepositPayload_internal_macro$
 	}
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 209
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 201
 	NOT
 	DUP
 	PUSHCONT {
@@ -2075,7 +2030,7 @@ PUSHCONT {
 	}
 	IFNOT
 	PUSHCONT {
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 212
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 204
 		ROLL 3
 		TRUE
 		ROLL 5
@@ -2104,28 +2059,28 @@ PUSHCONT {
 		ENDC
 		PUSHINT 128
 		SENDRAWMSG
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 220
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 212
 		BLKDROP 5
 		PUSHINT 4
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 	}
 	IFJMP
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 223
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 215
 	CALLREF {
 		CALL $updatePoolInfo_internal_macro$
 	}
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 225
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 217
 	GETGLOB 26
 	INC
 	UFITS 64
 	SETGLOB 26
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 226
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 218
 	GETGLOB 17
 	PUSH S8
 	ADD
 	UFITS 128
 	SETGLOB 17
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 228
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 220
 	PUSH3 S1, S7, S4
 	ROLL 3
 	TUPLE 4
@@ -2149,11 +2104,11 @@ PUSHCONT {
 	PUSHINT 64
 	DICTUSETREF
 	SETGLOB 27
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 230
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 222
 	CALLREF {
 		CALL $getUserDataAddress_internal_macro$
 	}
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 231
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 223
 	PUSHINT 32
 	GETGLOBVAR
 	GETGLOB 12
@@ -2184,10 +2139,10 @@ PUSHCONT {
 	ENDC
 	PUSHINT 128
 	SENDRAWMSG
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 233
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 225
 	PUSHINT 0
 	PUSHCONT {
 		DUP
@@ -2196,7 +2151,7 @@ PUSHCONT {
 		LESS
 	}
 	PUSHCONT {
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 234
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 226
 		GETGLOB 9
 		OVER
 		GETGLOB 21
@@ -2206,7 +2161,7 @@ PUSHCONT {
 		THROWIFNOT 50
 		SDEQ
 		PUSHCONT {
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 235
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 227
 			PUSH S6
 			GETGLOB 22
 			UNPAIR
@@ -2229,7 +2184,7 @@ PUSHCONT {
 			DICTUSETB
 			PAIR
 			SETGLOB 22
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 236
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 228
 			PUSH S6
 			GETGLOB 23
 			UNPAIR
@@ -2252,7 +2207,7 @@ PUSHCONT {
 			DICTUSETB
 			PAIR
 			SETGLOB 23
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 238
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 230
 			PUSH2 S6, S0
 			GETGLOB 20
 			SECOND
@@ -2267,16 +2222,16 @@ PUSHCONT {
 			ENDC
 			PUSHINT 0
 			SENDRAWMSG
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 		}
 		IF
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 233
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 225
 		INC
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 	}
 	WHILE
 	DROP
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 241
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 233
 	ROT
 	NEWC
 	STSLICECONST x42_
@@ -2286,15 +2241,15 @@ PUSHCONT {
 	ENDC
 	PUSHINT 128
 	SENDRAWMSG
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 242
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 234
 	BLKDROP 6
 	PUSHINT 4
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 IFELSE
 IFRET
 BLKDROP 6
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro finishDeposit
 DROP
@@ -2305,7 +2260,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 246
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 238
 LDU 64
 LDU 32
 LDDICT
@@ -2313,7 +2268,7 @@ ROTREV
 PAIR
 SWAP
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $finishDeposit_internal_macro$
 }
@@ -2324,7 +2279,7 @@ CALLREF {
 THROW 0
 
 .macro finishDeposit_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 247
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 239
 OVER
 GETGLOB 27
 PUSHINT 64
@@ -2355,24 +2310,24 @@ PUSHCONT {
 	TUPLE 4
 }
 IFELSE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 248
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 240
 DUP
 FIRST
 CALLREF {
 	CALL $getUserDataAddress_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 249
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 241
 DUP
 GETGLOB 9
 SDEQ
 THROWIFNOT 105
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 251
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 243
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 253
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 245
 OVER
 FIRST
 ROLL 3
@@ -2383,7 +2338,7 @@ INDEX 3
 CALLREF {
 	CALL $transferReward_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 258
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 250
 SWAP
 PUSH S2
 SECOND
@@ -2407,14 +2362,14 @@ STDICT
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 259
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 251
 SWAP
 GETGLOB 27
 PUSHINT 64
 DICTUDEL
 DROP
 SETGLOB 27
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 261
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 253
 THIRD
 NEWC
 STSLICECONST x42_
@@ -2424,7 +2379,7 @@ STZEROES
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro withdraw
 DROP
@@ -2435,7 +2390,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 264
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 256
 OVER
 PUSHCONT {
 	LDU 128
@@ -2450,7 +2405,7 @@ IFELSE
 LDMSGADDR
 LDU 32
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $withdraw_internal_macro$
 }
@@ -2461,11 +2416,11 @@ CALLREF {
 THROW 0
 
 .macro withdraw_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 265
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 257
 PUSH S2
 GTINT 0
 THROWIFNOT 107
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 266
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 258
 DEPTH
 ADDCONST -2
 PICK
@@ -2477,22 +2432,22 @@ MUL
 ADD
 GEQ
 THROWIFNOT 108
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 267
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 259
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 269
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 261
 CALLREF {
 	CALL $updatePoolInfo_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 271
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 263
 GETGLOB 9
 CALLREF {
 	CALL $getUserDataAddress_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 273
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 265
 PUSHINT 32
 GETGLOBVAR
 SWAP2
@@ -2524,7 +2479,7 @@ STBREFR
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro withdrawAll
 DROP
@@ -2535,7 +2490,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 276
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 268
 OVER
 PUSHCONT {
 	LDREF
@@ -2546,7 +2501,7 @@ IF
 LDMSGADDR
 LDU 32
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $withdrawAll_internal_macro$
 }
@@ -2557,7 +2512,7 @@ CALLREF {
 THROW 0
 
 .macro withdrawAll_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 277
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 269
 DEPTH
 ADDCONST -2
 PICK
@@ -2569,22 +2524,22 @@ MUL
 ADD
 GEQ
 THROWIFNOT 108
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 278
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 270
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 280
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 272
 CALLREF {
 	CALL $updatePoolInfo_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 282
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 274
 GETGLOB 9
 CALLREF {
 	CALL $getUserDataAddress_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 284
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 276
 PUSHINT 32
 GETGLOBVAR
 SWAP2
@@ -2615,7 +2570,7 @@ STBREFR
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro claimReward
 DROP
@@ -2626,7 +2581,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 287
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 279
 OVER
 PUSHCONT {
 	LDREF
@@ -2637,7 +2592,7 @@ IF
 LDMSGADDR
 LDU 32
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $claimReward_internal_macro$
 }
@@ -2648,7 +2603,7 @@ CALLREF {
 THROW 0
 
 .macro claimReward_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 288
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 280
 DEPTH
 ADDCONST -2
 PICK
@@ -2660,22 +2615,22 @@ MUL
 ADD
 GEQ
 THROWIFNOT 108
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 289
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 281
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 291
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 283
 CALLREF {
 	CALL $updatePoolInfo_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 293
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 285
 GETGLOB 9
 CALLREF {
 	CALL $getUserDataAddress_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 295
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 287
 PUSHINT 32
 GETGLOBVAR
 SWAP2
@@ -2706,7 +2661,7 @@ STBREFR
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro finishWithdraw
 DROP
@@ -2717,7 +2672,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 298
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 290
 OVER
 PUSHCONT {
 	LDREF
@@ -2738,7 +2693,7 @@ CTOS
 LDMSGADDR
 LDU 32
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $finishWithdraw_internal_macro$
 }
@@ -2749,40 +2704,40 @@ CALLREF {
 THROW 0
 
 .macro finishWithdraw_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 305
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 297
 PUSH S4
 CALLREF {
 	CALL $getUserDataAddress_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 306
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 298
 DUP
 GETGLOB 9
 SDEQ
 THROWIFNOT 105
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 307
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 299
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 309
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 301
 PUSH S5
 ROLL 4
 BLKPUSH 2, 4
 CALLREF {
 	CALL $transferReward_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 315
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 307
 PUSH S4
 GTINT 0
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 316
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 308
 	GETGLOB 17
 	PUSH S5
 	SUB
 	UFITS 128
 	SETGLOB 17
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 318
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 310
 	PUSH3 S0, S1, S4
 	PUSH S8
 	PUSHSLICE xc00000000000000000000000001bce879c
@@ -2803,11 +2758,11 @@ PUSHCONT {
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 320
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 312
 	PUSH S2
 	NEWC
 	STU 32
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 321
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 313
 	ENDC
 	TRUE
 	PUSH S5
@@ -2834,7 +2789,7 @@ PUSHCONT {
 	STBREFR
 }
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 331
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 323
 	PUSH3 S0, S1, S5
 	PUSHSLICE xc0000000000000000000000000301f2ce8
 	NEWC
@@ -2853,7 +2808,7 @@ PUSHCONT {
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 332
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 324
 	PUSH S3
 	NEWC
 	STSLICECONST x42_
@@ -2865,7 +2820,7 @@ IFELSE
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 BLKDROP 6
 
 .macro withdrawUnclaimed
@@ -2877,7 +2832,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 336
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 328
 OVER
 PUSHCONT {
 	LDREF
@@ -2892,7 +2847,7 @@ CTOS
 LDMSGADDR
 LDU 32
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $withdrawUnclaimed_internal_macro$
 }
@@ -2903,12 +2858,12 @@ CALLREF {
 THROW 0
 
 .macro withdrawUnclaimed_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 590
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 582
 GETGLOB 9
 GETGLOB 25
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 337
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 329
 DEPTH
 ADDCONST -2
 PICK
@@ -2920,13 +2875,13 @@ MUL
 ADD
 GEQ
 THROWIFNOT 108
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 339
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 331
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 341
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 333
 PUSHSLICE x2_
 ROLL 3
 GETGLOB 24
@@ -2936,7 +2891,7 @@ CALLREF {
 	CALL $transferReward_internal_macro$
 }
 DROP2
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 342
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 334
 PUSHINT 0
 PUSHCONT {
 	DUP
@@ -2945,7 +2900,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 343
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 335
 	GETGLOB 24
 	UNPAIR
 	PUXC S2, S-1
@@ -2960,13 +2915,13 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 24
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 342
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 334
 	INC
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 346
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 338
 NEWC
 STSLICECONST x42_
 STSLICE
@@ -2975,7 +2930,7 @@ STZEROES
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro withdrawUnclaimedAll
 DROP
@@ -2986,7 +2941,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 349
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 341
 OVER
 PUSHCONT {
 	LDREF
@@ -3001,7 +2956,7 @@ CTOS
 LDMSGADDR
 LDU 32
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $withdrawUnclaimedAll_internal_macro$
 }
@@ -3012,12 +2967,12 @@ CALLREF {
 THROW 0
 
 .macro withdrawUnclaimedAll_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 590
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 582
 GETGLOB 9
 GETGLOB 25
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 350
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 342
 DEPTH
 ADDCONST -2
 PICK
@@ -3029,11 +2984,11 @@ MUL
 ADD
 GEQ
 THROWIFNOT 108
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 351
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 343
 GETGLOB 12
 GTINT 0
 THROWIFNOT 117
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 352
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 344
 NOW
 GETGLOB 12
 GETGLOB 13
@@ -3044,13 +2999,13 @@ ADD
 UFITS 32
 GEQ
 THROWIFNOT 117
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 354
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 346
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 356
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 348
 PUSHSLICE x2_
 ROLL 3
 GETGLOB 22
@@ -3060,7 +3015,7 @@ CALLREF {
 	CALL $transferReward_internal_macro$
 }
 DROP2
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 357
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 349
 PUSHINT 0
 PUSHCONT {
 	DUP
@@ -3069,7 +3024,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 358
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 350
 	GETGLOB 24
 	UNPAIR
 	PUXC S2, S-1
@@ -3084,13 +3039,13 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 24
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 357
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 349
 	INC
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 361
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 353
 NEWC
 STSLICECONST x42_
 STSLICE
@@ -3099,7 +3054,7 @@ STZEROES
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro addRewardRound
 DROP
@@ -3110,7 +3065,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 364
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 356
 OVER
 PUSHCONT {
 	LDU 32
@@ -3138,7 +3093,7 @@ PUSHCONT {
 IFELSE
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $addRewardRound_internal_macro$
 }
@@ -3149,25 +3104,25 @@ CALLREF {
 THROW 0
 
 .macro addRewardRound_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 590
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 582
 GETGLOB 9
 GETGLOB 25
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 365
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 357
 DEPTH
 ADDCONST -2
 PICK
 PUSHINT 500000000
 GEQ
 THROWIFNOT 100
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 366
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 358
 OVER
 FIRST
 NOW
 GEQ
 THROWIFNOT 114
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 367
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 359
 OVER
 FIRST
 GETGLOB 18
@@ -3192,23 +3147,23 @@ CALLREF {
 FIRST
 GEQ
 THROWIFNOT 114
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 368
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 360
 OVER
 INDEX2 1, 0
 GETGLOB 20
 FIRST
 EQUAL
 THROWIFNOT 114
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 369
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 361
 GETGLOB 12
 THROWIF 114
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 371
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 363
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 372
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 364
 GETGLOB 18
 PUSH S2
 CALLREF {
@@ -3231,7 +3186,7 @@ PUSHINT 32
 DICTUSETB
 PAIR
 SETGLOB 18
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 373
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 365
 SWAP
 PUSHSLICE xc000000000000000000000000001792329
 NEWC
@@ -3248,7 +3203,7 @@ STDICT
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 374
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 366
 NEWC
 STSLICECONST x42_
 STSLICE
@@ -3257,7 +3212,7 @@ STZEROES
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro setEndTime
 DROP
@@ -3268,7 +3223,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 377
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 369
 OVER
 PUSHCONT {
 	LDU 32
@@ -3282,7 +3237,7 @@ PUSHCONT {
 IFELSE
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $setEndTime_internal_macro$
 }
@@ -3293,24 +3248,24 @@ CALLREF {
 THROW 0
 
 .macro setEndTime_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 590
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 582
 GETGLOB 9
 GETGLOB 25
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 378
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 370
 DEPTH
 ADDCONST -2
 PICK
 PUSHINT 500000000
 GEQ
 THROWIFNOT 100
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 379
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 371
 OVER
 NOW
 GEQ
 THROWIFNOT 115
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 380
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 372
 OVER
 GETGLOB 18
 FIRST
@@ -3334,19 +3289,19 @@ CALLREF {
 FIRST
 GEQ
 THROWIFNOT 115
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 381
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 373
 GETGLOB 12
 THROWIF 115
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 383
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 375
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 384
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 376
 OVER
 SETGLOB 12
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 385
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 377
 SWAP
 PUSHSLICE xc0000000000000000000000000723c946a
 NEWC
@@ -3355,7 +3310,7 @@ STU 32
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 386
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 378
 NEWC
 STSLICECONST x42_
 STSLICE
@@ -3364,7 +3319,7 @@ STZEROES
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro safeWithdraw
 DROP
@@ -3375,7 +3330,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 390
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 382
 OVER
 PUSHCONT {
 	LDREF
@@ -3385,7 +3340,7 @@ PUSHCONT {
 IF
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $safeWithdraw_internal_macro$
 }
@@ -3395,25 +3350,25 @@ IFREF {
 THROW 0
 
 .macro safeWithdraw_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 391
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 383
 DEPTH
 ADDCONST -2
 PICK
 PUSHINT 1000000000
 GEQ
 THROWIFNOT 108
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 392
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 384
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 394
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 386
 GETGLOB 9
 CALLREF {
 	CALL $getUserDataAddress_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 395
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 387
 PUSHINT 32
 GETGLOBVAR
 ROTREV
@@ -3431,7 +3386,7 @@ STBREFR
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro finishSafeWithdraw
 DROP
@@ -3442,7 +3397,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 398
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 390
 OVER
 PUSHCONT {
 	LDREF
@@ -3457,7 +3412,7 @@ ENDS
 CTOS
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $finishSafeWithdraw_internal_macro$
 }
@@ -3468,31 +3423,31 @@ CALLREF {
 THROW 0
 
 .macro finishSafeWithdraw_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 399
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 391
 PUSH S2
 CALLREF {
 	CALL $getUserDataAddress_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 400
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 392
 GETGLOB 9
 SDEQ
 THROWIFNOT 105
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 401
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 393
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 403
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 395
 GETGLOB 17
 PUSH S2
 SUB
 UFITS 128
 SETGLOB 17
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 408
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 400
 PUSHREF {
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 409
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 401
 PUSHINT 0
 NEWDICT
 PAIR
@@ -3515,7 +3470,7 @@ STDICT
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 411
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 403
 TRUE
 ROT
 PUSHINT 0
@@ -3542,74 +3497,74 @@ STBREFR
 ENDC
 PUSHINT 128
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .globl	_getMultiplier_internal
 .type	_getMultiplier_internal, @function
 CALL $_getMultiplier_internal_macro$
 
 .macro _getMultiplier_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 422
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 414
 DUP2
 LEQ
 THROWIFNOT 110
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 424
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 416
 PUSH2 S1, S2
 GREATER
 PUSH2 S1, S4
 LESS
 OR
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 425
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 417
 	BLKDROP 4
 	PUSHINT 0
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 IFJMP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 428
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 420
 PUSH2 S0, S2
 GREATER
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 429
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 421
 	PUSH S2
 	NIP
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 IF
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 432
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 424
 PUSH2 S1, S3
 LESS
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 433
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 425
 	PUSH S3
 	POP S2
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 IF
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 436
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 428
 SUBR
 UFITS 32
 BLKDROP2 2, 1
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .globl	_getRoundEndTime_internal
 .type	_getRoundEndTime_internal, @function
 CALL $_getRoundEndTime_internal_macro$
 
 .macro _getRoundEndTime_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 440
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 432
 DUP
 GETGLOB 18
 FIRST
 DEC
 UFITS 256
 EQUAL
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 441
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 433
 PUSHINT 0
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 442
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 434
 SWAP
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 444
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 436
 	GETGLOB 12
 	GTINT 0
 	PUSHCONT {
@@ -3621,7 +3576,7 @@ PUSHCONT {
 	IFELSE
 }
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 447
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 439
 	OVER
 	INC
 	GETGLOB 18
@@ -3643,7 +3598,7 @@ PUSHCONT {
 }
 IFELSE
 BLKDROP2 2, 1
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro calculateRewardData
 DROP
@@ -3654,9 +3609,9 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 452
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 444
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $calculateRewardData_internal_macro$
 }
@@ -3704,13 +3659,13 @@ THROW 0
 CALL $calculateRewardData_internal_macro$
 
 .macro calculateRewardData_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 453
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 445
 GETGLOB 11
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 454
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 446
 GETGLOB 19
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 455
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 447
 GETGLOB 24
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 457
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 449
 PUSHINT 0
 GETGLOB 18
 SECOND
@@ -3728,37 +3683,37 @@ CALLREF {
 	PAIR
 }
 FIRST
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 460
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 452
 NOW
 OVER
 LESS
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 461
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 453
 	NOW
 	POP S4
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 462
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 454
 	DROP
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 IFJMP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 465
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 457
 NOW
 PUSH S4
 GREATER
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 467
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 459
 	PUSH2 S3, S0
 	LESS
 	PUSHCONT {
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 468
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 460
 		DUP
 		NOW
 		MIN
 		POP S4
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 	}
 	IF
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 471
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 463
 	GETGLOB 18
 	FIRST
 	DEC
@@ -3768,7 +3723,7 @@ PUSHCONT {
 		GTINT -1
 	}
 	PUSHCONT {
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 473
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 465
 		PUSH2 S4, S0
 		GETGLOB 18
 		SECOND
@@ -3788,7 +3743,7 @@ PUSHCONT {
 		FIRST
 		GEQ
 		PUSHCONT {
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 475
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 467
 			DUP
 			PUSHCONT {
 				DUP
@@ -3798,7 +3753,7 @@ PUSHCONT {
 			}
 			PUSHCONT {
 				PUSHCONT {
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 477
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 469
 					NOW
 					OVER
 					GETGLOB 18
@@ -3819,12 +3774,12 @@ PUSHCONT {
 					FIRST
 					LEQ
 					IFRETALT
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 480
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 472
 					DUP
 					CALLREF {
 						CALL $_getRoundEndTime_internal_macro$
 					}
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 482
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 474
 					OVER
 					GETGLOB 18
 					SECOND
@@ -3847,11 +3802,11 @@ PUSHCONT {
 					CALLREF {
 						CALL $_getMultiplier_internal_macro$
 					}
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 483
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 475
 					PUSHINT 0
 					NEWDICT
 					PAIR
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 484
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 476
 					PUSHINT 0
 					PUSHCONT {
 						PUSH2 S0, S4
@@ -3874,7 +3829,7 @@ PUSHCONT {
 						LESS
 					}
 					PUSHCONT {
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 485
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 477
 						DUP2
 						PUSH S6
 						GETGLOB 18
@@ -3911,35 +3866,35 @@ PUSHCONT {
 						DICTUSETB
 						PAIR
 						POP S2
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 484
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 476
 						INC
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 					}
 					WHILE
 					DROP
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 487
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 479
 					PUSHINT 0
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 488
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 480
 					PUSH S3
 					GETGLOB 12
 					EQUAL
 					PUSHCONT {
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 489
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 481
 						DROP
 						NOW
 					}
 					PUSHCONT {
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 491
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 483
 						PUSH S3
 						NOW
 						MIN
 						NIP
 					}
 					IFELSE
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 494
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 486
 					GETGLOB 17
 					PUSHCONT {
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 495
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 487
 						PUSHINT 0
 						PUSHCONT {
 							PUSH2 S0, S5
@@ -3962,7 +3917,7 @@ PUSHCONT {
 							LESS
 						}
 						PUSHCONT {
-							.loc ../contracts/v2/base/EverFarmPoolBase.sol, 496
+							.loc ../contracts/v1/base/EverFarmPoolBase.sol, 488
 							PUSH2 S0, S2
 							SECOND
 							PUSHINT 32
@@ -3990,20 +3945,20 @@ PUSHCONT {
 							DICTUSETB
 							PAIR
 							POP S9
-							.loc ../contracts/v2/base/EverFarmPoolBase.sol, 495
+							.loc ../contracts/v1/base/EverFarmPoolBase.sol, 487
 							INC
-							.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+							.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 						}
 						WHILE
 						DROP
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 498
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 490
 						POP S9
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 499
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 491
 						BLKDROP 3
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 					}
 					IFNOTJMP
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 502
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 494
 					PUSHINT 0
 					PUSHCONT {
 						PUSH2 S0, S5
@@ -4026,7 +3981,7 @@ PUSHCONT {
 						LESS
 					}
 					PUSHCONT {
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 503
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 495
 						PUSH2 S0, S2
 						SECOND
 						PUSHINT 32
@@ -4035,7 +3990,7 @@ PUSHCONT {
 						PLDU 128
 						PUSHINT 1000000000000000000
 						MUL
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 504
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 496
 						GETGLOB 17
 						DIV
 						PUSH S10
@@ -4058,83 +4013,83 @@ PUSHCONT {
 						DICTUSETB
 						PAIR
 						POP S10
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 502
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 494
 						INC
-						.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+						.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 					}
 					WHILE
 					DROP
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 506
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 498
 					POP S9
-					.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+					.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 					BLKDROP 3
 				}
 				CALLX
-				.loc ../contracts/v2/base/EverFarmPoolBase.sol, 475
+				.loc ../contracts/v1/base/EverFarmPoolBase.sol, 467
 				INC
-				.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+				.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 			}
 			WHILEBRK
 			DROP
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 508
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 500
 			RETALT
-			.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+			.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 		}
 		IFJMP
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 510
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 502
 		DUP
 		IFNOTRET
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 471
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 463
 		DEC
 		UFITS 256
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 	}
 	WHILEBRK
 	DROP
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 IF
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 516
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 508
 DROP
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .globl	updatePoolInfo_internal
 .type	updatePoolInfo_internal, @function
 CALL $updatePoolInfo_internal_macro$
 
 .macro updatePoolInfo_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 520
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 512
 CALLREF {
 	CALL $calculateRewardData_internal_macro$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 521
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 513
 ROT
 SETGLOB 11
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 522
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 514
 SWAP
 SETGLOB 19
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 523
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 515
 SETGLOB 24
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .globl	_buildUserDataParams_internal
 .type	_buildUserDataParams_internal, @function
 CALL $_buildUserDataParams_internal_macro$
 
 .macro _buildUserDataParams_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 528
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 520
 NEWC
 STSLICE
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 529
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 521
 ENDC
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .globl	_buildInitData_internal
 .type	_buildInitData_internal, @function
 CALL $_buildInitData_internal_macro$
 
 .macro _buildInitData_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 533
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 525
 PUSHINT 0
 NEWC
 STU 256
@@ -4173,38 +4128,38 @@ STOPTREF
 STOPTREF
 STZERO
 ENDC
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .globl	deployUserData_internal
 .type	deployUserData_internal, @function
 CALL $deployUserData_internal_macro$
 
 .macro deployUserData_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 548
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 540
 PUSHINT 32
 GETGLOBVAR
 NEWC
 STU 32
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 549
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 541
 PUSHINT 32
 GETGLOBVAR
 SWAP
 STU 32
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 551
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 543
 GETGLOB 20
 FIRST
 UFITS 8
 SWAP
 STU 8
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 552
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 544
 GETGLOB 13
 SWAP
 STU 32
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 553
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 545
 GETGLOB 14
 SWAP
 STU 32
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 555
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 547
 PUXC S1, S-1
 ENDC
 GETGLOB 29
@@ -4264,7 +4219,7 @@ STBREFR
 ENDC
 PUSHINT 0
 SENDRAWMSG
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro getUserDataAddress
 DROP
@@ -4275,7 +4230,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 561
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 553
 LDU 32
 GETGLOB 4
 ROT
@@ -4290,7 +4245,7 @@ PUSHCONT {
 IF
 LDMSGADDR
 ENDS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 CALLREF {
 	CALL $getUserDataAddress_internal_macro$
 }
@@ -4359,7 +4314,7 @@ THROW 0
 CALL $getUserDataAddress_internal_macro$
 
 .macro getUserDataAddress_internal_macro
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 562
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 554
 GETGLOB 4
 PUSHINT 0
 SETINDEXQ 2
@@ -4380,7 +4335,7 @@ STSLICECONST x801_
 STU 256
 ENDC
 CTOS
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 
 .macro on_bounce_macro
 GETGLOB 6
@@ -4390,27 +4345,27 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 566
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 558
 ACCEPT
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 568
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 560
 DUP
 LDU 32
 POP S2
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 570
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 562
 PUSHINT 148004568
 EQUAL
 PUSHCONT {
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 571
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 563
 	CALLREF {
 		CALL $_reserve_internal_macro$
 	}
 	PUSHINT 0
 	RAWRESERVE
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 573
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 565
 	DUP
 	LDU 64
 	POP S2
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 574
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 566
 	DUP
 	GETGLOB 27
 	PUSHINT 64
@@ -4441,13 +4396,13 @@ PUSHCONT {
 		TUPLE 4
 	}
 	IFELSE
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 575
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 567
 	DUP
 	FIRST
 	CALLREF {
 		CALL $deployUserData_internal_macro$
 	}
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 576
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 568
 	PUSHINT 0
 	PUSHCONT {
 		DUP
@@ -4456,7 +4411,7 @@ PUSHCONT {
 		LESS
 	}
 	PUSHCONT {
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 578
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 570
 		PUSHINT 100000000
 		PUSH S3
 		FIRST
@@ -4481,13 +4436,13 @@ PUSHCONT {
 		ENDC
 		PUSHINT 0
 		SENDRAWMSG
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 576
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 568
 		INC
-		.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+		.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 	}
 	WHILE
 	DROP
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 584
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 576
 	PUSHINT 32
 	GETGLOBVAR
 	GETGLOB 12
@@ -4518,10 +4473,10 @@ PUSHCONT {
 	ENDC
 	PUSHINT 128
 	SENDRAWMSG
-	.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+	.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 }
 IF
-.loc ../contracts/v2/base/EverFarmPoolBase.sol, 0
+.loc ../contracts/v1/base/EverFarmPoolBase.sol, 0
 DROP
 CALLREF {
 	CALL $c7_to_c4$
@@ -4698,28 +4653,8 @@ PUSHCONT {
 		PUSHINT 0
 	}
 	IFELSE
-	PUSHINT 5
-	PUSH S33
-	PUSHINT 64
-	DICTUGET
-	PUSHCONT {
-		PLDU 32
-	}
-	PUSHCONT {
-		PUSHINT 0
-	}
-	IFELSE
-	PUSHINT 6
-	PUSH S34
-	PUSHINT 64
-	DICTUGET
-	PUSHCONT {
-		PLDU 32
-	}
-	PUSHCONT {
-		PUSHINT 0
-	}
-	IFELSE
+	PUSHINT 0
+	DUP
 	PUSHINT 34
 	TUPLEVAR
 	POP C7
@@ -5058,7 +4993,7 @@ IFJMPREF {
 	}
 }
 DUP
-PUSHINT 2134328500
+PUSHINT 2068813800
 LEQ
 IFJMPREF {
 	DUP
@@ -5120,21 +5055,10 @@ IFJMPREF {
 		}
 	}
 	DUP
-	PUSHINT 2134328500
-	LEQ
+	PUSHINT 2068813800
+	EQUAL
 	IFJMPREF {
-		DUP
-		PUSHINT 2068813800
-		EQUAL
-		IFJMPREF {
-			CALL $safeWithdraw$
-		}
-		DUP
-		PUSHINT 2134328500
-		EQUAL
-		IFJMPREF {
-			CALL $forceUpgradeUserData$
-		}
+		CALL $safeWithdraw$
 	}
 }
 
