@@ -567,7 +567,7 @@ abstract contract EverFarmPoolBase is EverFarmPoolStorage {
 
         uint32 functionId = slice.decode(uint32);
         // if processing failed - contract was not deployed. Deploy and try again
-        if (functionId == tvm.functionId(UserData.processDeposit)) {
+        if (functionId == tvm.functionId(UserDataV2.processDeposit)) {
             tvm.rawReserve(_reserve(), 0);
 
             uint64 _deposit_nonce = slice.decode(uint64);

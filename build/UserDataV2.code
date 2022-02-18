@@ -10,7 +10,7 @@ IFREF {
 GETGLOB 6
 THROWIF 51
 ENDS
-.loc ../contracts/v2/UserDataV2.sol, 31
+.loc ../contracts/v2/UserDataV2.sol, 32
 THROW 100
 .loc ../contracts/v2/UserDataV2.sol, 0
 
@@ -19,19 +19,19 @@ THROW 100
 CALL $_init_internal_macro$
 
 .macro _init_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 35
+.loc ../contracts/v2/UserDataV2.sol, 36
 GETGLOB 20
 GETGLOB 9
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/UserDataV2.sol, 36
+.loc ../contracts/v2/UserDataV2.sol, 37
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S3
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 37
+	.loc ../contracts/v2/UserDataV2.sol, 38
 	GETGLOB 17
 	PUSHINT 0
 	NEWC
@@ -45,7 +45,7 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 17
-	.loc ../contracts/v2/UserDataV2.sol, 38
+	.loc ../contracts/v2/UserDataV2.sol, 39
 	GETGLOB 18
 	PUSHINT 0
 	NEWC
@@ -59,7 +59,7 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 18
-	.loc ../contracts/v2/UserDataV2.sol, 39
+	.loc ../contracts/v2/UserDataV2.sol, 40
 	GETGLOB 19
 	PUSHINT 0
 	NEWC
@@ -73,16 +73,30 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 19
-	.loc ../contracts/v2/UserDataV2.sol, 36
+	.loc ../contracts/v2/UserDataV2.sol, 41
+	GETGLOB 16
+	PUSHINT 0
+	NEWC
+	STU 32
+	SWAP
+	UNPAIR
+	OVER
+	INC
+	ROLLREV 3
+	PUSHINT 32
+	DICTUSETB
+	PAIR
+	SETGLOB 16
+	.loc ../contracts/v2/UserDataV2.sol, 37
 	INC
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/UserDataV2.sol, 41
+.loc ../contracts/v2/UserDataV2.sol, 43
 SWAP
 SETGLOB 13
-.loc ../contracts/v2/UserDataV2.sol, 42
+.loc ../contracts/v2/UserDataV2.sol, 44
 SETGLOB 14
 .loc ../contracts/v2/UserDataV2.sol, 0
 DROP
@@ -92,7 +106,7 @@ DROP
 CALL $_reserve_internal_macro$
 
 .macro _reserve_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 46
+.loc ../contracts/v2/UserDataV2.sol, 48
 GETPARAM 7
 FIRST
 DEPTH
@@ -113,7 +127,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/UserDataV2.sol, 49
+.loc ../contracts/v2/UserDataV2.sol, 51
 LDU 32
 GETGLOB 4
 ROT
@@ -139,7 +153,7 @@ PUSHCONT {
 	STUR 98
 	SWAP
 	NEWC
-	STSLICECONST xf3b13894
+	STSLICECONST xf5949c9e
 	SWAP
 	UNTUPLE 8
 	REVERSE 9, 0
@@ -153,8 +167,14 @@ PUSHCONT {
 	XCHG S2
 	STU 32
 	STDICT
+	SWAP
+	UNPAIR
+	XCHG S2
 	STU 32
+	STDICT
 	STU 128
+	ROLLREV 4
+	NEWC
 	SWAP
 	UNPAIR
 	XCHG S2
@@ -165,6 +185,7 @@ PUSHCONT {
 	NEWC
 	STSLICE
 	STU 32
+	STBREFR
 	STBREFR
 	STBREFR
 	ENDC
@@ -209,8 +230,14 @@ PUSHCONT {
 	XCHG S2
 	STU 32
 	STDICT
+	SWAP
+	UNPAIR
+	XCHG S2
 	STU 32
+	STDICT
 	STU 128
+	ROLLREV 4
+	NEWC
 	SWAP
 	UNPAIR
 	XCHG S2
@@ -221,6 +248,7 @@ PUSHCONT {
 	NEWC
 	STSLICE
 	STU 32
+	STBREFR
 	STBREFR
 	STBREFR
 	ENDC
@@ -235,7 +263,7 @@ IFREF {
 THROW 0
 
 .macro getDetails_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 50
+.loc ../contracts/v2/UserDataV2.sol, 52
 GETGLOB 4
 PUSHINT 0
 SETINDEXQ 2
@@ -246,8 +274,8 @@ SETINDEXQ 4
 SETGLOB 4
 GETGLOB 19
 GETGLOB 18
-GETGLOB 15
 GETGLOB 16
+GETGLOB 15
 GETGLOB 17
 GETGLOB 20
 GETGLOB 21
@@ -264,7 +292,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/UserDataV2.sol, 56
+.loc ../contracts/v2/UserDataV2.sol, 58
 LDU 32
 LDDICT
 ROTREV
@@ -291,7 +319,7 @@ PUSHCONT {
 	PUSHINT 98
 	STZEROES
 	REVERSE 4, 1
-	STSLICECONST xae87e7a2
+	STSLICECONST x84574201
 	SWAP
 	UNPAIR
 	XCHG S2
@@ -307,7 +335,11 @@ PUSHCONT {
 	XCHG S2
 	STU 32
 	STDICT
+	SWAP
+	UNPAIR
+	XCHG S2
 	STU 32
+	STDICT
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -322,13 +354,13 @@ IFREF {
 THROW 0
 
 .macro pendingReward_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 56
+.loc ../contracts/v2/UserDataV2.sol, 58
 PUSHINT 0
 NEWDICT
 PAIR
 DUP
-.loc ../contracts/v2/UserDataV2.sol, 61
-GETGLOB 16
+.loc ../contracts/v2/UserDataV2.sol, 63
+GETGLOB 15
 GETGLOB 17
 BLKSWAP 3, 4
 CALLREF {
@@ -337,7 +369,7 @@ CALLREF {
 XCHG S2
 POP S4
 POP S2
-.loc ../contracts/v2/UserDataV2.sol, 67
+.loc ../contracts/v2/UserDataV2.sol, 69
 ROTREV
 GETGLOB 19
 ROLL 3
@@ -348,7 +380,7 @@ ROLL 3
 CALL $_isEven_internal_macro$
 
 .macro _isEven_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 71
+.loc ../contracts/v2/UserDataV2.sol, 73
 RSHIFT 1
 PUSHCONT {
 	FALSE
@@ -364,13 +396,13 @@ IFELSE
 CALL $_rangeSum_internal_macro$
 
 .macro _rangeSum_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 75
+.loc ../contracts/v2/UserDataV2.sol, 77
 DUP
 CALLREF {
 	CALL $_isEven_internal_macro$
 }
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 76
+	.loc ../contracts/v2/UserDataV2.sol, 78
 	DUP
 	RSHIFT 1
 	OVER
@@ -383,7 +415,7 @@ PUSHCONT {
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 IFJMP
-.loc ../contracts/v2/UserDataV2.sol, 78
+.loc ../contracts/v2/UserDataV2.sol, 80
 DUP
 RSHIFT 1
 INC
@@ -397,7 +429,7 @@ UFITS 64
 CALL $_rangeIntervalAverage_internal_macro$
 
 .macro _rangeIntervalAverage_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 83
+.loc ../contracts/v2/UserDataV2.sol, 85
 SWAP
 CALLREF {
 	CALL $_rangeSum_internal_macro$
@@ -413,13 +445,13 @@ DIV
 CALL $_computeVestedForInterval_internal_macro$
 
 .macro _computeVestedForInterval_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 88
+.loc ../contracts/v2/UserDataV2.sol, 90
 DUP
 GETGLOB 13
 DIV
 DEC
 UFITS 32
-.loc ../contracts/v2/UserDataV2.sol, 89
+.loc ../contracts/v2/UserDataV2.sol, 91
 GETGLOB 13
 MUL
 UFITS 32
@@ -428,11 +460,11 @@ GETGLOB 13
 MOD
 ADD
 UFITS 32
-.loc ../contracts/v2/UserDataV2.sol, 90
+.loc ../contracts/v2/UserDataV2.sol, 92
 DUP2
 SUB
 UFITS 32
-.loc ../contracts/v2/UserDataV2.sol, 93
+.loc ../contracts/v2/UserDataV2.sol, 95
 SWAP
 PUSHINT 1000000000000000000
 MUL
@@ -443,12 +475,12 @@ MUL
 PUSHINT 1000000000000000000
 DIV
 UFITS 128
-.loc ../contracts/v2/UserDataV2.sol, 94
+.loc ../contracts/v2/UserDataV2.sol, 96
 ROT
 OVER
 SUB
 UFITS 128
-.loc ../contracts/v2/UserDataV2.sol, 97
+.loc ../contracts/v2/UserDataV2.sol, 99
 PUSH S2
 GETGLOB 13
 CALLREF {
@@ -456,17 +488,17 @@ CALLREF {
 }
 ROLL 3
 DIV
-.loc ../contracts/v2/UserDataV2.sol, 98
+.loc ../contracts/v2/UserDataV2.sol, 100
 OVER
 MUL
 PUSHINT 1000000000000000000
 DIV
 UFITS 128
-.loc ../contracts/v2/UserDataV2.sol, 99
+.loc ../contracts/v2/UserDataV2.sol, 101
 TUCK
 SUB
 UFITS 128
-.loc ../contracts/v2/UserDataV2.sol, 101
+.loc ../contracts/v2/UserDataV2.sol, 103
 ROTREV
 ADD
 UFITS 128
@@ -478,47 +510,47 @@ SWAP
 CALL $_computeVestedForNewlyEntitled_internal_macro$
 
 .macro _computeVestedForNewlyEntitled_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 106
+.loc ../contracts/v2/UserDataV2.sol, 108
 PUSHINT 0
-.loc ../contracts/v2/UserDataV2.sol, 107
+.loc ../contracts/v2/UserDataV2.sol, 109
 PUSH S3
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 108
+	.loc ../contracts/v2/UserDataV2.sol, 110
 	BLKDROP 4
 	PUSHINT 0
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 IFNOTJMP
-.loc ../contracts/v2/UserDataV2.sol, 110
+.loc ../contracts/v2/UserDataV2.sol, 112
 OVER
 EQINT 0
 OVER2
 LESS
 OR
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 111
+	.loc ../contracts/v2/UserDataV2.sol, 113
 	ROT
 	GETGLOB 12
 	SUB
 	UFITS 32
-	.loc ../contracts/v2/UserDataV2.sol, 113
+	.loc ../contracts/v2/UserDataV2.sol, 115
 	DUP
 	GETGLOB 13
 	GREATER
 	PUSHCONT {
-		.loc ../contracts/v2/UserDataV2.sol, 114
+		.loc ../contracts/v2/UserDataV2.sol, 116
 		ROLL 3
 		SWAP
 		CALLREF {
 			CALL $_computeVestedForInterval_internal_macro$
 		}
-		.loc ../contracts/v2/UserDataV2.sol, 115
+		.loc ../contracts/v2/UserDataV2.sol, 117
 		DROP
 		BLKDROP2 2, 1
 		.loc ../contracts/v2/UserDataV2.sol, 0
 	}
 	PUSHCONT {
-		.loc ../contracts/v2/UserDataV2.sol, 117
+		.loc ../contracts/v2/UserDataV2.sol, 119
 		DUP
 		GETGLOB 13
 		CALLREF {
@@ -526,7 +558,7 @@ PUSHCONT {
 		}
 		SWAP
 		DIV
-		.loc ../contracts/v2/UserDataV2.sol, 118
+		.loc ../contracts/v2/UserDataV2.sol, 120
 		ROLL 3
 		MUL
 		PUSHINT 1000000000000000000
@@ -539,25 +571,25 @@ PUSHCONT {
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 121
+	.loc ../contracts/v2/UserDataV2.sol, 123
 	OVER
 	GETGLOB 12
 	SUB
 	UFITS 32
-	.loc ../contracts/v2/UserDataV2.sol, 122
+	.loc ../contracts/v2/UserDataV2.sol, 124
 	SWAP2
 	SUB
 	UFITS 32
 	GETGLOB 13
 	MIN
-	.loc ../contracts/v2/UserDataV2.sol, 124
+	.loc ../contracts/v2/UserDataV2.sol, 126
 	PUSHINT 0
 	PUSH2 S0, S2
-	.loc ../contracts/v2/UserDataV2.sol, 126
+	.loc ../contracts/v2/UserDataV2.sol, 128
 	GETGLOB 13
 	GREATER
 	PUSHCONT {
-		.loc ../contracts/v2/UserDataV2.sol, 127
+		.loc ../contracts/v2/UserDataV2.sol, 129
 		PUSH2 S5, S3
 		CALLREF {
 			CALL $_computeVestedForInterval_internal_macro$
@@ -565,7 +597,7 @@ PUSHCONT {
 		BLKDROP2 2, 2
 	}
 	PUSHCONT {
-		.loc ../contracts/v2/UserDataV2.sol, 129
+		.loc ../contracts/v2/UserDataV2.sol, 131
 		PUSH S3
 		GETGLOB 13
 		CALLREF {
@@ -573,27 +605,27 @@ PUSHCONT {
 		}
 		PUSH S4
 		DIV
-		.loc ../contracts/v2/UserDataV2.sol, 130
+		.loc ../contracts/v2/UserDataV2.sol, 132
 		PUSH S6
 		MUL
 		PUSHINT 1000000000000000000
 		DIV
 		UFITS 128
 		POP S2
-		.loc ../contracts/v2/UserDataV2.sol, 131
+		.loc ../contracts/v2/UserDataV2.sol, 133
 		PUSH2 S5, S1
 		SUB
 		UFITS 128
 		NIP
 	}
 	IFELSE
-	.loc ../contracts/v2/UserDataV2.sol, 134
+	.loc ../contracts/v2/UserDataV2.sol, 136
 	ROT
 	MUL
 	UFITS 128
 	GETGLOB 13
 	DIV
-	.loc ../contracts/v2/UserDataV2.sol, 135
+	.loc ../contracts/v2/UserDataV2.sol, 137
 	ADD
 	UFITS 128
 	BLKDROP2 3, 1
@@ -607,9 +639,27 @@ IFELSE
 CALL $_computeVesting_internal_macro$
 
 .macro _computeVesting_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 146
+.loc ../contracts/v2/UserDataV2.sol, 148
+GETGLOB 16
+FIRST
 PUSHINT 0
-.loc ../contracts/v2/UserDataV2.sol, 147
+NEWC
+STU 32
+PUSHINT 0
+NEWDICT
+PUSH S3
+PUSHCONT {
+	BLKPUSH 2, 2
+	INC
+	XCHG S3
+	ROT
+	PUSHINT 32
+	DICTUSETB
+}
+REPEAT
+BLKDROP2 2, 1
+PAIR
+.loc ../contracts/v2/UserDataV2.sol, 149
 PUSH S4
 FIRST
 PUSHINT 0
@@ -629,7 +679,7 @@ PUSHCONT {
 REPEAT
 BLKDROP2 2, 1
 PAIR
-.loc ../contracts/v2/UserDataV2.sol, 148
+.loc ../contracts/v2/UserDataV2.sol, 150
 PUSH S5
 FIRST
 PUSHINT 0
@@ -649,7 +699,7 @@ PUSHCONT {
 REPEAT
 BLKDROP2 2, 1
 PAIR
-.loc ../contracts/v2/UserDataV2.sol, 149
+.loc ../contracts/v2/UserDataV2.sol, 151
 PUSH S6
 FIRST
 PUSHINT 0
@@ -669,7 +719,7 @@ PUSHCONT {
 REPEAT
 BLKDROP2 2, 1
 PAIR
-.loc ../contracts/v2/UserDataV2.sol, 151
+.loc ../contracts/v2/UserDataV2.sol, 153
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S8
@@ -677,7 +727,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 152
+	.loc ../contracts/v2/UserDataV2.sol, 154
 	PUSH3 S9, S0, S7
 	SECOND
 	PUSHINT 32
@@ -685,7 +735,7 @@ PUSHCONT {
 	THROWIFNOT 50
 	PLDU 256
 	MUL
-	.loc ../contracts/v2/UserDataV2.sol, 153
+	.loc ../contracts/v2/UserDataV2.sol, 155
 	PUSHINT 1000000000000000000
 	DIV
 	UFITS 128
@@ -711,11 +761,11 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	POP S2
-	.loc ../contracts/v2/UserDataV2.sol, 154
+	.loc ../contracts/v2/UserDataV2.sol, 156
 	GETGLOB 14
 	GTINT 0
 	PUSHCONT {
-		.loc ../contracts/v2/UserDataV2.sol, 156
+		.loc ../contracts/v2/UserDataV2.sol, 158
 		PUSH2 S0, S1
 		SECOND
 		PUSHINT 32
@@ -727,7 +777,7 @@ PUSHCONT {
 		UFITS 128
 		PUSHINT 1000
 		DIV
-		.loc ../contracts/v2/UserDataV2.sol, 157
+		.loc ../contracts/v2/UserDataV2.sol, 159
 		PUSH2 S1, S2
 		SECOND
 		PUSHINT 32
@@ -737,7 +787,7 @@ PUSHCONT {
 		OVER
 		SUB
 		UFITS 128
-		.loc ../contracts/v2/UserDataV2.sol, 159
+		.loc ../contracts/v2/UserDataV2.sol, 161
 		GETGLOB 12
 		PUSH S8
 		LESS
@@ -745,7 +795,7 @@ PUSHCONT {
 		EQINT 0
 		OR
 		PUSHCONT {
-			.loc ../contracts/v2/UserDataV2.sol, 160
+			.loc ../contracts/v2/UserDataV2.sol, 162
 			PUSH3 S1, S8, S7
 			CALLREF {
 				CALL $_computeVestedForNewlyEntitled_internal_macro$
@@ -759,7 +809,7 @@ PUSHCONT {
 			ROLL 3
 		}
 		PUSHCONT {
-			.loc ../contracts/v2/UserDataV2.sol, 163
+			.loc ../contracts/v2/UserDataV2.sol, 165
 			PUSH S5
 			UNPAIR
 			PUXC S4, S-1
@@ -776,9 +826,14 @@ PUSHCONT {
 		DICTUSETB
 		PAIR
 		POP S6
-		.loc ../contracts/v2/UserDataV2.sol, 167
-		PUSH S8
-		GETGLOB 15
+		.loc ../contracts/v2/UserDataV2.sol, 169
+		PUSH2 S8, S2
+		GETGLOB 16
+		SECOND
+		PUSHINT 32
+		DICTUGET
+		THROWIFNOT 50
+		PLDU 32
 		GEQ
 		PUSHCONT {
 			GETGLOB 13
@@ -790,7 +845,7 @@ PUSHCONT {
 			UFITS 32
 		}
 		IFELSE
-		.loc ../contracts/v2/UserDataV2.sol, 168
+		.loc ../contracts/v2/UserDataV2.sol, 170
 		PUSH S3
 		GETGLOB 18
 		SECOND
@@ -800,7 +855,7 @@ PUSHCONT {
 		PLDU 128
 		OVER
 		MUL
-		.loc ../contracts/v2/UserDataV2.sol, 169
+		.loc ../contracts/v2/UserDataV2.sol, 171
 		SWAP
 		GETGLOB 13
 		GEQ
@@ -814,8 +869,13 @@ PUSHCONT {
 			PLDU 128
 		}
 		PUSHCONT {
-			DUP
-			GETGLOB 15
+			PUSH2 S0, S3
+			GETGLOB 16
+			SECOND
+			PUSHINT 32
+			DICTUGET
+			THROWIFNOT 50
+			PLDU 32
 			GETGLOB 12
 			SUB
 			UFITS 32
@@ -823,7 +883,7 @@ PUSHCONT {
 			UFITS 128
 		}
 		IFELSE
-		.loc ../contracts/v2/UserDataV2.sol, 174
+		.loc ../contracts/v2/UserDataV2.sol, 176
 		PUSH S4
 		GETGLOB 18
 		SECOND
@@ -847,7 +907,7 @@ PUSHCONT {
 			PUSHINT 0
 		}
 		IFELSE
-		.loc ../contracts/v2/UserDataV2.sol, 175
+		.loc ../contracts/v2/UserDataV2.sol, 177
 		PUSH3 S4, S5, S8
 		SECOND
 		PUSHINT 32
@@ -856,23 +916,29 @@ PUSHCONT {
 		PLDU 128
 		SUB
 		UFITS 128
-		.loc ../contracts/v2/UserDataV2.sol, 176
+		.loc ../contracts/v2/UserDataV2.sol, 178
 		DUP2
 		ADD
 		UFITS 128
-		.loc ../contracts/v2/UserDataV2.sol, 179
+		.loc ../contracts/v2/UserDataV2.sol, 181
 		DUP
 		PUSHCONT {
 			PUSH S2
 			PUSHCONT {
 				OVER
 				PUSHCONT {
-					.loc ../contracts/v2/UserDataV2.sol, 189
-					GETGLOB 15
+					.loc ../contracts/v2/UserDataV2.sol, 191
+					PUSH S7
+					GETGLOB 16
+					SECOND
+					PUSHINT 32
+					DICTUGET
+					THROWIFNOT 50
+					PLDU 32
 					PUSH S14
 					SUB
 					UFITS 32
-					.loc ../contracts/v2/UserDataV2.sol, 190
+					.loc ../contracts/v2/UserDataV2.sol, 192
 					PUSH S3
 					MUL
 					UFITS 128
@@ -885,7 +951,7 @@ PUSHCONT {
 					OVER
 					DIV
 					UFITS 32
-					.loc ../contracts/v2/UserDataV2.sol, 191
+					.loc ../contracts/v2/UserDataV2.sol, 193
 					PUXC S14, S-1
 					GETGLOB 13
 					MIN
@@ -893,27 +959,46 @@ PUSHCONT {
 					UFITS 32
 				}
 				PUSHCONT {
-					.loc ../contracts/v2/UserDataV2.sol, 186
-					GETGLOB 15
+					.loc ../contracts/v2/UserDataV2.sol, 188
+					PUSH S7
+					GETGLOB 16
+					SECOND
+					PUSHINT 32
+					DICTUGET
+					THROWIFNOT 50
+					PLDU 32
 				}
 				IFELSE
 			}
 			PUSHCONT {
-				.loc ../contracts/v2/UserDataV2.sol, 183
+				.loc ../contracts/v2/UserDataV2.sol, 185
 				PUSH S13
 				GETGLOB 13
 				ADD
 				UFITS 32
 			}
 			IFELSE
+			PUSH S12
 		}
 		PUSHCONT {
-			.loc ../contracts/v2/UserDataV2.sol, 180
-			PUSH S13
+			.loc ../contracts/v2/UserDataV2.sol, 182
+			PUSH2 S13, S11
 		}
 		IFELSE
+		UNPAIR
+		PUXC S10, S-1
+		PUSH2 S1, S2
+		LESS
+		THROWIFNOT 50
+		ROLL 3
+		NEWC
+		STU 32
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
 		POP S12
-		.loc ../contracts/v2/UserDataV2.sol, 194
+		.loc ../contracts/v2/UserDataV2.sol, 196
 		BLKDROP 3
 		PUSH S9
 		GTINT 0
@@ -922,15 +1007,38 @@ PUSHCONT {
 			GETGLOB 13
 			ADD
 			UFITS 32
-			PUSH S9
+			PUSH2 S5, S9
+			SECOND
+			PUSHINT 32
+			DICTUGET
+			THROWIFNOT 50
+			PLDU 32
 			MIN
 		}
 		PUSHCONT {
-			PUSH S8
+			PUSH2 S4, S8
+			SECOND
+			PUSHINT 32
+			DICTUGET
+			THROWIFNOT 50
+			PLDU 32
 		}
 		IFELSE
+		PUSH S9
+		UNPAIR
+		PUXC S7, S-1
+		PUSH2 S1, S2
+		LESS
+		THROWIFNOT 50
+		ROLL 3
+		NEWC
+		STU 32
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
 		POP S9
-		.loc ../contracts/v2/UserDataV2.sol, 195
+		.loc ../contracts/v2/UserDataV2.sol, 197
 		PUSH S4
 		GETGLOB 18
 		SECOND
@@ -966,7 +1074,7 @@ PUSHCONT {
 		DICTUSETB
 		PAIR
 		POP S6
-		.loc ../contracts/v2/UserDataV2.sol, 196
+		.loc ../contracts/v2/UserDataV2.sol, 198
 		ROT
 		ADD
 		UFITS 128
@@ -995,7 +1103,7 @@ PUSHCONT {
 		DROP
 	}
 	PUSHCONT {
-		.loc ../contracts/v2/UserDataV2.sol, 198
+		.loc ../contracts/v2/UserDataV2.sol, 200
 		PUSH2 S0, S1
 		SECOND
 		PUSHINT 32
@@ -1019,13 +1127,13 @@ PUSHCONT {
 		.loc ../contracts/v2/UserDataV2.sol, 0
 	}
 	IFELSE
-	.loc ../contracts/v2/UserDataV2.sol, 151
+	.loc ../contracts/v2/UserDataV2.sol, 153
 	INC
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 WHILE
 DROP2
-.loc ../contracts/v2/UserDataV2.sol, 202
+.loc ../contracts/v2/UserDataV2.sol, 204
 XCHG S2
 BLKDROP2 5, 3
 .loc ../contracts/v2/UserDataV2.sol, 0
@@ -1039,7 +1147,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/UserDataV2.sol, 205
+.loc ../contracts/v2/UserDataV2.sol, 207
 OVER
 PUSHCONT {
 	LDU 32
@@ -1073,19 +1181,19 @@ CALLREF {
 THROW 0
 
 .macro increasePoolDebt_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 206
+.loc ../contracts/v2/UserDataV2.sol, 208
 DROP
 GETGLOB 9
 GETGLOB 20
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/UserDataV2.sol, 207
+.loc ../contracts/v2/UserDataV2.sol, 209
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/UserDataV2.sol, 209
+.loc ../contracts/v2/UserDataV2.sol, 211
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S2
@@ -1093,7 +1201,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 210
+	.loc ../contracts/v2/UserDataV2.sol, 212
 	PUSH2 S0, S2
 	SECOND
 	PUSHINT 32
@@ -1121,13 +1229,13 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 19
-	.loc ../contracts/v2/UserDataV2.sol, 209
+	.loc ../contracts/v2/UserDataV2.sol, 211
 	INC
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/UserDataV2.sol, 213
+.loc ../contracts/v2/UserDataV2.sol, 215
 NEWC
 STSLICECONST x42_
 STSLICE
@@ -1148,7 +1256,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/UserDataV2.sol, 216
+.loc ../contracts/v2/UserDataV2.sol, 218
 LDU 64
 LDU 128
 LDU 32
@@ -1171,29 +1279,29 @@ CALLREF {
 THROW 0
 
 .macro processDeposit_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 217
+.loc ../contracts/v2/UserDataV2.sol, 219
 DROP
 GETGLOB 9
 GETGLOB 20
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/UserDataV2.sol, 218
+.loc ../contracts/v2/UserDataV2.sol, 220
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/UserDataV2.sol, 220
-GETGLOB 16
-.loc ../contracts/v2/UserDataV2.sol, 221
-GETGLOB 17
+.loc ../contracts/v2/UserDataV2.sol, 222
+GETGLOB 15
 .loc ../contracts/v2/UserDataV2.sol, 223
-GETGLOB 16
+GETGLOB 17
+.loc ../contracts/v2/UserDataV2.sol, 225
+GETGLOB 15
 ROLL 6
 ADD
 UFITS 128
-SETGLOB 16
-.loc ../contracts/v2/UserDataV2.sol, 224
+SETGLOB 15
+.loc ../contracts/v2/UserDataV2.sol, 226
 PUSHINT 0
 PUSHCONT {
 	DUP
@@ -1202,8 +1310,8 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 225
-	GETGLOB 16
+	.loc ../contracts/v2/UserDataV2.sol, 227
+	GETGLOB 15
 	PUSH2 S1, S6
 	SECOND
 	PUSHINT 32
@@ -1211,7 +1319,7 @@ PUSHCONT {
 	THROWIFNOT 50
 	PLDU 256
 	MUL
-	.loc ../contracts/v2/UserDataV2.sol, 226
+	.loc ../contracts/v2/UserDataV2.sol, 228
 	PUSHINT 1000000000000000000
 	DIV
 	UFITS 128
@@ -1229,28 +1337,28 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 17
-	.loc ../contracts/v2/UserDataV2.sol, 224
+	.loc ../contracts/v2/UserDataV2.sol, 226
 	INC
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/UserDataV2.sol, 229
+.loc ../contracts/v2/UserDataV2.sol, 231
 ROLL 4
 PUSH S4
 ROLL 4
 CALLREF {
 	CALL $_computeVesting_internal_macro$
 }
-.loc ../contracts/v2/UserDataV2.sol, 234
+.loc ../contracts/v2/UserDataV2.sol, 236
 ROT
 SETGLOB 18
-.loc ../contracts/v2/UserDataV2.sol, 235
-SETGLOB 15
-.loc ../contracts/v2/UserDataV2.sol, 236
+.loc ../contracts/v2/UserDataV2.sol, 237
+SETGLOB 16
+.loc ../contracts/v2/UserDataV2.sol, 238
 SWAP
 SETGLOB 12
-.loc ../contracts/v2/UserDataV2.sol, 238
+.loc ../contracts/v2/UserDataV2.sol, 240
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S1
@@ -1258,7 +1366,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 239
+	.loc ../contracts/v2/UserDataV2.sol, 241
 	DUP
 	GETGLOB 19
 	SECOND
@@ -1287,7 +1395,7 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	POP S2
-	.loc ../contracts/v2/UserDataV2.sol, 240
+	.loc ../contracts/v2/UserDataV2.sol, 242
 	GETGLOB 19
 	UNPAIR
 	PUXC S2, S-1
@@ -1302,13 +1410,13 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 19
-	.loc ../contracts/v2/UserDataV2.sol, 238
+	.loc ../contracts/v2/UserDataV2.sol, 240
 	INC
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/UserDataV2.sol, 243
+.loc ../contracts/v2/UserDataV2.sol, 245
 SWAP
 GETGLOB 9
 NEWC
@@ -1332,12 +1440,12 @@ SENDRAWMSG
 CALL $_withdraw_internal_macro$
 
 .macro _withdraw_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 248
+.loc ../contracts/v2/UserDataV2.sol, 250
 PUSH S5
-GETGLOB 16
+GETGLOB 15
 GREATER
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 249
+	.loc ../contracts/v2/UserDataV2.sol, 251
 	DROP
 	NEWC
 	STSLICECONST x42_
@@ -1347,21 +1455,21 @@ PUSHCONT {
 	ENDC
 	PUSHINT 128
 	SENDRAWMSG
-	.loc ../contracts/v2/UserDataV2.sol, 250
+	.loc ../contracts/v2/UserDataV2.sol, 252
 	BLKDROP 4
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 IFJMP
-.loc ../contracts/v2/UserDataV2.sol, 253
-GETGLOB 16
+.loc ../contracts/v2/UserDataV2.sol, 255
+GETGLOB 15
 GETGLOB 17
-GETGLOB 16
+GETGLOB 15
 PUSH S8
-.loc ../contracts/v2/UserDataV2.sol, 256
+.loc ../contracts/v2/UserDataV2.sol, 258
 SUB
 UFITS 128
-SETGLOB 16
-.loc ../contracts/v2/UserDataV2.sol, 257
+SETGLOB 15
+.loc ../contracts/v2/UserDataV2.sol, 259
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S7
@@ -1369,8 +1477,8 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 258
-	GETGLOB 16
+	.loc ../contracts/v2/UserDataV2.sol, 260
+	GETGLOB 15
 	PUSH2 S1, S8
 	SECOND
 	PUSHINT 32
@@ -1378,7 +1486,7 @@ PUSHCONT {
 	THROWIFNOT 50
 	PLDU 256
 	MUL
-	.loc ../contracts/v2/UserDataV2.sol, 259
+	.loc ../contracts/v2/UserDataV2.sol, 261
 	PUSHINT 1000000000000000000
 	DIV
 	UFITS 128
@@ -1396,28 +1504,28 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 17
-	.loc ../contracts/v2/UserDataV2.sol, 257
+	.loc ../contracts/v2/UserDataV2.sol, 259
 	INC
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/UserDataV2.sol, 262
+.loc ../contracts/v2/UserDataV2.sol, 264
 ROLL 6
 PUSH S6
 ROLL 6
 CALLREF {
 	CALL $_computeVesting_internal_macro$
 }
-.loc ../contracts/v2/UserDataV2.sol, 267
+.loc ../contracts/v2/UserDataV2.sol, 269
 ROT
 SETGLOB 18
-.loc ../contracts/v2/UserDataV2.sol, 268
-SETGLOB 15
-.loc ../contracts/v2/UserDataV2.sol, 269
+.loc ../contracts/v2/UserDataV2.sol, 270
+SETGLOB 16
+.loc ../contracts/v2/UserDataV2.sol, 271
 ROLL 3
 SETGLOB 12
-.loc ../contracts/v2/UserDataV2.sol, 271
+.loc ../contracts/v2/UserDataV2.sol, 273
 PUSHINT 0
 PUSHCONT {
 	PUSH2 S0, S1
@@ -1425,7 +1533,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 272
+	.loc ../contracts/v2/UserDataV2.sol, 274
 	DUP
 	GETGLOB 19
 	SECOND
@@ -1454,7 +1562,7 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	POP S2
-	.loc ../contracts/v2/UserDataV2.sol, 273
+	.loc ../contracts/v2/UserDataV2.sol, 275
 	GETGLOB 19
 	UNPAIR
 	PUXC S2, S-1
@@ -1469,13 +1577,13 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 19
-	.loc ../contracts/v2/UserDataV2.sol, 271
+	.loc ../contracts/v2/UserDataV2.sol, 273
 	INC
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/UserDataV2.sol, 276
+.loc ../contracts/v2/UserDataV2.sol, 278
 SWAP
 XCHG S3
 GETGLOB 21
@@ -1515,7 +1623,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/UserDataV2.sol, 279
+.loc ../contracts/v2/UserDataV2.sol, 281
 OVER
 PUSHCONT {
 	LDU 128
@@ -1560,19 +1668,19 @@ THROW 0
 CALL $processWithdraw_internal_macro$
 
 .macro processWithdraw_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 288
+.loc ../contracts/v2/UserDataV2.sol, 290
 DROP
 GETGLOB 9
 GETGLOB 20
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/UserDataV2.sol, 289
+.loc ../contracts/v2/UserDataV2.sol, 291
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/UserDataV2.sol, 291
+.loc ../contracts/v2/UserDataV2.sol, 293
 CALLREF {
 	CALL $_withdraw_internal_macro$
 }
@@ -1587,7 +1695,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/UserDataV2.sol, 294
+.loc ../contracts/v2/UserDataV2.sol, 296
 OVER
 PUSHCONT {
 	LDU 32
@@ -1626,20 +1734,20 @@ CALLREF {
 THROW 0
 
 .macro processWithdrawAll_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 295
+.loc ../contracts/v2/UserDataV2.sol, 297
 DROP
 GETGLOB 9
 GETGLOB 20
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/UserDataV2.sol, 296
+.loc ../contracts/v2/UserDataV2.sol, 298
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/UserDataV2.sol, 298
-GETGLOB 16
+.loc ../contracts/v2/UserDataV2.sol, 300
+GETGLOB 15
 ROLLREV 5
 CALLREF {
 	CALL $_withdraw_internal_macro$
@@ -1655,7 +1763,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/UserDataV2.sol, 301
+.loc ../contracts/v2/UserDataV2.sol, 303
 OVER
 PUSHCONT {
 	LDU 32
@@ -1694,19 +1802,19 @@ CALLREF {
 THROW 0
 
 .macro processClaimReward_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 302
+.loc ../contracts/v2/UserDataV2.sol, 304
 DROP
 GETGLOB 9
 GETGLOB 20
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/UserDataV2.sol, 303
+.loc ../contracts/v2/UserDataV2.sol, 305
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/UserDataV2.sol, 305
+.loc ../contracts/v2/UserDataV2.sol, 307
 PUSHINT 0
 ROLLREV 5
 CALLREF {
@@ -1723,7 +1831,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/UserDataV2.sol, 308
+.loc ../contracts/v2/UserDataV2.sol, 310
 OVER
 PUSHCONT {
 	LDREF
@@ -1745,24 +1853,24 @@ CALLREF {
 THROW 0
 
 .macro processSafeWithdraw_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 309
+.loc ../contracts/v2/UserDataV2.sol, 311
 DROP
 GETGLOB 9
 GETGLOB 20
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/UserDataV2.sol, 310
+.loc ../contracts/v2/UserDataV2.sol, 312
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/UserDataV2.sol, 312
-GETGLOB 16
-.loc ../contracts/v2/UserDataV2.sol, 313
-PUSHINT 0
-SETGLOB 16
 .loc ../contracts/v2/UserDataV2.sol, 314
+GETGLOB 15
+.loc ../contracts/v2/UserDataV2.sol, 315
+PUSHINT 0
+SETGLOB 15
+.loc ../contracts/v2/UserDataV2.sol, 316
 PUSHINT 0
 PUSHCONT {
 	DUP
@@ -1771,7 +1879,7 @@ PUSHCONT {
 	LESS
 }
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 315
+	.loc ../contracts/v2/UserDataV2.sol, 317
 	GETGLOB 17
 	UNPAIR
 	PUXC S2, S-1
@@ -1786,13 +1894,13 @@ PUSHCONT {
 	DICTUSETB
 	PAIR
 	SETGLOB 17
-	.loc ../contracts/v2/UserDataV2.sol, 314
+	.loc ../contracts/v2/UserDataV2.sol, 316
 	INC
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 WHILE
 DROP
-.loc ../contracts/v2/UserDataV2.sol, 317
+.loc ../contracts/v2/UserDataV2.sol, 319
 GETGLOB 21
 GETGLOB 9
 NEWC
@@ -1824,7 +1932,7 @@ ISNULL
 IFREF {
 	CALL $c4_to_c7$
 }
-.loc ../contracts/v2/UserDataV2.sol, 320
+.loc ../contracts/v2/UserDataV2.sol, 322
 OVER
 PUSHCONT {
 	LDREF
@@ -1851,23 +1959,23 @@ CALLREF {
 THROW 0
 
 .macro upgrade_internal_macro
-.loc ../contracts/v2/UserDataV2.sol, 321
+.loc ../contracts/v2/UserDataV2.sol, 323
 GETGLOB 9
 GETGLOB 20
 SDEQ
 THROWIFNOT 101
-.loc ../contracts/v2/UserDataV2.sol, 323
+.loc ../contracts/v2/UserDataV2.sol, 325
 OVER
 GETGLOB 10
 EQUAL
 PUSHCONT {
-	.loc ../contracts/v2/UserDataV2.sol, 324
+	.loc ../contracts/v2/UserDataV2.sol, 326
 	CALLREF {
 		CALL $_reserve_internal_macro$
 	}
 	PUSHINT 0
 	RAWRESERVE
-	.loc ../contracts/v2/UserDataV2.sol, 325
+	.loc ../contracts/v2/UserDataV2.sol, 327
 	NEWC
 	STSLICECONST x42_
 	STSLICE
@@ -1876,88 +1984,90 @@ PUSHCONT {
 	ENDC
 	PUSHINT 128
 	SENDRAWMSG
-	.loc ../contracts/v2/UserDataV2.sol, 326
+	.loc ../contracts/v2/UserDataV2.sol, 328
 	DROP2
 	.loc ../contracts/v2/UserDataV2.sol, 0
 }
 IFJMP
-.loc ../contracts/v2/UserDataV2.sol, 330
+.loc ../contracts/v2/UserDataV2.sol, 332
 GETGLOB 20
 NEWC
 STSLICE
-.loc ../contracts/v2/UserDataV2.sol, 331
+.loc ../contracts/v2/UserDataV2.sol, 333
 PUSHINT 0
 SWAP
 STU 8
-.loc ../contracts/v2/UserDataV2.sol, 332
-STSLICE
 .loc ../contracts/v2/UserDataV2.sol, 334
+STSLICE
+.loc ../contracts/v2/UserDataV2.sol, 336
 GETGLOB 11
 SWAP
 STREF
-.loc ../contracts/v2/UserDataV2.sol, 337
+.loc ../contracts/v2/UserDataV2.sol, 339
 GETGLOB 21
 NEWC
 STSLICE
-.loc ../contracts/v2/UserDataV2.sol, 340
+.loc ../contracts/v2/UserDataV2.sol, 342
 ROT
 NEWC
 STU 32
-.loc ../contracts/v2/UserDataV2.sol, 341
+.loc ../contracts/v2/UserDataV2.sol, 343
 GETGLOB 10
 SWAP
 STU 32
-.loc ../contracts/v2/UserDataV2.sol, 343
+.loc ../contracts/v2/UserDataV2.sol, 345
 PUSH S2
 ROT
 STBREFR
 POP S2
-.loc ../contracts/v2/UserDataV2.sol, 344
+.loc ../contracts/v2/UserDataV2.sol, 346
 STBREFR
-.loc ../contracts/v2/UserDataV2.sol, 347
+.loc ../contracts/v2/UserDataV2.sol, 349
 GETGLOB 12
 NEWC
 STU 32
-.loc ../contracts/v2/UserDataV2.sol, 348
+.loc ../contracts/v2/UserDataV2.sol, 350
 GETGLOB 13
 SWAP
 STU 32
-.loc ../contracts/v2/UserDataV2.sol, 349
+.loc ../contracts/v2/UserDataV2.sol, 351
 GETGLOB 14
 SWAP
 STU 32
-.loc ../contracts/v2/UserDataV2.sol, 350
-GETGLOB 15
-SWAP
-STU 32
-.loc ../contracts/v2/UserDataV2.sol, 351
-GETGLOB 16
-SWAP
-STU 128
 .loc ../contracts/v2/UserDataV2.sol, 352
-GETGLOB 17
+GETGLOB 16
 UNPAIR
 XCHG S2
 STU 32
 STDICT
 .loc ../contracts/v2/UserDataV2.sol, 353
+GETGLOB 15
+SWAP
+STU 128
+.loc ../contracts/v2/UserDataV2.sol, 354
+GETGLOB 17
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+.loc ../contracts/v2/UserDataV2.sol, 355
 GETGLOB 18
 UNPAIR
 XCHG S2
 STU 32
 STDICT
-.loc ../contracts/v2/UserDataV2.sol, 354
+.loc ../contracts/v2/UserDataV2.sol, 356
 GETGLOB 19
 UNPAIR
 XCHG S2
 STU 32
 STDICT
-.loc ../contracts/v2/UserDataV2.sol, 356
+.loc ../contracts/v2/UserDataV2.sol, 358
 STBREFR
-.loc ../contracts/v2/UserDataV2.sol, 359
+.loc ../contracts/v2/UserDataV2.sol, 361
 OVER
 SETCODE
-.loc ../contracts/v2/UserDataV2.sol, 362
+.loc ../contracts/v2/UserDataV2.sol, 364
 SWAP
 CTOS
 DUP
@@ -1972,7 +2082,7 @@ PLDREF
 CTOS
 BLESS
 POP C3
-.loc ../contracts/v2/UserDataV2.sol, 363
+.loc ../contracts/v2/UserDataV2.sol, 365
 ENDC
 CALLREF {
 	CALL $:onCodeUpgrade$
@@ -1981,7 +2091,7 @@ CALLREF {
 
 .internal-alias :onCodeUpgrade, 2
 .internal :onCodeUpgrade
-.loc ../contracts/v2/UserDataV2.sol, 367
+.loc ../contracts/v2/UserDataV2.sol, 369
 PUSHINT 0
 SETGLOB 10
 PUSHREF {
@@ -1996,6 +2106,8 @@ SETGLOB 14
 PUSHINT 0
 SETGLOB 15
 PUSHINT 0
+NEWDICT
+PAIR
 SETGLOB 16
 PUSHINT 0
 NEWDICT
@@ -2017,59 +2129,162 @@ PUSHREFSLICE {
 	.blob x8000000000000000000000000000000000000000000000000000000000000000001_
 }
 SETGLOB 21
-.loc ../contracts/v2/UserDataV2.sol, 368
+.loc ../contracts/v2/UserDataV2.sol, 370
 CALLREF {
 	CALL $_reserve_internal_macro$
 }
 PUSHINT 0
 RAWRESERVE
-.loc ../contracts/v2/UserDataV2.sol, 370
+.loc ../contracts/v2/UserDataV2.sol, 372
 CTOS
-.loc ../contracts/v2/UserDataV2.sol, 371
+.loc ../contracts/v2/UserDataV2.sol, 373
 DUP
 LDMSGADDR
 LDU 8
 LDMSGADDR
 POP S4
 NIP
-.loc ../contracts/v2/UserDataV2.sol, 372
+.loc ../contracts/v2/UserDataV2.sol, 374
 SWAP
 SETGLOB 20
-.loc ../contracts/v2/UserDataV2.sol, 374
+.loc ../contracts/v2/UserDataV2.sol, 376
 OVER
 LDREF
 POP S3
 SETGLOB 11
-.loc ../contracts/v2/UserDataV2.sol, 376
+.loc ../contracts/v2/UserDataV2.sol, 378
 OVER
 LDREFRTOS
 SWAP
 POP S3
-.loc ../contracts/v2/UserDataV2.sol, 377
+.loc ../contracts/v2/UserDataV2.sol, 379
 LDMSGADDR
 DROP
 SETGLOB 21
-.loc ../contracts/v2/UserDataV2.sol, 379
-SWAP
+.loc ../contracts/v2/UserDataV2.sol, 381
+OVER
 LDREFRTOS
-NIP
-.loc ../contracts/v2/UserDataV2.sol, 380
+SWAP
+POP S3
+.loc ../contracts/v2/UserDataV2.sol, 383
 DUP
 LDU 32
 LDU 32
 POP S3
-DROP
+SWAP
 SETGLOB 10
-.loc ../contracts/v2/UserDataV2.sol, 382
-LDU 8
-LDU 32
-LDU 32
-DROP
 .loc ../contracts/v2/UserDataV2.sol, 384
-CALLREF {
-	CALL $_init_internal_macro$
+DUP
+GETGLOB 10
+NEQ
+PUSHCONT {
+	.loc ../contracts/v2/UserDataV2.sol, 387
+	PUSH S3
+	LDREFRTOS
+	SWAP
+	POP S5
+	.loc ../contracts/v2/UserDataV2.sol, 388
+	DUP
+	LDU 32
+	POP S2
+	SETGLOB 12
+	.loc ../contracts/v2/UserDataV2.sol, 389
+	DUP
+	LDU 32
+	POP S2
+	SETGLOB 13
+	.loc ../contracts/v2/UserDataV2.sol, 390
+	DUP
+	LDU 32
+	POP S2
+	SETGLOB 14
+	.loc ../contracts/v2/UserDataV2.sol, 391
+	LDU 32
+	NIP
+	.loc ../contracts/v2/UserDataV2.sol, 392
+	DUP
+	LDU 128
+	POP S2
+	SETGLOB 15
+	.loc ../contracts/v2/UserDataV2.sol, 393
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SETGLOB 17
+	.loc ../contracts/v2/UserDataV2.sol, 394
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SETGLOB 18
+	.loc ../contracts/v2/UserDataV2.sol, 395
+	LDU 32
+	LDDICT
+	DROP
+	PAIR
+	SETGLOB 19
+	.loc ../contracts/v2/UserDataV2.sol, 397
+	PUSHINT 0
+	PUSHCONT {
+		DUP
+		GETGLOB 17
+		FIRST
+		LESS
+	}
+	PUSHCONT {
+		.loc ../contracts/v2/UserDataV2.sol, 398
+		NOW
+		GETGLOB 13
+		ADD
+		UFITS 32
+		GETGLOB 16
+		UNPAIR
+		PUXC S3, S-1
+		PUSH2 S1, S2
+		LESS
+		THROWIFNOT 50
+		ROLL 3
+		NEWC
+		STU 32
+		ROTREV
+		PUSHINT 32
+		DICTUSETB
+		PAIR
+		SETGLOB 16
+		.loc ../contracts/v2/UserDataV2.sol, 397
+		INC
+		.loc ../contracts/v2/UserDataV2.sol, 0
+	}
+	WHILE
+	DROP
+	.loc ../contracts/v2/UserDataV2.sol, 401
+	GETGLOB 10
+	OVER
+	PUSHSLICE xc00000000000000000000000002bcd4670
+	NEWC
+	STSLICE
+	STU 32
+	STU 32
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
 }
-.loc ../contracts/v2/UserDataV2.sol, 386
+PUSHCONT {
+	.loc ../contracts/v2/UserDataV2.sol, 404
+	OVER
+	LDU 8
+	LDU 32
+	LDU 32
+	POP S5
+	.loc ../contracts/v2/UserDataV2.sol, 405
+	CALLREF {
+		CALL $_init_internal_macro$
+	}
+}
+IFELSE
+.loc ../contracts/v2/UserDataV2.sol, 407
+DROP2
 NEWC
 STSLICECONST x42_
 STSLICE
@@ -2079,6 +2294,7 @@ ENDC
 PUSHINT 128
 SENDRAWMSG
 .loc ../contracts/v2/UserDataV2.sol, 0
+DROP
 CALLREF {
 	CALL $c7_to_c4$
 }
@@ -2097,7 +2313,6 @@ LDREF
 LDU 32
 LDU 32
 LDU 32
-LDU 32
 LDU 128
 LDU 32
 LDDICT
@@ -2112,6 +2327,11 @@ SWAP
 LDREF
 ENDS
 CTOS
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
 LDU 32
 LDDICT
 ROTREV
@@ -2152,10 +2372,10 @@ PUSHCONT {
 	PUSHREF {
 	}
 	PUSHINT 0
-	BLKPUSH 5, 0
+	BLKPUSH 4, 0
 	NEWDICT
 	PAIR
-	BLKPUSH 2, 0
+	BLKPUSH 3, 0
 	PUSHREFSLICE {
 		.blob x8000000000000000000000000000000000000000000000000000000000000000001_
 	}
@@ -2208,7 +2428,6 @@ STREF
 STU 32
 STU 32
 STU 32
-STU 32
 STU 128
 SWAP
 UNPAIR
@@ -2220,8 +2439,13 @@ UNPAIR
 XCHG S2
 STU 32
 STDICT
-ROLLREV 3
+ROLLREV 4
 NEWC
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
 SWAP
 UNPAIR
 XCHG S2
@@ -2345,16 +2569,16 @@ PUSHINT 1322502770
 LEQ
 IFJMPREF {
 	DUP
+	PUSHINT 72827393
+	EQUAL
+	IFJMPREF {
+		CALL $pendingReward$
+	}
+	DUP
 	PUSHINT 148004568
 	EQUAL
 	IFJMPREF {
 		CALL $processDeposit$
-	}
-	DUP
-	PUSHINT 780658594
-	EQUAL
-	IFJMPREF {
-		CALL $pendingReward$
 	}
 	DUP
 	PUSHINT 977291704
@@ -2399,7 +2623,7 @@ IFJMPREF {
 	}
 }
 DUP
-PUSHINT 1940994196
+PUSHINT 1972673694
 LEQ
 IFJMPREF {
 	DUP
@@ -2409,7 +2633,7 @@ IFJMPREF {
 		CALL $constructor$
 	}
 	DUP
-	PUSHINT 1940994196
+	PUSHINT 1972673694
 	EQUAL
 	IFJMPREF {
 		CALL $getDetails$

@@ -3,10 +3,12 @@ pragma AbiHeader expire;
 
 
 interface IUserData {
+    event UserDataUpdated(uint32 prev_version, uint32 new_version);
+
     struct UserDataDetails {
         uint128[] pool_debt;
         uint128[] entitled;
-        uint32 vestingTime;
+        uint32[] vestingTime;
         uint128 amount;
         uint128[] rewardDebt;
         address farmPool;

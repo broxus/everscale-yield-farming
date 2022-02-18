@@ -15,6 +15,7 @@ contract EverFarmPoolV2 is EverFarmPoolBase {
         uint32 _vestingRatio,
         uint32 _withdrawAllLockPeriod
     ) public {
+        require (_vestingRatio <= 1000, BAD_VESTING_SETUP);
         require (_rewardRounds.length > 0, BAD_REWARD_ROUNDS_INPUT);
         require ((_vestingPeriod == 0 && _vestingRatio == 0) || (_vestingPeriod > 0 && _vestingRatio > 0), BAD_VESTING_SETUP);
         for (uint i = 0; i < _rewardRounds.length; i++) {

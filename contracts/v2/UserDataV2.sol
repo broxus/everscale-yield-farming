@@ -6,7 +6,7 @@ import "./interfaces/IUserData.sol";
 import "@broxus/contracts/contracts/libraries/MsgFlag.sol";
 
 
-contract UserData is IUserData {
+contract UserDataV2 is IUserData {
     uint32 current_version;
     TvmCell platform_code;
 
@@ -14,9 +14,10 @@ contract UserData is IUserData {
     uint32 vestingPeriod;
     // number from 0 to 1000 (0% to 100%). 0 means vesting is disabled
     uint32 vestingRatio;
-    uint32 vestingTime;
+//    uint32 vestingTime; this was in v1
 
     uint128 amount;
+    uint32[] vestingTime;
     uint128[] rewardDebt;
     uint128[] entitled;
     uint128[] pool_debt;
@@ -37,6 +38,7 @@ contract UserData is IUserData {
             rewardDebt.push(0);
             entitled.push(0);
             pool_debt.push(0);
+            vestingTime.push(0);
         }
         vestingPeriod = _vestingPeriod;
         vestingRatio = _vestingRatio;
@@ -57,7 +59,7 @@ contract UserData is IUserData {
         uint256[] _accRewardPerShare,
         uint32 poolLastRewardTime,
         uint32 farmEndTime
-    ) external view returns (uint128[] _entitled, uint128[] _vested, uint128[] _pool_debt, uint32 _vesting_time) {
+    ) external view returns (uint128[] _entitled, uint128[] _vested, uint128[] _pool_debt, uint32[] _vesting_time) {
         (
             _entitled,
             _vested,
@@ -142,8 +144,8 @@ contract UserData is IUserData {
         uint256[] _accRewardPerShare,
         uint32 _poolLastRewardTime,
         uint32 _farmEndTime
-    ) internal view returns (uint128[], uint128[], uint32) {
-        uint32 new_vesting_time;
+    ) internal view returns (uint128[], uint128[], uint32[]) {
+        uint32[] new_vesting_time = new uint32[](vestingTime.length);
         uint128[] newly_vested = new uint128[](_rewardDebt.length);
         uint128[] updated_entitled = new uint128[](_rewardDebt.length);
         uint128[] new_entitled = new uint128[](_rewardDebt.length);
@@ -164,11 +166,11 @@ contract UserData is IUserData {
                 }
 
                 // now calculate newly vested part of old entitled reward
-                uint32 age2 = _poolLastRewardTime >= vestingTime ? vestingPeriod : _poolLastRewardTime - lastRewardTime;
+                uint32 age2 = _poolLastRewardTime >= vestingTime[i] ? vestingPeriod : _poolLastRewardTime - lastRewardTime;
                 uint256 _vested = uint256(entitled[i]) * age2;
                 uint128 to_vest = age2 >= vestingPeriod
                     ? entitled[i]
-                    : uint128(_vested / (vestingTime - lastRewardTime));
+                    : uint128(_vested / (vestingTime[i] - lastRewardTime));
 
                 // amount of reward vested from now
                 uint128 remainingEntitled = entitled[i] == 0 ? 0 : entitled[i] - to_vest;
@@ -177,21 +179,21 @@ contract UserData is IUserData {
 
                 // Compute the vesting time (i.e. when the entitled reward to be all vested)
                 if (pending == 0) {
-                    new_vesting_time = _poolLastRewardTime;
+                    new_vesting_time[i] = _poolLastRewardTime;
                 } else if (remainingEntitled == 0) {
                     // only new reward, set vesting time to vesting period
-                    new_vesting_time = _poolLastRewardTime + vestingPeriod;
+                    new_vesting_time[i] = _poolLastRewardTime + vestingPeriod;
                 } else if (unreleasedNewly == 0) {
                     // only unlocking old reward, dont change vesting time
-                    new_vesting_time = vestingTime;
+                    new_vesting_time[i] = vestingTime[i];
                 } else {
                     // "old" reward and, perhaps, "new" reward are pending - the weighted average applied
-                    uint32 age3 = vestingTime - _poolLastRewardTime;
+                    uint32 age3 = vestingTime[i] - _poolLastRewardTime;
                     uint32 period = uint32(((remainingEntitled * age3) + (unreleasedNewly * vestingPeriod)) / pending);
-                    new_vesting_time = _poolLastRewardTime + math.min(period, vestingPeriod);
+                    new_vesting_time[i] = _poolLastRewardTime + math.min(period, vestingPeriod);
                 }
 
-                new_vesting_time = _farmEndTime > 0 ? math.min(_farmEndTime + vestingPeriod, new_vesting_time) : new_vesting_time;
+                new_vesting_time[i] = _farmEndTime > 0 ? math.min(_farmEndTime + vestingPeriod, new_vesting_time[i]) : new_vesting_time[i];
                 updated_entitled[i] = entitled[i] + vesting_part - to_vest - newly_vested[i];
                 newly_vested[i] += to_vest + clear_part;
             } else {
@@ -229,7 +231,7 @@ contract UserData is IUserData {
         (
             uint128[] _entitled,
             uint128[] _vested,
-            uint32 _vestingTime
+            uint32[] _vestingTime
         ) = _computeVesting(prevAmount, prevRewardDebt, _accRewardPerShare, poolLastRewardTime, farmEndTime);
         entitled = _entitled;
         vestingTime = _vestingTime;
@@ -262,7 +264,7 @@ contract UserData is IUserData {
         (
             uint128[] _entitled,
             uint128[] _vested,
-            uint32 _vestingTime
+            uint32[] _vestingTime
         ) = _computeVesting(prevAmount, prevRewardDebt, _accRewardPerShare, poolLastRewardTime, farmEndTime);
         entitled = _entitled;
         vestingTime = _vestingTime;
@@ -377,12 +379,31 @@ contract UserData is IUserData {
         user = initialData.decode(address);
 
         TvmSlice params = s.loadRefAsSlice();
-        (current_version, ) = params.decode(uint32, uint32);
+        uint32 prev_version;
+        (current_version, prev_version) = params.decode(uint32, uint32);
+        if (prev_version != current_version) {
+            // upgrade from old version
+            uint32 vestingTime_old;
+            TvmSlice data = s.loadRefAsSlice();
+            lastRewardTime = data.decode(uint32);
+            vestingPeriod = data.decode(uint32);
+            vestingRatio = data.decode(uint32);
+            vestingTime_old = data.decode(uint32);
+            amount = data.decode(uint128);
+            rewardDebt = data.decode(uint128[]);
+            entitled = data.decode(uint128[]);
+            pool_debt = data.decode(uint128[]);
 
-        (uint8 tokens_num, uint32 _vestingPeriod, uint32 _vestingRatio) = params.decode(uint8, uint32, uint32);
+            for (uint i = 0; i < rewardDebt.length; i++) {
+                vestingTime[i] = now + vestingPeriod;
+            }
 
-        _init(tokens_num, _vestingPeriod, _vestingRatio);
-
+            emit UserDataUpdated(prev_version, current_version);
+        } else {
+            // initialization from platform
+            (uint8 tokens_num, uint32 _vestingPeriod, uint32 _vestingRatio) = params.decode(uint8, uint32, uint32);
+            _init(tokens_num, _vestingPeriod, _vestingRatio);
+        }
         send_gas_to.transfer({ value: 0, bounce: false, flag: MsgFlag.ALL_NOT_RESERVED });
     }
 
