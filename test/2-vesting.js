@@ -44,7 +44,7 @@ describe('Test Ton Farm Pool - vesting', async function() {
     let rewardPerSec_1;
     let rewardPerSec_2;
 
-    let vestingPeriod = 5;
+    let vestingPeriod = 1000;
     let vestingRatio = 500;
     const MAX_VESTING_RATIO = 1000;
 
@@ -192,7 +192,7 @@ describe('Test Ton Farm Pool - vesting', async function() {
     describe('Vesting staking pipeline testing', async function() {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
-                fabric = await setupFabric(admin_user);
+                fabric = await setupFabric(admin_user, 1);
             });
 
             it('Deploy farm pool contract with vesting period', async function() {
@@ -201,7 +201,7 @@ describe('Test Ton Farm Pool - vesting', async function() {
 
                 farm_pool = await fabric.deployPool({
                     pool_owner: admin_user,
-                    reward_rounds: [{startTime: farmStart, rewardPerSecond: [rewardPerSec_1, rewardPerSec_2]}],
+                    reward_rounds: [{startTime: farmStart, rewardPerSecond: [rewardPerSec_1, 0]}],
                     tokenRoot: root.address,
                     rewardTokenRoot: [farming_root_1.address, farming_root_2.address],
                     vestingPeriod: vestingPeriod,
@@ -260,8 +260,8 @@ describe('Test Ton Farm Pool - vesting', async function() {
                 userFarmTokenWallet1_1 = await farming_root_1.wallet(user1);
                 userFarmTokenWallet1_2 = await farming_root_2.wallet(user1);
 
-                userData1 = await farm_pool.userData(user1);
-                userData2 = await farm_pool.userData(user2);
+                userData1 = await farm_pool.userData(user1, 'UserDataV2');
+                userData2 = await farm_pool.userData(user2, 'UserDataV2');
 
                 const user_data_details = await getUserDataDetails(userData1);
                 expect(user_data_details.amount.toFixed(0)).to.be.equal(minDeposit.toFixed(0), 'Deposit failed');
@@ -290,12 +290,12 @@ describe('Test Ton Farm Pool - vesting', async function() {
 
                 // const reward_data = await farm_pool.call({method: 'calculateRewardData'});
                 // // console.log(reward_data);
-                // const _accTonPerShare = reward_data._accTonPerShare.map(i => i.toFixed(0));
+                // const _accRewardPerShare = reward_data._accRewardPerShare.map(i => i.toFixed(0));
                 // const _lastRewardTime = reward_data._lastRewardTime.toFixed(0);
                 //
                 // const pending_vested = await userData1.call({
                 //     method: 'pendingReward',
-                //     params: {_accTonPerShare: _accTonPerShare, poolLastRewardTime: _lastRewardTime, farmEndTime: 0}}
+                //     params: {_accRewardPerShare: _accRewardPerShare, poolLastRewardTime: _lastRewardTime, farmEndTime: 0}}
                 // )
 
                 // console.log('Vested', pending_vested._vested.map(i => i.toFixed(0)));
@@ -307,6 +307,12 @@ describe('Test Ton Farm Pool - vesting', async function() {
                 await checkTokenBalances(
                     userTokenWallet1, minDeposit * 2, minDeposit * 2, userInitialTokenBal - minDeposit * 2
                 );
+
+                const details = await getUserDataDetails(userData1);
+                // console.log(details.vestingTime.toFixed(0));
+                console.log(details.vestingTime[0].toFixed(0));
+                console.log(details.vestingTime[1].toFixed(0));
+
 
                 const new_reward_time = await farm_pool.lastRewardTime();
 
@@ -427,12 +433,12 @@ describe('Test Ton Farm Pool - vesting', async function() {
                 //
                 // const reward_data = await farm_pool.call({method: 'calculateRewardData'});
                 // // console.log(reward_data);
-                // const _accTonPerShare = reward_data._accTonPerShare.map(i => i.toFixed(0));
+                // const _accRewardPerShare = reward_data._accRewardPerShare.map(i => i.toFixed(0));
                 // const _lastRewardTime = reward_data._lastRewardTime.toFixed(0);
                 //
                 // const pending_vested = await userData1.call({
                 //     method: 'pendingReward',
-                //     params: {_accTonPerShare: _accTonPerShare, poolLastRewardTime: _lastRewardTime}}
+                //     params: {_accRewardPerShare: _accRewardPerShare, poolLastRewardTime: _lastRewardTime}}
                 // )
                 // console.log(pending_vested);
                 // console.log(pending_vested._entitled[0].toFixed(0));
@@ -453,24 +459,24 @@ describe('Test Ton Farm Pool - vesting', async function() {
                 await sleep(2000);
                 const reward_data = await farm_pool.pool.call({method: 'calculateRewardData'});
                 // console.log(reward_data);
-                const _accTonPerShare = reward_data._accTonPerShare.map(i => i.toFixed(0));
+                const _accRewardPerShare = reward_data._accRewardPerShare.map(i => i.toFixed(0));
                 const _lastRewardTime = reward_data._lastRewardTime.toFixed(0);
 
                 const pending_vested = await userData1.call({
                     method: 'pendingReward',
-                    params: {_accTonPerShare: _accTonPerShare, poolLastRewardTime: _lastRewardTime, farmEndTime: end_time.toFixed(0)}}
+                    params: {_accRewardPerShare: _accRewardPerShare, poolLastRewardTime: _lastRewardTime, farmEndTime: end_time.toFixed(0)}}
                 )
 
                 await sleep(3000);
                 const reward_data_1 = await farm_pool.pool.call({method: 'calculateRewardData'});
                 // console.log(reward_data);
-                const _accTonPerShare_1 = reward_data_1._accTonPerShare.map(i => i.toFixed(0));
+                const _accRewardPerShare_1 = reward_data_1._accRewardPerShare.map(i => i.toFixed(0));
                 const _lastRewardTime_1 = reward_data_1._lastRewardTime.toFixed(0);
 
 
                 const pending_vested_1 = await userData1.call({
                     method: 'pendingReward',
-                    params: {_accTonPerShare: _accTonPerShare_1, poolLastRewardTime: _lastRewardTime_1, farmEndTime: end_time.toFixed(0)}}
+                    params: {_accRewardPerShare: _accRewardPerShare_1, poolLastRewardTime: _lastRewardTime_1, farmEndTime: end_time.toFixed(0)}}
                 )
 
                 const entitled_before = pending_vested._entitled[0];

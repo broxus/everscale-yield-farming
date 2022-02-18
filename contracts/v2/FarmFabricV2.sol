@@ -119,7 +119,7 @@ contract FarmFabricV2 is IFabric {
         require (msg.value >= POOL_UPGRADE_VALUE, LOW_MSG_VALUE);
         tvm.rawReserve(_reserve(), 0);
 
-        IEverFarmPool(pool).forceUpgradeUserData{value: POOL_UPGRADE_VALUE, flag: MsgFlag.ALL_NOT_RESERVED}(user, send_gas_to);
+        IEverFarmPool(pool).forceUpgradeUserData{value: 0, flag: MsgFlag.ALL_NOT_RESERVED}(user, send_gas_to);
     }
 
     function processUpgradePoolRequest(address send_gas_to) external override {

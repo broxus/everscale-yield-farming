@@ -391,6 +391,7 @@ class Fabric {
     constructor(fabric_contract, fabric_owner) {
         this.fabric = fabric_contract;
         this.owner = fabric_owner;
+        this.address = fabric_contract.address;
     }
 
     async deployPool({pool_owner, reward_rounds, tokenRoot, rewardTokenRoot, vestingPeriod, vestingRatio, withdrawAllLockPeriod}) {
@@ -488,24 +489,32 @@ class Fabric {
         });
     }
 
-    async upgradePool(pool) {
+    async upgradePools(pool) {
         return await this.owner.runTarget({
             contract: this.fabric,
-            method: 'upgradePool',
-            params: {pool: pool.address, send_gas_to: this.owner.address},
-            value: convertCrystal(1.5, 'nano')
+            method: 'upgradePools',
+            params: {pools: [pool.address], send_gas_to: this.owner.address},
+            value: convertCrystal(2.5, 'nano')
         });
     }
 
-    async updatePoolUserDataCode(pool) {
+    async updatePoolsUserDataCode(pool) {
         return await this.owner.runTarget({
             contract: this.fabric,
-            method: 'updatePoolUserDataCode',
-            params: {pool: pool.address, send_gas_to: this.owner.address},
-            value: convertCrystal(1.5, 'nano')
+            method: 'updatePoolsUserDataCode',
+            params: {pools: [pool.address], send_gas_to: this.owner.address},
+            value: convertCrystal(2.5, 'nano')
         });
     }
 
+    async forceUpdateUserData(pool, user) {
+        return await this.owner.runTarget({
+            contract: this.fabric,
+            method: 'forceUpdateUserData',
+            params: {pool: pool.address, user: user.address, send_gas_to: this.owner.address},
+            value: convertCrystal(2.5, 'nano')
+        });
+    }
     async pool_version() {
         return await this.fabric.call({method: 'farm_pool_version'});
     }
@@ -513,14 +522,45 @@ class Fabric {
     async user_data_version() {
         return await this.fabric.call({method: 'user_data_version'});
     }
+
+    async fabric_version() {
+        return await this.fabric.call({method: 'fabric_version'});
+    }
+
+    async upgrade(new_code) {
+        return await this.owner.runTarget({
+            contract: this.fabric,
+            method: 'upgrade',
+            params: {new_code: new_code, send_gas_to: this.owner.address},
+            value: convertCrystal(2.5, 'nano')
+        });
+    }
+
+    async getEvents(event_name) {
+        return await this.fabric.getEvents(event_name);
+    }
+
+    static async from_addr(addr, owner, name='FarmFabric') {
+        const fabric = await locklift.factory.getContract(name);
+        fabric.setAddress(addr);
+        return new Fabric(fabric, owner);
+    }
 }
 
 
 // -------------------------- SETUP METHODS --------------------------
-const setupFabric = async (owner) => {
-    const PoolFabric = await locklift.factory.getContract('FarmFabric',);
-    const EverFarmPool = await locklift.factory.getContract('EverFarmPool');
-    const UserData = await locklift.factory.getContract('UserData');
+const setupFabric = async (owner, version=0) => {
+    let PoolFabric, EverFarmPool, UserData;
+    if (version === 0) {
+        PoolFabric = await locklift.factory.getContract('FarmFabric');
+        EverFarmPool = await locklift.factory.getContract('EverFarmPool');
+        UserData = await locklift.factory.getContract('UserData');
+    } else if (version === 1) {
+        PoolFabric = await locklift.factory.getContract('FarmFabricV2');
+        EverFarmPool = await locklift.factory.getContract('EverFarmPoolV2');
+        UserData = await locklift.factory.getContract('UserDataV2');
+    }
+
     const Platform = await locklift.factory.getContract('Platform');
 
 
@@ -649,5 +689,6 @@ module.exports = {
     calcExpectedReward,
     checkReward,
     FarmPool,
-    isValidTonAddress
+    isValidTonAddress,
+    Fabric
 };

@@ -349,7 +349,7 @@ contract UserDataV2 is IUserData {
         data_builder.store(lastRewardTime); // 32
         data_builder.store(vestingPeriod); // 32
         data_builder.store(vestingRatio); // 32
-        data_builder.store(vestingTime); // 32
+        data_builder.store(vestingTime); // 33 + ref
         data_builder.store(amount); // 128
         data_builder.store(rewardDebt); // 33 + ref
         data_builder.store(entitled); // 33 + ref
@@ -395,7 +395,7 @@ contract UserDataV2 is IUserData {
             pool_debt = data.decode(uint128[]);
 
             for (uint i = 0; i < rewardDebt.length; i++) {
-                vestingTime[i] = now + vestingPeriod;
+                vestingTime.push(now + vestingPeriod);
             }
 
             emit UserDataUpdated(prev_version, current_version);

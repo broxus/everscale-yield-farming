@@ -1,5 +1,5 @@
 const logger = require('mocha-logger');
-const { expect } = require('chai');
+const { expect, version} = require('chai');
 const BigNumber = require('bignumber.js');
 const {
     convertCrystal
@@ -127,7 +127,7 @@ describe('Test Ton Farm Pool - main', async function() {
     describe('Base staking pipeline testing', async function() {
         describe('Farm pool', async function() {
             it('Deploy fabric contract', async function () {
-                fabric = await setupFabric(admin_user);
+                fabric = await setupFabric(admin_user, 1);
             });
 
             it('Deploy farm pool contract', async function() {
@@ -393,8 +393,8 @@ describe('Test Ton Farm Pool - main', async function() {
                 await afterRun(tx2);
                 user2_deposit_time = await farm_pool.lastRewardTime();
 
-                userData1 = await farm_pool.userData(user1);
-                userData2 = await farm_pool.userData(user2);
+                userData1 = await farm_pool.userData(user1, 'UserDataV2');
+                userData2 = await farm_pool.userData(user2, 'UserDataV2');
             });
 
             it('Users withdraw tokens', async function() {
@@ -474,7 +474,7 @@ describe('Test Ton Farm Pool - main', async function() {
 
             it('User deposit tokens', async function() {
                 const tx = await farm_pool.deposit(userTokenWallet1, minDeposit);
-                // console.log(tx.transaction.out_msgs);
+
                 await sleep(1000);
                 await checkTokenBalances(
                     userTokenWallet1, minDeposit, minDeposit, userInitialTokenBal - minDeposit
