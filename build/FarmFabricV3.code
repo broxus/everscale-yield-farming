@@ -1,0 +1,1852 @@
+.version sol 0.57.1
+
+.macro constructor
+DROP
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7_with_init_storage$
+}
+GETGLOB 6
+THROWIF 51
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDMSGADDR
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 50
+GETGLOB 2
+GETGLOB 5
+DUP
+ISNULL
+PUSHCONT {
+	DROP
+	PUSHINT 0
+}
+IF
+EQUAL
+THROWIFNOT 101
+.loc ../contracts/v3/FarmFabricV3.sol, 51
+ACCEPT
+.loc ../contracts/v3/FarmFabricV3.sol, 53
+SETGLOB 14
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	_reserve_internal
+.type	_reserve_internal, @function
+CALL $_reserve_internal_macro$
+
+.macro _reserve_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 57
+GETPARAM 7
+FIRST
+DEPTH
+ADDCONST -2
+PICK
+SUB
+UFITS 128
+PUSHINT 1000000000
+MAX
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+
+.macro transferOwnership
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 60
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDMSGADDR
+LDREF
+ENDS
+CTOS
+LDMSGADDR
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $transferOwnership_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro transferOwnership_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 61
+GETGLOB 9
+GETGLOB 14
+SDEQ
+THROWIFNOT 102
+.loc ../contracts/v3/FarmFabricV3.sol, 62
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/v3/FarmFabricV3.sol, 64
+OVER
+GETGLOB 14
+PUSHSLICE xc0000000000000000000000001
+NEWC
+STSLICE
+ROTREV
+NEWC
+STSLICECONST x13193f97
+STSLICE
+SWAP
+NEWC
+STSLICE
+STBREFR
+STBREFR
+ENDC
+PUSHINT 0
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 65
+SWAP
+SETGLOB 14
+.loc ../contracts/v3/FarmFabricV3.sol, 66
+NEWC
+STSLICECONST x42_
+STSLICE
+PUSHINT 111
+STZEROES
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+
+.macro installNewFarmPoolCode
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 69
+OVER
+PUSHCONT {
+	LDREF
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDREF
+}
+IFELSE
+LDMSGADDR
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $installNewFarmPoolCode_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro installNewFarmPoolCode_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 70
+GETGLOB 9
+GETGLOB 14
+SDEQ
+THROWIFNOT 102
+.loc ../contracts/v3/FarmFabricV3.sol, 71
+DEPTH
+ADDCONST -2
+PICK
+PUSHINT 1000000000
+GEQ
+THROWIFNOT 104
+.loc ../contracts/v3/FarmFabricV3.sol, 72
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/v3/FarmFabricV3.sol, 74
+SWAP
+SETGLOB 16
+.loc ../contracts/v3/FarmFabricV3.sol, 75
+GETGLOB 11
+INC
+UFITS 32
+BLKPUSH 2, 0
+SETGLOB 11
+.loc ../contracts/v3/FarmFabricV3.sol, 76
+DEC
+UFITS 32
+PUSHSLICE xc000000000000000000000000076151290
+NEWC
+STSLICE
+STU 32
+STU 32
+ENDC
+PUSHINT 0
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 77
+NEWC
+STSLICECONST x42_
+STSLICE
+PUSHINT 111
+STZEROES
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+
+.macro installNewUserDataCode
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 80
+OVER
+PUSHCONT {
+	LDREF
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDREF
+}
+IFELSE
+LDMSGADDR
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $installNewUserDataCode_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro installNewUserDataCode_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 81
+GETGLOB 9
+GETGLOB 14
+SDEQ
+THROWIFNOT 102
+.loc ../contracts/v3/FarmFabricV3.sol, 82
+DEPTH
+ADDCONST -2
+PICK
+PUSHINT 1000000000
+GEQ
+THROWIFNOT 104
+.loc ../contracts/v3/FarmFabricV3.sol, 83
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/v3/FarmFabricV3.sol, 85
+SWAP
+SETGLOB 15
+.loc ../contracts/v3/FarmFabricV3.sol, 86
+GETGLOB 12
+INC
+UFITS 32
+BLKPUSH 2, 0
+SETGLOB 12
+.loc ../contracts/v3/FarmFabricV3.sol, 87
+DEC
+UFITS 32
+PUSHSLICE xc00000000000000000000000006d3545bf
+NEWC
+STSLICE
+STU 32
+STU 32
+ENDC
+PUSHINT 0
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 88
+NEWC
+STSLICECONST x42_
+STSLICE
+PUSHINT 111
+STZEROES
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+
+.macro upgradePools
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 91
+OVER
+PUSHCONT {
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+}
+IFELSE
+LDMSGADDR
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $upgradePools_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro upgradePools_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 92
+GETGLOB 9
+GETGLOB 14
+SDEQ
+THROWIFNOT 102
+.loc ../contracts/v3/FarmFabricV3.sol, 93
+DEPTH
+ADDCONST -2
+PICK
+PUSHINT 1000000000
+PUSH S3
+FIRST
+INC
+MUL
+GEQ
+THROWIFNOT 104
+.loc ../contracts/v3/FarmFabricV3.sol, 94
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/v3/FarmFabricV3.sol, 96
+PUSHINT 0
+PUSHCONT {
+	PUSH2 S0, S2
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/v3/FarmFabricV3.sol, 97
+	OVER
+	GETGLOB 11
+	GETGLOB 16
+	PUSH2 S3, S5
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	NEWC
+	STSLICECONST x62_
+	STSLICE
+	PUSHSLICE x43b9aca00000000000000000000000000003_
+	STSLICER
+	ROLLREV 3
+	NEWC
+	STSLICECONST x64a578c8
+	STREF
+	STU 32
+	STSLICE
+	STBREFR
+	ENDC
+	PUSHINT 1
+	SENDRAWMSG
+	.loc ../contracts/v3/FarmFabricV3.sol, 96
+	INC
+	.loc ../contracts/v3/FarmFabricV3.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/v3/FarmFabricV3.sol, 101
+NEWC
+STSLICECONST x42_
+STSLICE
+PUSHINT 111
+STZEROES
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+DROP
+
+.macro updatePoolsUserDataCode
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 104
+OVER
+PUSHCONT {
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDU 32
+	LDDICT
+	ROTREV
+	PAIR
+	SWAP
+}
+IFELSE
+LDMSGADDR
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $updatePoolsUserDataCode_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro updatePoolsUserDataCode_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 105
+GETGLOB 9
+GETGLOB 14
+SDEQ
+THROWIFNOT 102
+.loc ../contracts/v3/FarmFabricV3.sol, 106
+DEPTH
+ADDCONST -2
+PICK
+PUSHINT 1000000000
+PUSH S3
+FIRST
+INC
+MUL
+GEQ
+THROWIFNOT 104
+.loc ../contracts/v3/FarmFabricV3.sol, 107
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/v3/FarmFabricV3.sol, 109
+PUSHINT 0
+PUSHCONT {
+	PUSH2 S0, S2
+	FIRST
+	LESS
+}
+PUSHCONT {
+	.loc ../contracts/v3/FarmFabricV3.sol, 110
+	OVER
+	GETGLOB 12
+	GETGLOB 15
+	PUSH2 S3, S5
+	SECOND
+	PUSHINT 32
+	DICTUGET
+	THROWIFNOT 50
+	NEWC
+	STSLICECONST x62_
+	STSLICE
+	PUSHSLICE x43b9aca00000000000000000000000000003_
+	STSLICER
+	ROLLREV 3
+	NEWC
+	STSLICECONST x53b0fcf9
+	STREF
+	STU 32
+	STSLICE
+	STBREFR
+	ENDC
+	PUSHINT 1
+	SENDRAWMSG
+	.loc ../contracts/v3/FarmFabricV3.sol, 109
+	INC
+	.loc ../contracts/v3/FarmFabricV3.sol, 0
+}
+WHILE
+DROP
+.loc ../contracts/v3/FarmFabricV3.sol, 114
+NEWC
+STSLICECONST x42_
+STSLICE
+PUSHINT 111
+STZEROES
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+DROP
+
+.macro forceUpdateUserData
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 117
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDMSGADDR
+LDREF
+ENDS
+CTOS
+LDMSGADDR
+LDREF
+ENDS
+CTOS
+LDMSGADDR
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $forceUpdateUserData_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro forceUpdateUserData_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 118
+GETGLOB 9
+GETGLOB 14
+SDEQ
+THROWIFNOT 102
+.loc ../contracts/v3/FarmFabricV3.sol, 119
+DEPTH
+ADDCONST -2
+PICK
+PUSHINT 1000000000
+GEQ
+THROWIFNOT 104
+.loc ../contracts/v3/FarmFabricV3.sol, 120
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/v3/FarmFabricV3.sol, 122
+XCHG S2
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHINT 1
+STUR 111
+ROTREV
+NEWC
+STSLICECONST x7f3744b4
+STSLICE
+SWAP
+NEWC
+STSLICE
+STBREFR
+STBREFR
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+
+.macro processUpgradePoolRequest
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 125
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDMSGADDR
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $processUpgradePoolRequest_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro processUpgradePoolRequest_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 126
+DEPTH
+ADDCONST -2
+PICK
+PUSHINT 1000000000
+GEQ
+THROWIFNOT 104
+.loc ../contracts/v3/FarmFabricV3.sol, 127
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/v3/FarmFabricV3.sol, 129
+GETGLOB 11
+GETGLOB 16
+GETGLOB 9
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHINT 1
+STUR 111
+ROLLREV 3
+NEWC
+STSLICECONST x64a578c8
+STREF
+STU 32
+STSLICE
+STBREFR
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+
+.macro processUpdatePoolUserDataRequest
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 134
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDMSGADDR
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $processUpdatePoolUserDataRequest_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro processUpdatePoolUserDataRequest_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 135
+DEPTH
+ADDCONST -2
+PICK
+PUSHINT 1000000000
+GEQ
+THROWIFNOT 104
+.loc ../contracts/v3/FarmFabricV3.sol, 136
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/v3/FarmFabricV3.sol, 138
+GETGLOB 12
+GETGLOB 15
+GETGLOB 9
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHINT 1
+STUR 111
+ROLLREV 3
+NEWC
+STSLICECONST x53b0fcf9
+STREF
+STU 32
+STSLICE
+STBREFR
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+
+.macro deployFarmPool
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 143
+OVER
+PUSHCONT {
+	LDREF
+	ENDS
+	CTOS
+}
+IF
+LDMSGADDR
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDREF
+ENDS
+CTOS
+LDMSGADDR
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDU 32
+LDU 32
+LDU 32
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $deployFarmPool_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro deployFarmPool_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 152
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/v3/FarmFabricV3.sol, 153
+DEPTH
+ADDCONST -2
+PICK
+PUSHINT 5000000000
+GEQ
+THROWIFNOT 104
+.loc ../contracts/v3/FarmFabricV3.sol, 155
+GETGLOB 2
+NEWC
+STU 256
+PUSHINT 0
+NEWDICT
+PUSHINT 64
+DICTUSETB
+GETGLOB 15
+PUSHINT 2
+ROT
+PUSHINT 64
+DICTUSETREF
+GETGLOB 17
+PUSHINT 1
+ROT
+PUSHINT 64
+DICTUSETREF
+GETGLOB 13
+NEWC
+STU 64
+PUSHINT 4
+ROT
+PUSHINT 64
+DICTUSETB
+MYADDR
+PUSHINT 3
+ROT
+PUSHINT 64
+DICTUSET
+GETGLOB 12
+NEWC
+STU 32
+PUSHINT 5
+ROT
+PUSHINT 64
+DICTUSETB
+GETGLOB 11
+NEWC
+STU 32
+PUSHINT 6
+ROT
+PUSHINT 64
+DICTUSETB
+NEWC
+STDICT
+ENDC
+GETGLOB 16
+NEWC
+STSLICECONST x2_
+STOPTREF
+STOPTREF
+STZERO
+ENDC
+.loc ../contracts/v3/FarmFabricV3.sol, 168
+GETGLOB 13
+INC
+UFITS 64
+SETGLOB 13
+.loc ../contracts/v3/FarmFabricV3.sol, 170
+REVERSE 7, 1
+DUP
+HASHCU
+MYADDR
+PARSEMSGADDR
+THIRD
+NEWC
+STSLICECONST x9_
+STI 8
+STU 256
+ENDC
+CTOS
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHSLICE x0000000000000000000000000007_
+STSLICER
+OVER
+CALLREF {
+	CTOS
+	LDI 1
+	SWAP
+	PUSHCONT {
+		LDI 5
+		NIP
+	}
+	IF
+	LDI 1
+	SWAP
+	PUSHCONT {
+		LDI 2
+		NIP
+	}
+	IF
+	LDOPTREF
+	LDOPTREF
+	LDDICT
+	ENDS
+	BLKDROP 3
+}
+STREF
+STSLICECONST 1
+ROLLREV 7
+NEWC
+STSLICECONST x43cb1b72
+STSLICE
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+ROLLREV 5
+NEWC
+STSLICE
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+STU 32
+STU 32
+STU 32
+STBREFR
+STBREFR
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+
+.macro onPoolDeploy
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 178
+OVER
+PUSHCONT {
+	LDU 64
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDU 64
+}
+IFELSE
+LDMSGADDR
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDREF
+ENDS
+CTOS
+LDMSGADDR
+LDU 32
+LDDICT
+ROTREV
+PAIR
+SWAP
+LDU 32
+LDU 32
+LDU 32
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $onPoolDeploy_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.macro onPoolDeploy_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 188
+GETGLOB 2
+NEWC
+STU 256
+PUSHINT 0
+NEWDICT
+PUSHINT 64
+DICTUSETB
+GETGLOB 15
+PUSHINT 2
+ROT
+PUSHINT 64
+DICTUSETREF
+GETGLOB 17
+PUSHINT 1
+ROT
+PUSHINT 64
+DICTUSETREF
+ROLL 8
+NEWC
+STU 64
+PUSHINT 4
+ROT
+PUSHINT 64
+DICTUSETB
+MYADDR
+PUSHINT 3
+ROT
+PUSHINT 64
+DICTUSET
+GETGLOB 12
+NEWC
+STU 32
+PUSHINT 5
+ROT
+PUSHINT 64
+DICTUSETB
+GETGLOB 11
+NEWC
+STU 32
+PUSHINT 6
+ROT
+PUSHINT 64
+DICTUSETB
+NEWC
+STDICT
+ENDC
+GETGLOB 16
+NEWC
+STSLICECONST x2_
+STOPTREF
+STOPTREF
+STZERO
+ENDC
+.loc ../contracts/v3/FarmFabricV3.sol, 201
+HASHCU
+NEWC
+STSLICECONST x801_
+STU 256
+ENDC
+CTOS
+.loc ../contracts/v3/FarmFabricV3.sol, 202
+GETGLOB 9
+OVER
+SDEQ
+THROWIFNOT 103
+.loc ../contracts/v3/FarmFabricV3.sol, 204
+CALLREF {
+	CALL $_reserve_internal_macro$
+}
+PUSHINT 0
+RAWRESERVE
+.loc ../contracts/v3/FarmFabricV3.sol, 206
+REVERSE 7, 1
+PUSHSLICE xc0000000000000000000000001
+NEWC
+STSLICE
+ROLLREV 8
+NEWC
+STSLICECONST x55c223f4
+STSLICE
+ROLLREV 7
+NEWC
+STSLICE
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+ROLLREV 5
+NEWC
+STSLICE
+SWAP
+UNPAIR
+XCHG S2
+STU 32
+STDICT
+STU 32
+STU 32
+STU 32
+STBREFR
+STBREFR
+STBREFR
+ENDC
+PUSHINT 0
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+
+.macro upgrade
+DROP
+GETGLOB 6
+THROWIFNOT 76
+GETGLOB 2
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 209
+OVER
+PUSHCONT {
+	LDREF
+	LDREF
+	ENDS
+	CTOS
+}
+PUSHCONT {
+	LDREF
+}
+IFELSE
+LDMSGADDR
+ENDS
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $upgrade_internal_macro$
+}
+DROP
+CALLREF {
+	CALL $c7_to_c4$
+}
+THROW 0
+
+.globl	upgrade_internal
+.type	upgrade_internal, @function
+CALL $upgrade_internal_macro$
+
+.macro upgrade_internal_macro
+.loc ../contracts/v3/FarmFabricV3.sol, 210
+DROP
+GETGLOB 9
+GETGLOB 14
+SDEQ
+THROWIFNOT 102
+.loc ../contracts/v3/FarmFabricV3.sol, 211
+DEPTH
+ADDCONST -2
+PICK
+PUSHINT 1000000000
+GEQ
+THROWIFNOT 104
+.loc ../contracts/v3/FarmFabricV3.sol, 213
+GETGLOB 17
+GETGLOB 16
+GETGLOB 15
+GETGLOB 10
+GETGLOB 12
+GETGLOB 11
+GETGLOB 18
+GETGLOB 13
+GETGLOB 14
+NEWC
+STSLICE
+STU 64
+STU 128
+STU 32
+STU 32
+STU 32
+STREF
+STREF
+STREF
+ENDC
+.loc ../contracts/v3/FarmFabricV3.sol, 225
+OVER
+SETCODE
+.loc ../contracts/v3/FarmFabricV3.sol, 226
+SWAP
+CTOS
+DUP
+PUSHSLICE x8adb35
+SDEQ
+PUSHCONT {
+	PLDREFIDX 1
+	CTOS
+}
+IF
+PLDREF
+CTOS
+BLESS
+POP C3
+.loc ../contracts/v3/FarmFabricV3.sol, 228
+CALLREF {
+	CALL $:onCodeUpgrade$
+}
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+
+.internal-alias :onCodeUpgrade, 2
+.internal :onCodeUpgrade
+.loc ../contracts/v3/FarmFabricV3.sol, 232
+PUSHINT 0
+SETGLOB 10
+PUSHINT 0
+SETGLOB 11
+PUSHINT 0
+SETGLOB 12
+PUSHINT 0
+SETGLOB 13
+PUSHREFSLICE {
+	.blob x8000000000000000000000000000000000000000000000000000000000000000001_
+}
+SETGLOB 14
+PUSHREF {
+}
+SETGLOB 15
+PUSHREF {
+}
+SETGLOB 16
+PUSHREF {
+}
+SETGLOB 17
+PUSHINT 0
+SETGLOB 18
+.loc ../contracts/v3/FarmFabricV3.sol, 234
+CTOS
+.loc ../contracts/v3/FarmFabricV3.sol, 236
+DUP
+LDMSGADDR
+POP S2
+SETGLOB 14
+.loc ../contracts/v3/FarmFabricV3.sol, 237
+DUP
+LDU 64
+POP S2
+SETGLOB 13
+.loc ../contracts/v3/FarmFabricV3.sol, 238
+DUP
+LDU 128
+POP S2
+SETGLOB 18
+.loc ../contracts/v3/FarmFabricV3.sol, 239
+DUP
+LDU 32
+POP S2
+SETGLOB 11
+.loc ../contracts/v3/FarmFabricV3.sol, 240
+DUP
+LDU 32
+POP S2
+SETGLOB 12
+.loc ../contracts/v3/FarmFabricV3.sol, 242
+DUP
+LDREF
+POP S2
+SETGLOB 15
+.loc ../contracts/v3/FarmFabricV3.sol, 243
+DUP
+LDREF
+POP S2
+SETGLOB 16
+.loc ../contracts/v3/FarmFabricV3.sol, 244
+LDREF
+DROP
+SETGLOB 17
+.loc ../contracts/v3/FarmFabricV3.sol, 246
+PUSHINT 1
+DUP
+SETGLOB 10
+.loc ../contracts/v3/FarmFabricV3.sol, 248
+PUSHSLICE xc000000000000000000000000030a90cc700000000
+NEWC
+STSLICE
+STU 32
+ENDC
+PUSHINT 0
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 249
+GETGLOB 14
+NEWC
+STSLICECONST x42_
+STSLICE
+PUSHINT 111
+STZEROES
+ENDC
+PUSHINT 128
+SENDRAWMSG
+.loc ../contracts/v3/FarmFabricV3.sol, 0
+CALLREF {
+	CALL $c7_to_c4$
+}
+COMMIT
+THROW 0
+
+.macro c4_to_c7
+PUSHROOT
+CTOS
+LDU 256 ; pubkey c4
+LDU 64 ; pubkey timestamp c4
+LDU 1 ; ctor flag
+NIP
+LDU 32
+LDU 32
+LDU 32
+LDU 64
+LDREF
+ENDS
+CTOS
+LDMSGADDR
+LDREF
+LDREF
+LDREF
+LDU 128
+ENDS
+SETGLOB 18
+SETGLOB 17
+SETGLOB 16
+SETGLOB 15
+SETGLOB 14
+SETGLOB 13
+SETGLOB 12
+SETGLOB 11
+SETGLOB 10
+SETGLOB 3
+SETGLOB 2
+
+.macro c4_to_c7_with_init_storage
+PUSHROOT
+CTOS
+SBITS
+GTINT 1
+PUSHCONT {
+	PUSHINT 0
+	PUSHROOT
+	CTOS
+	PLDDICT ; D
+	PUSHINT 0
+	BLKPUSH 3, 0
+	PUSHREFSLICE {
+		.blob x8000000000000000000000000000000000000000000000000000000000000000001_
+	}
+	PUSHINT 1
+	PUSH S6
+	PUSHINT 64
+	DICTUGETREF
+	PUSHCONT {
+		PUSHREF {
+		}
+	}
+	IFNOT
+	PUSHINT 2
+	PUSH S7
+	PUSHINT 64
+	DICTUGETREF
+	PUSHCONT {
+		PUSHREF {
+		}
+	}
+	IFNOT
+	PUSHINT 3
+	PUSH S8
+	PUSHINT 64
+	DICTUGETREF
+	PUSHCONT {
+		PUSHREF {
+		}
+	}
+	IFNOT
+	PUSHINT 4
+	PUSH S9
+	PUSHINT 64
+	DICTUGET
+	PUSHCONT {
+		PLDU 128
+	}
+	PUSHCONT {
+		PUSHINT 0
+	}
+	IFELSE
+	SETGLOB 18
+	SETGLOB 17
+	SETGLOB 16
+	SETGLOB 15
+	SETGLOB 14
+	SETGLOB 13
+	SETGLOB 12
+	SETGLOB 11
+	SETGLOB 10
+	PUSHINT 64
+	DICTUGET
+	THROWIFNOT 61
+	PLDU 256
+	SETGLOB 2
+	PUSHINT 0 ; timestamp
+	SETGLOB 3
+	PUSHINT 0
+	SETGLOB 13
+}
+IFREFELSE {
+	CALL $c4_to_c7$
+}
+
+.macro c7_to_c4
+GETGLOB 18
+GETGLOB 17
+GETGLOB 16
+GETGLOB 15
+GETGLOB 14
+GETGLOB 13
+GETGLOB 12
+GETGLOB 11
+GETGLOB 10
+GETGLOB 3
+GETGLOB 2
+NEWC
+STU 256
+STU 64
+STONE
+STU 32
+STU 32
+STU 32
+STU 64
+ROLLREV 5
+NEWC
+STSLICE
+STREF
+STREF
+STREF
+STU 128
+STBREFR
+ENDC
+POPROOT
+
+.macro upd_only_time_in_c4
+PUSHROOT
+CTOS
+LDU 256
+LDU 64
+NIP
+GETGLOB 3
+ROT
+NEWC
+STU 256
+STU 64
+STSLICE
+ENDC
+POPROOT
+
+.internal-alias :main_internal, 0
+.internal :main_internal
+PUSHROOT
+CTOS
+SBITS
+NEQINT 1
+SETGLOB 6
+PUSH S2
+CTOS
+LDU 4 ; bounced tail
+LDMSGADDR ; bounced src tail
+DROP
+SETGLOB 9
+MODPOW2 1
+IFRET
+OVER
+SEMPTY ; isEmpty
+IFJMPREF {
+	GETGLOB 6
+	THROWIFNOT 76
+}
+OVER
+LDUQ 32  ; [funcId] body' ok
+THROWIFNOT 60
+OVER
+IFNOTJMPREF {
+	GETGLOB 6
+	THROWIFNOT 76
+}
+SWAP
+CALLREF {
+	CALL $public_function_selector$
+}
+THROW 60
+
+.internal-alias :main_external, -1
+.internal :main_external
+PUSHROOT
+CTOS
+SBITS
+NEQINT 1
+SETGLOB 6
+PUSHREFSLICE {
+	.blob x8000000000000000000000000000000000000000000000000000000000000000001_
+}
+SETGLOB 9
+OVER
+CALLREF {
+	CALL $c4_to_c7_with_init_storage$
+}
+LDU 1 ; haveSign msgSlice
+SWAP
+PUSHCONT {
+	PUSHINT 512
+	LDSLICEX ; signatureSlice msgSlice
+	DUP
+	HASHSU ; signatureSlice msgSlice hashMsgSlice
+	ROT
+	GETGLOB 2
+	DUP
+	SETGLOB 5
+	CHKSIGNU ; msgSlice isSigned
+	THROWIFNOT 40
+}
+IF
+LDU 64 ; timestamp msgSlice
+SWAP
+CALL $replay_protection_macro$
+LDU 32 ; expireAt msgSlice
+SWAP
+NOW ; msgSlice expireAt now
+GREATER ; msgSlice expireAt>now
+THROWIFNOT 57
+LDU 32 ; funcId body
+SWAP
+CALLREF {
+	CALL $public_function_selector$
+}
+THROW 60
+
+.macro fabric_version
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 10
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000c96cca09
+	NEWC
+	STSLICE
+	STU 32
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
+.macro farm_pool_version
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 11
+OVER
+PUSHCONT {
+	PUSHSLICE xc00000000000000000000000008682ced1
+	NEWC
+	STSLICE
+	STU 32
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
+.macro user_data_version
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 12
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000f4de5202
+	NEWC
+	STSLICE
+	STU 32
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
+.macro pools_count
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 13
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000d6aedd45
+	NEWC
+	STSLICE
+	STU 64
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
+.macro owner
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 14
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000df0bcfde
+	NEWC
+	STSLICE
+	STSLICE
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
+.macro FarmPoolUserDataCode
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 15
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000b2f5536b
+	NEWC
+	STSLICE
+	STREF
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
+.macro FarmPoolCode
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 16
+OVER
+PUSHCONT {
+	PUSHSLICE xc00000000000000000000000009c78095d
+	NEWC
+	STSLICE
+	STREF
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
+.macro PlatformCode
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 17
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000be069aad
+	NEWC
+	STSLICE
+	STREF
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
+.macro nonce
+DROP
+ENDS
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 18
+OVER
+PUSHCONT {
+	PUSHSLICE xc0000000000000000000000000c6cca7d1
+	NEWC
+	STSLICE
+	STU 128
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+IF
+THROW 0
+
+.macro public_function_selector
+DUP
+PUSHINT 1851005601
+LEQ
+IFJMPREF {
+	DUP
+	PUSHINT 477628765
+	LEQ
+	IFJMPREF {
+		DUP
+		PUSHINT 109235921
+		EQUAL
+		IFJMPREF {
+			CALL $farm_pool_version$
+		}
+		DUP
+		PUSHINT 273997743
+		EQUAL
+		IFJMPREF {
+			CALL $upgrade$
+		}
+		DUP
+		PUSHINT 360877100
+		EQUAL
+		IFJMPREF {
+			CALL $transferOwnership$
+		}
+		DUP
+		PUSHINT 477628765
+		EQUAL
+		IFJMPREF {
+			CALL $FarmPoolCode$
+		}
+	}
+	DUP
+	PUSHINT 1019008478
+	LEQ
+	IFJMPREF {
+		DUP
+		PUSHINT 628829606
+		EQUAL
+		IFJMPREF {
+			CALL $upgradePools$
+		}
+		DUP
+		PUSHINT 689372097
+		EQUAL
+		IFJMPREF {
+			CALL $processUpdatePoolUserDataRequest$
+		}
+		DUP
+		PUSHINT 854938475
+		EQUAL
+		IFJMPREF {
+			CALL $FarmPoolUserDataCode$
+		}
+		DUP
+		PUSHINT 1019008478
+		EQUAL
+		IFJMPREF {
+			CALL $installNewFarmPoolCode$
+		}
+	}
+	DUP
+	PUSHINT 1231866377
+	LEQ
+	IFJMPREF {
+		DUP
+		PUSHINT 1040620205
+		EQUAL
+		IFJMPREF {
+			CALL $PlatformCode$
+		}
+		DUP
+		PUSHINT 1187817425
+		EQUAL
+		IFJMPREF {
+			CALL $nonce$
+		}
+		DUP
+		PUSHINT 1196840156
+		EQUAL
+		IFJMPREF {
+			CALL $constructor$
+		}
+		DUP
+		PUSHINT 1231866377
+		EQUAL
+		IFJMPREF {
+			CALL $fabric_version$
+		}
+	}
+	DUP
+	PUSHINT 1851005601
+	LEQ
+	IFJMPREF {
+		DUP
+		PUSHINT 1454300485
+		EQUAL
+		IFJMPREF {
+			CALL $pools_count$
+		}
+		DUP
+		PUSHINT 1523634898
+		EQUAL
+		IFJMPREF {
+			CALL $deployFarmPool$
+		}
+		DUP
+		PUSHINT 1594609630
+		EQUAL
+		IFJMPREF {
+			CALL $owner$
+		}
+		DUP
+		PUSHINT 1851005601
+		EQUAL
+		IFJMPREF {
+			CALL $processUpgradePoolRequest$
+		}
+	}
+}
+DUP
+PUSHINT 2134264097
+LEQ
+IFJMPREF {
+	DUP
+	PUSHINT 2027471442
+	LEQ
+	IFJMPREF {
+		DUP
+		PUSHINT 1869324361
+		EQUAL
+		IFJMPREF {
+			CALL $installNewUserDataCode$
+		}
+		DUP
+		PUSHINT 1951078477
+		EQUAL
+		IFJMPREF {
+			CALL $forceUpdateUserData$
+		}
+		DUP
+		PUSHINT 1960727042
+		EQUAL
+		IFJMPREF {
+			CALL $user_data_version$
+		}
+		DUP
+		PUSHINT 2027471442
+		EQUAL
+		IFJMPREF {
+			CALL $updatePoolsUserDataCode$
+		}
+	}
+	DUP
+	PUSHINT 2134264097
+	EQUAL
+	IFJMPREF {
+		CALL $onPoolDeploy$
+	}
+}
+

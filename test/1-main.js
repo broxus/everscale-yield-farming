@@ -182,8 +182,12 @@ describe('Test Ton Farm Pool - main', async function() {
             let unclaimed = [0, 0];
 
             it('Deposit tokens', async function() {
+                locklift.tracing.allowCodes({compute: [51]})
+                console.log('Transfer tokens from user1 to user2');
                 // user1 send his tokens to user2 so that he will deposit them instead of him
                 await userTokenWallet1.transfer(minDeposit, user2);
+
+                console.log('Depositing tokens');
                 // now user2 deposit tokens of user1 with special payload
                 const tx = await farm_pool.deposit(userTokenWallet2, minDeposit, user1);
 

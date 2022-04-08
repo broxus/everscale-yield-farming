@@ -14,27 +14,15 @@ async function main() {
             name: 'owner',
             message: 'Fabric owner (can upgrade pool/user data codes)',
             validate: value => isValidTonAddress(value) ? true : 'Invalid address'
-        },
-        {
-            type: 'number',
-            name: 'version',
-            message: 'Fabric version',
-            validate: value => value <= 1
-        },
+        }
     ]);
 
     console.log(`Deploying Farm Pool with owner: ${response.owner}`)
+    console.log('Deploying versions: fabric - V3, pool - V3, user data - V3');
 
-    let PoolFabric, TonFarmPool, UserData;
-    if (response.version === 1) {
-        PoolFabric = await locklift.factory.getContract('FarmFabricV2');
-        TonFarmPool = await locklift.factory.getContract('EverFarmPoolV2');
-        UserData = await locklift.factory.getContract('UserDataV2');
-    } else {
-        PoolFabric = await locklift.factory.getContract('FarmFabric');
-        TonFarmPool = await locklift.factory.getContract('EverFarmPool');
-        UserData = await locklift.factory.getContract('UserData');
-    }
+    const PoolFabric = await locklift.factory.getContract('FarmFabricV3');
+    const TonFarmPool = await locklift.factory.getContract('EverFarmPoolV3');
+    const UserData = await locklift.factory.getContract('UserDataV3');
 
     const Platform = await locklift.factory.getContract('Platform');
 

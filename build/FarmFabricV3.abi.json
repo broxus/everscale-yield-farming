@@ -1,0 +1,269 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_owner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "transferOwnership",
+			"inputs": [
+				{"name":"new_owner","type":"address"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "installNewFarmPoolCode",
+			"inputs": [
+				{"name":"farm_pool_code","type":"cell"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "installNewUserDataCode",
+			"inputs": [
+				{"name":"user_data_code","type":"cell"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "upgradePools",
+			"inputs": [
+				{"name":"pools","type":"address[]"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "updatePoolsUserDataCode",
+			"inputs": [
+				{"name":"pools","type":"address[]"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "forceUpdateUserData",
+			"inputs": [
+				{"name":"pool","type":"address"},
+				{"name":"user","type":"address"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processUpgradePoolRequest",
+			"inputs": [
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processUpdatePoolUserDataRequest",
+			"inputs": [
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployFarmPool",
+			"inputs": [
+				{"name":"pool_owner","type":"address"},
+				{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"reward_rounds","type":"tuple[]"},
+				{"name":"tokenRoot","type":"address"},
+				{"name":"rewardTokenRoot","type":"address[]"},
+				{"name":"vestingPeriod","type":"uint32"},
+				{"name":"vestingRatio","type":"uint32"},
+				{"name":"withdrawAllLockPeriod","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onPoolDeploy",
+			"inputs": [
+				{"name":"pool_deploy_nonce","type":"uint64"},
+				{"name":"pool_owner","type":"address"},
+				{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"reward_rounds","type":"tuple[]"},
+				{"name":"tokenRoot","type":"address"},
+				{"name":"rewardTokenRoot","type":"address[]"},
+				{"name":"vestingPeriod","type":"uint32"},
+				{"name":"vestingRatio","type":"uint32"},
+				{"name":"withdrawAllLockPeriod","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "upgrade",
+			"inputs": [
+				{"name":"new_code","type":"cell"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "fabric_version",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"fabric_version","type":"uint32"}
+			]
+		},
+		{
+			"name": "farm_pool_version",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"farm_pool_version","type":"uint32"}
+			]
+		},
+		{
+			"name": "user_data_version",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"user_data_version","type":"uint32"}
+			]
+		},
+		{
+			"name": "pools_count",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"pools_count","type":"uint64"}
+			]
+		},
+		{
+			"name": "owner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"owner","type":"address"}
+			]
+		},
+		{
+			"name": "FarmPoolUserDataCode",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"FarmPoolUserDataCode","type":"cell"}
+			]
+		},
+		{
+			"name": "FarmPoolCode",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"FarmPoolCode","type":"cell"}
+			]
+		},
+		{
+			"name": "PlatformCode",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"PlatformCode","type":"cell"}
+			]
+		},
+		{
+			"name": "nonce",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"nonce","type":"uint128"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"FarmPoolUserDataCode","type":"cell"},
+		{"key":2,"name":"FarmPoolCode","type":"cell"},
+		{"key":3,"name":"PlatformCode","type":"cell"},
+		{"key":4,"name":"nonce","type":"uint128"}
+	],
+	"events": [
+		{
+			"name": "NewFarmPool",
+			"inputs": [
+				{"name":"pool","type":"address"},
+				{"name":"pool_owner","type":"address"},
+				{"components":[{"name":"startTime","type":"uint32"},{"name":"rewardPerSecond","type":"uint128[]"}],"name":"reward_rounds","type":"tuple[]"},
+				{"name":"tokenRoot","type":"address"},
+				{"name":"rewardTokenRoot","type":"address[]"},
+				{"name":"vestingPeriod","type":"uint32"},
+				{"name":"vestingRatio","type":"uint32"},
+				{"name":"withdrawAllLockPeriod","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "FarmPoolCodeUpdated",
+			"inputs": [
+				{"name":"prev_version","type":"uint32"},
+				{"name":"new_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "UserDataCodeUpdated",
+			"inputs": [
+				{"name":"prev_version","type":"uint32"},
+				{"name":"new_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "FabricUpdated",
+			"inputs": [
+				{"name":"prev_version","type":"uint32"},
+				{"name":"new_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "NewOwner",
+			"inputs": [
+				{"name":"prev_owner","type":"address"},
+				{"name":"new_owner","type":"address"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"fabric_version","type":"uint32"},
+		{"name":"farm_pool_version","type":"uint32"},
+		{"name":"user_data_version","type":"uint32"},
+		{"name":"pools_count","type":"uint64"},
+		{"name":"owner","type":"address"},
+		{"name":"FarmPoolUserDataCode","type":"cell"},
+		{"name":"FarmPoolCode","type":"cell"},
+		{"name":"PlatformCode","type":"cell"},
+		{"name":"nonce","type":"uint128"}
+	]
+}

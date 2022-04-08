@@ -1,0 +1,149 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDetails",
+			"inputs": [
+				{"name":"answerId","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"pool_debt","type":"uint128[]"},{"name":"entitled","type":"uint128[]"},{"name":"vestingTime","type":"uint32[]"},{"name":"amount","type":"uint128"},{"name":"rewardDebt","type":"uint128[]"},{"name":"farmPool","type":"address"},{"name":"user","type":"address"},{"name":"current_version","type":"uint32"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "pendingReward",
+			"inputs": [
+				{"name":"_accRewardPerShare","type":"uint256[]"},
+				{"name":"poolLastRewardTime","type":"uint32"},
+				{"name":"farmEndTime","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"_entitled","type":"uint128[]"},
+				{"name":"_vested","type":"uint128[]"},
+				{"name":"_pool_debt","type":"uint128[]"},
+				{"name":"_vesting_time","type":"uint32[]"}
+			]
+		},
+		{
+			"name": "increasePoolDebt",
+			"inputs": [
+				{"name":"_pool_debt","type":"uint128[]"},
+				{"name":"send_gas_to","type":"address"},
+				{"name":"code_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processDeposit",
+			"inputs": [
+				{"name":"nonce","type":"uint64"},
+				{"name":"_amount","type":"uint128"},
+				{"name":"_accRewardPerShare","type":"uint256[]"},
+				{"name":"poolLastRewardTime","type":"uint32"},
+				{"name":"farmEndTime","type":"uint32"},
+				{"name":"code_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processWithdraw",
+			"inputs": [
+				{"name":"_amount","type":"uint128"},
+				{"name":"_accRewardPerShare","type":"uint256[]"},
+				{"name":"poolLastRewardTime","type":"uint32"},
+				{"name":"farmEndTime","type":"uint32"},
+				{"name":"send_gas_to","type":"address"},
+				{"name":"nonce","type":"uint32"},
+				{"name":"code_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processWithdrawAll",
+			"inputs": [
+				{"name":"_accRewardPerShare","type":"uint256[]"},
+				{"name":"poolLastRewardTime","type":"uint32"},
+				{"name":"farmEndTime","type":"uint32"},
+				{"name":"send_gas_to","type":"address"},
+				{"name":"nonce","type":"uint32"},
+				{"name":"code_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processClaimReward",
+			"inputs": [
+				{"name":"_accRewardPerShare","type":"uint256[]"},
+				{"name":"poolLastRewardTime","type":"uint32"},
+				{"name":"farmEndTime","type":"uint32"},
+				{"name":"send_gas_to","type":"address"},
+				{"name":"nonce","type":"uint32"},
+				{"name":"code_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processSafeWithdraw",
+			"inputs": [
+				{"name":"send_gas_to","type":"address"},
+				{"name":"code_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "upgrade",
+			"inputs": [
+				{"name":"new_code","type":"cell"},
+				{"name":"new_version","type":"uint32"},
+				{"name":"send_gas_to","type":"address"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+		{
+			"name": "UserDataUpdated",
+			"inputs": [
+				{"name":"prev_version","type":"uint32"},
+				{"name":"new_version","type":"uint32"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"current_version","type":"uint32"},
+		{"name":"platform_code","type":"cell"},
+		{"name":"lastRewardTime","type":"uint32"},
+		{"name":"vestingPeriod","type":"uint32"},
+		{"name":"vestingRatio","type":"uint32"},
+		{"name":"amount","type":"uint128"},
+		{"name":"vestingTime","type":"uint32[]"},
+		{"name":"rewardDebt","type":"uint128[]"},
+		{"name":"entitled","type":"uint128[]"},
+		{"name":"pool_debt","type":"uint128[]"},
+		{"name":"farmPool","type":"address"},
+		{"name":"user","type":"address"}
+	]
+}

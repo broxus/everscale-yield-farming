@@ -7,7 +7,7 @@ const {
 
 // ------------------------------- UTILS -----------------------------------
 async function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return;
 }
 
 const isValidTonAddress = (address) => /^(?:-1|0):[0-9a-fA-F]{64}$/.test(address);
@@ -82,10 +82,14 @@ class TokenWallet {
         return await this.wallet.call({method: 'balance'});
     }
 
-    async transfer(amount, receiver_or_addr, payload='') {
+    async transfer(amount, receiver_or_addr, payload='', tracing=null, allowed_codes={compute: []}) {
         let addr = receiver_or_addr.address;
         if (addr === undefined) {
             addr = receiver_or_addr;
+        }
+        let notify = false;
+        if (payload) {
+            notify = true;
         }
         return await this._owner.runTarget({
             contract: this.wallet,
@@ -95,10 +99,12 @@ class TokenWallet {
                 recipient: addr,
                 deployWalletValue: 0,
                 remainingGasTo: this._owner.address,
-                notify: true,
+                notify: notify,
                 payload: payload
             },
-            value: convertCrystal(5, 'nano')
+            value: convertCrystal(5, 'nano'),
+            tracing: tracing,
+            tracing_allowed_codes: allowed_codes
         });
     }
 }
@@ -210,7 +216,7 @@ class FarmPool {
         return res.tokenBalance;
     }
 
-    async userData(user, name='UserData') {
+    async userData(user, name='UserDataV2') {
         const addr = await this.pool.call({method: 'getUserDataAddress', params: {user: user.address}});
         const userData = await locklift.factory.getContract(name);
         userData.setAddress(addr);
@@ -251,12 +257,26 @@ class FarmPool {
         });
     }
 
-    async deposit(from_wallet, amount, deposit_owner) {
+    async deposit(from_wallet, amount, deposit_owner, tracing_errors={compute: [null]}) {
         if (deposit_owner === undefined) {
             deposit_owner = from_wallet._owner;
         }
         const payload = await this.depositPayload(deposit_owner);
-        return await from_wallet.transfer(amount, this.pool, payload);
+        return await from_wallet.transfer(amount, this.pool, payload, null, tracing_errors);
+    }
+
+    async claimRewardForUser(caller, user, tracing_errors={compute: []}) {
+        return await caller.runTarget({
+            contract: this.pool,
+            method: 'claimRewardForUser',
+            params: {
+                user: user.address,
+                send_gas_to: user.address,
+                nonce: 0
+            },
+            value: convertCrystal(5, 'nano'),
+            tracing_allowed_codes: tracing_errors
+        });
     }
 
     async withdrawUnclaimed() {
@@ -272,7 +292,7 @@ class FarmPool {
         })
     }
 
-    async withdrawTokens(user, withdraw_amount) {
+    async withdrawTokens(user, withdraw_amount, tracing_errors={compute: []}) {
         return await user.runTarget({
             contract: this.pool,
             method: 'withdraw',
@@ -281,7 +301,8 @@ class FarmPool {
                 send_gas_to: user.address,
                 nonce: 0
             },
-            value: convertCrystal(5, 'nano')
+            value: convertCrystal(5, 'nano'),
+            tracing_allowed_codes: tracing_errors
         });
     };
 
@@ -309,7 +330,7 @@ class FarmPool {
         })
     }
 
-    async claimReward(user) {
+    async claimReward(user, tracing_errors={compute: []}) {
         return await user.runTarget({
             contract: this.pool,
             method: 'claimReward',
@@ -317,7 +338,8 @@ class FarmPool {
                 send_gas_to: user.address,
                 nonce: 0
             },
-            value: convertCrystal(5, 'nano')
+            value: convertCrystal(5, 'nano'),
+            tracing_allowed_codes: tracing_errors
         });
     };
 
@@ -549,20 +571,29 @@ class Fabric {
 
 
 // -------------------------- SETUP METHODS --------------------------
-const setupFabric = async (owner, version=0) => {
-    let PoolFabric, EverFarmPool, UserData;
-    if (version === 0) {
-        PoolFabric = await locklift.factory.getContract('FarmFabric');
-        EverFarmPool = await locklift.factory.getContract('EverFarmPool');
-        UserData = await locklift.factory.getContract('UserData');
-    } else if (version === 1) {
-        PoolFabric = await locklift.factory.getContract('FarmFabricV2');
-        EverFarmPool = await locklift.factory.getContract('EverFarmPoolV2');
-        UserData = await locklift.factory.getContract('UserDataV2');
+const setupFabric = async (owner, fabric_version=2, pool_version=2, user_data_version=2) => {
+    const fabric_codes = {
+        0: await locklift.factory.getContract('FarmFabric'),
+        1: await locklift.factory.getContract('FarmFabricV2'),
+        2: await locklift.factory.getContract('FarmFabricV3')
+
+    };
+    const pool_codes = {
+        0: await locklift.factory.getContract('EverFarmPool'),
+        1: await locklift.factory.getContract('EverFarmPoolV2'),
+        2: await locklift.factory.getContract('EverFarmPoolV3')
+    };
+    const user_data_codes = {
+        0: await locklift.factory.getContract('UserData'),
+        1: await locklift.factory.getContract('UserDataV2'),
+        2: await locklift.factory.getContract('UserDataV3')
     }
 
-    const Platform = await locklift.factory.getContract('Platform');
+    const PoolFabric = fabric_codes[fabric_version];
+    const EverFarmPool = pool_codes[pool_version];
+    const UserData = user_data_codes[user_data_version];
 
+    const Platform = await locklift.factory.getContract('Platform');
 
     const [keyPair] = await locklift.keys.getKeyPairs();
     const fabric = await locklift.giver.deployContract({

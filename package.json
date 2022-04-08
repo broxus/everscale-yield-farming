@@ -23,7 +23,7 @@
     "bignumber.js": "^9.0.1",
     "broxus-ton-tokens-contracts": "github:broxus/ton-eth-bridge-token-contracts#d3c1cd920c0320ffaab03b54c878dd0e06fed3c7",
     "chai-as-promised": "^7.1.1",
-    "locklift": "^1.5.1",
+    "locklift": "github:broxus/ton-locklift#ecc04004f6d282b370fe3ff1e51e691480c4a484",
     "mocha-logger": "^1.0.7",
     "prompts": "^2.4.2"
   },
